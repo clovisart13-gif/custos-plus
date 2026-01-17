@@ -20,6 +20,7 @@ import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
 import { Loader2, Plus, Search, Pencil, Trash2, Eye } from "lucide-react";
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -27,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 export default function FichasCusto() {
   const { user, loading: authLoading, isAuthenticated } = useAuth();
+  const [, setLocation] = useLocation();
   const [search, setSearch] = useState("");
   const [filterTipo, setFilterTipo] = useState<string>("");
   const [filterFamilia, setFilterFamilia] = useState<string>("");
@@ -297,7 +299,7 @@ export default function FichasCusto() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => window.location.href = `/ficha/${ficha.id}`}
+                            onClick={() => setLocation(`/ficha/${ficha.id}`)}
                             title="Visualizar"
                           >
                             <Eye className="h-4 w-4" />

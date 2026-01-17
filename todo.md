@@ -94,3 +94,7 @@
 - [ ] Criar página para listar todos os orçamentos
 - [ ] Adicionar filtros por cliente, data, status
 - [ ] Implementar busca por número de orçamento
+
+## Bugs Reportados
+
+- [x] Corrigir erro 404 ao clicar em "Visualizar" ficha de custo
