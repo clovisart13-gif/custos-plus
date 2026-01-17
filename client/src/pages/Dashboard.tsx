@@ -181,7 +181,11 @@ export default function Dashboard() {
                       <TableHead className="text-right">Modelagem</TableHead>
                       <TableHead className="text-right">Piloto</TableHead>
                       <TableHead className="text-right">Corte</TableHead>
+                      <TableHead className="text-right">Benefic.</TableHead>
                       <TableHead className="text-right">Costura</TableHead>
+                      <TableHead className="text-right">Lavand.</TableHead>
+                      <TableHead className="text-right">Acabam.</TableHead>
+                      <TableHead className="text-right">Passad.</TableHead>
                       <TableHead className="text-right">Tecido</TableHead>
                       <TableHead className="text-right">Aviamento</TableHead>
                       <TableHead className="text-right font-bold">TOTAL MÉDIO</TableHead>
@@ -195,7 +199,11 @@ export default function Dashboard() {
                         <TableCell className="text-right">R$ {item.modelagem.toFixed(2)}</TableCell>
                         <TableCell className="text-right">R$ {item.piloto.toFixed(2)}</TableCell>
                         <TableCell className="text-right">R$ {item.corte.toFixed(2)}</TableCell>
+                        <TableCell className="text-right">R$ {item.beneficiamento.toFixed(2)}</TableCell>
                         <TableCell className="text-right">R$ {item.costura.toFixed(2)}</TableCell>
+                        <TableCell className="text-right">R$ {item.lavanderia.toFixed(2)}</TableCell>
+                        <TableCell className="text-right">R$ {item.acabamento.toFixed(2)}</TableCell>
+                        <TableCell className="text-right">R$ {item.passadoria.toFixed(2)}</TableCell>
                         <TableCell className="text-right">R$ {item.tecido.toFixed(2)}</TableCell>
                         <TableCell className="text-right">R$ {item.aviamento.toFixed(2)}</TableCell>
                         <TableCell className="text-right font-bold">

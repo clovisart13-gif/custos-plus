@@ -17,11 +17,11 @@ export default function VisualizarFicha() {
   const ficha = fichas?.find((f) => f.id === fichaId);
 
   useEffect(() => {
-    if (!fichaId || !ficha) {
-      // Redirecionar se não encontrar a ficha
-      setLocation("/fichas");
+    if (fichaId && !ficha && fichas && fichas.length > 0) {
+      // Redirecionar apenas se já carregou as fichas e não encontrou
+      setLocation("/fichas-custo");
     }
-  }, [fichaId, ficha, setLocation]);
+  }, [fichaId, ficha, fichas, setLocation]);
 
   if (!ficha) {
     return null;
@@ -64,7 +64,7 @@ export default function VisualizarFicha() {
     <div className="min-h-screen bg-background">
       {/* Botões de ação - não aparecem na impressão */}
       <div className="print:hidden container py-4 flex gap-2">
-        <Button variant="outline" onClick={() => setLocation("/fichas")}>
+        <Button variant="outline" onClick={() => setLocation("/fichas-custo")}>
           <ArrowLeft className="w-4 h-4 mr-2" />
           Voltar
         </Button>

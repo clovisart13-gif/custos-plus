@@ -97,4 +97,11 @@
 
 ## Bugs Reportados
 
-- [x] Corrigir erro 404 ao clicar em "Visualizar" ficha de custo
+- [x] Erro 404 corrigido - visualização de ficha funciona
+- [x] Dashboard corrigido - agora mostra todas as 10 colunas (8 etapas de mão-de-obra + Tecido + Aviamento)
+
+## Melhorias Críticas Solicitadas
+
+- [ ] Permitir adicionar campos personalizados de mão-de-obra (bordado, silk, etc.)
+- [ ] Remover campos fixos de mão-de-obra e tornar dinâmicos
+- [ ] Sincronizar campos entre dashboard e ficha de custo
