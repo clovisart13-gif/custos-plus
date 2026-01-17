@@ -156,8 +156,10 @@ export default function VisualizarOrcamento() {
                     <th className="text-left py-2 px-2">Referência</th>
                     <th className="text-left py-2 px-2">Descrição</th>
                     <th className="text-right py-2 px-2">Quantidade</th>
+                    <th className="text-center py-2 px-2">Markup</th>
                     <th className="text-right py-2 px-2">Valor Unitário</th>
                     <th className="text-right py-2 px-2">Total</th>
+                    <th className="text-center py-2 px-2">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -166,8 +168,23 @@ export default function VisualizarOrcamento() {
                       <td className="py-2 px-2">{item.referencia}</td>
                       <td className="py-2 px-2">{item.descricao}</td>
                       <td className="text-right py-2 px-2">{item.quantidade}</td>
+                      <td className="text-center py-2 px-2">
+                        <span className="bg-primary/10 px-2 py-1 rounded text-xs font-semibold">
+                          ÷ {Number(item.markupDivisor).toFixed(2)}
+                        </span>
+                      </td>
                       <td className="text-right py-2 px-2">{formatCurrency(Number(item.valorUnitario))}</td>
                       <td className="text-right py-2 px-2 font-semibold">{formatCurrency(Number(item.valorTotal))}</td>
+                      <td className="text-center py-2 px-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => alert("Editar markup em desenvolvimento")}
+                          className="text-xs"
+                        >
+                          Editar
+                        </Button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

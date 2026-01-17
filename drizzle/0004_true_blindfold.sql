@@ -1,0 +1,1 @@
+ALTER TABLE `itens_orcamento` ADD `markup_divisor` decimal(4,2) DEFAULT '0.50' NOT NULL;

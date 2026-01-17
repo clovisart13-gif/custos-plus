@@ -189,6 +189,7 @@ export const appRouter = router({
         custo: z.number().min(0),
         valorUnitario: z.number().min(0),
         valorTotal: z.number().min(0),
+        markupDivisor: z.number().min(0.1).max(1),
       }))
       .mutation(async ({ input }) => {
         const result = await db.createItemOrcamento({
@@ -200,7 +201,23 @@ export const appRouter = router({
           custo: input.custo.toString(),
           valorUnitario: input.valorUnitario.toString(),
           valorTotal: input.valorTotal.toString(),
+          markupDivisor: input.markupDivisor.toString(),
         });
+        return result;
+      }),
+
+    updateItemMarkup: protectedProcedure
+      .input(z.object({
+        itemId: z.number(),
+        markupDivisor: z.number().min(0.1).max(1),
+        custo: z.number().min(0),
+      }))
+      .mutation(async ({ input }) => {
+        const result = await db.updateItemMarkup(
+          input.itemId,
+          input.markupDivisor,
+          input.custo
+        );
         return result;
       }),
 

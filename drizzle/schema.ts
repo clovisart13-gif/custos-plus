@@ -95,6 +95,7 @@ export const itensOrcamento = mysqlTable("itens_orcamento", {
   custo: decimal("custo", { precision: 12, scale: 2 }).notNull(),
   valorUnitario: decimal("valor_unitario", { precision: 12, scale: 2 }).notNull(),
   valorTotal: decimal("valor_total", { precision: 12, scale: 2 }).notNull(),
+  markupDivisor: decimal("markup_divisor", { precision: 4, scale: 2 }).default("0.50").notNull(),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });

@@ -87,8 +87,10 @@
 - [x] Implementar cálculo de markup divisor (0,40 / 0,50 / 0,60)
 - [x] Adicionar campos de quantidade e prazos
 - [x] Implementar cálculo automático de condições de pagamento
-- [ ] Botão "Gerar Orçamento" na página de Fichas de Custo
-- [ ] Melhorar clareza visual: deixar evidente que múltiplas fichas podem virar um orçamento
+- [x] Botão "Gerar Orçamento" na página de Fichas de Custo
+- [x] Melhorar clareza visual: deixar evidente que múltiplas fichas podem virar um orçamento
+- [x] Campo de markup editável ao adicionar item ao orçamento
+- [x] Coluna de markup visível na tabela de itens do orçamento
 
 ### Visualização e Exportação
 - [x] Criar página de visualização de orçamento
@@ -96,8 +98,16 @@
 - [ ] Adicionar exportação para PDF
 - [x] Adicionar botão de impressão
 - [ ] Melhorar layout PDF para mostrar claramente cada ficha como item separado
+- [ ] Implementar botão "Editar Markup" para mudar markup de itens em tempo real
 
 ### Testes
-- [x] Testar geração de orçamento (7 testes passando)
-- [ ] Testar cálculos de preço
+- [x] Testar geração de orçamento (14 testes passando)
+- [x] Testar cálculos de preço
 - [ ] Testar exportação para PDF
+
+## Funcionalidades Futuras (Planejadas)
+- [ ] Botões de "Aprovado" e "Reprovado" na lista de orçamentos
+- [ ] Integração com Kanban para gerar pedidos automáticos quando orçamento aprovado
+- [ ] Filtros e busca na página de orçamentos
+- [ ] Status de orçamento (Pendente, Aceito, Rejeitado)
+- [ ] Histórico de alterações de orçamentos

@@ -496,3 +496,44 @@ export async function generateNextOrcamentoNumber(userId: number): Promise<strin
   
   return `${padrao}-${numeroFormatado}`;
 }
+
+export async function updateItemMarkup(
+  itemId: number,
+  markupDivisor: number,
+  custo: number
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // Calcular novo valor unitário baseado no markup
+  const valorUnitario = custo / markupDivisor;
+  
+  // Buscar item para pegar quantidade
+  const item = await db
+    .select()
+    .from(itensOrcamento)
+    .where(eq(itensOrcamento.id, itemId))
+    .limit(1);
+
+  if (!item || item.length === 0) {
+    throw new Error("Item não encontrado");
+  }
+
+  const quantidade = item[0].quantidade;
+  const valorTotal = valorUnitario * quantidade;
+
+  // Atualizar item com novo markup e valores recalculados
+  await db
+    .update(itensOrcamento)
+    .set({
+      markupDivisor: markupDivisor.toString(),
+      valorUnitario: valorUnitario.toString(),
+      valorTotal: valorTotal.toString(),
+    })
+    .where(eq(itensOrcamento.id, itemId));
+
+  return {
+    valorUnitario,
+    valorTotal,
+  };
+}
