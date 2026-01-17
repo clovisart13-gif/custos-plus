@@ -1,0 +1,22 @@
+CREATE TABLE `fichas_custo` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`referencia` varchar(100) NOT NULL,
+	`tipo` varchar(100) NOT NULL,
+	`familia` varchar(100) NOT NULL,
+	`cliente` varchar(200) NOT NULL,
+	`modelagem` decimal(10,2) NOT NULL DEFAULT '0.00',
+	`piloto` decimal(10,2) NOT NULL DEFAULT '0.00',
+	`corte` decimal(10,2) NOT NULL DEFAULT '0.00',
+	`beneficiamento` decimal(10,2) NOT NULL DEFAULT '0.00',
+	`costura` decimal(10,2) NOT NULL DEFAULT '0.00',
+	`lavanderia` decimal(10,2) NOT NULL DEFAULT '0.00',
+	`acabamento` decimal(10,2) NOT NULL DEFAULT '0.00',
+	`passadoria` decimal(10,2) NOT NULL DEFAULT '0.00',
+	`tecido` decimal(10,2) NOT NULL DEFAULT '0.00',
+	`aviamento` decimal(10,2) NOT NULL DEFAULT '0.00',
+	`observacoes` text,
+	`user_id` int NOT NULL,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `fichas_custo_id` PRIMARY KEY(`id`)
+);

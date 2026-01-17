@@ -1,17 +1,10 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { decimal, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
- * Extend this file with additional tables as your product grows.
- * Columns use camelCase to match both database fields and generated types.
  */
 export const users = mysqlTable("users", {
-  /**
-   * Surrogate primary key. Auto-incremented numeric value managed by the database.
-   * Use this for relations between tables.
-   */
   id: int("id").autoincrement().primaryKey(),
-  /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
   openId: varchar("openId", { length: 64 }).notNull().unique(),
   name: text("name"),
   email: varchar("email", { length: 320 }),
@@ -25,4 +18,36 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * Fichas de Custo - Cost Sheets for production references
+ */
+export const fichasCusto = mysqlTable("fichas_custo", {
+  id: int("id").autoincrement().primaryKey(),
+  referencia: varchar("referencia", { length: 100 }).notNull(),
+  tipo: varchar("tipo", { length: 100 }).notNull(), // Malha, Plano, Rashguard, etc.
+  familia: varchar("familia", { length: 100 }).notNull(), // Camiseta, Bermuda, Macacão, etc.
+  cliente: varchar("cliente", { length: 200 }).notNull(),
+  
+  // Custos de Mão-de-Obra (8 etapas)
+  modelagem: decimal("modelagem", { precision: 10, scale: 2 }).default("0.00").notNull(),
+  piloto: decimal("piloto", { precision: 10, scale: 2 }).default("0.00").notNull(),
+  corte: decimal("corte", { precision: 10, scale: 2 }).default("0.00").notNull(),
+  beneficiamento: decimal("beneficiamento", { precision: 10, scale: 2 }).default("0.00").notNull(),
+  costura: decimal("costura", { precision: 10, scale: 2 }).default("0.00").notNull(),
+  lavanderia: decimal("lavanderia", { precision: 10, scale: 2 }).default("0.00").notNull(),
+  acabamento: decimal("acabamento", { precision: 10, scale: 2 }).default("0.00").notNull(),
+  passadoria: decimal("passadoria", { precision: 10, scale: 2 }).default("0.00").notNull(),
+  
+  // Custos de Matéria-Prima
+  tecido: decimal("tecido", { precision: 10, scale: 2 }).default("0.00").notNull(),
+  aviamento: decimal("aviamento", { precision: 10, scale: 2 }).default("0.00").notNull(),
+  
+  observacoes: text("observacoes"),
+  
+  userId: int("user_id").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type FichaCusto = typeof fichasCusto.$inferSelect;
+export type InsertFichaCusto = typeof fichasCusto.$inferInsert;
