@@ -23,10 +23,12 @@ export type InsertUser = typeof users.$inferInsert;
  */
 export const fichasCusto = mysqlTable("fichas_custo", {
   id: int("id").autoincrement().primaryKey(),
+  userId: int("user_id").notNull(),
   referencia: varchar("referencia", { length: 100 }).notNull(),
-  tipo: varchar("tipo", { length: 100 }).notNull(), // Malha, Plano, Rashguard, etc.
-  familia: varchar("familia", { length: 100 }).notNull(), // Camiseta, Bermuda, Macacão, etc.
-  cliente: varchar("cliente", { length: 200 }).notNull(),
+  tipo: varchar("tipo", { length: 50 }).notNull(),
+  familia: varchar("familia", { length: 50 }).notNull(),
+  cliente: varchar("cliente", { length: 100 }).notNull(),
+  fotoUrl: text("foto_url"),
   
   // Custos de Mão-de-Obra (8 etapas)
   modelagem: decimal("modelagem", { precision: 10, scale: 2 }).default("0.00").notNull(),
@@ -44,7 +46,6 @@ export const fichasCusto = mysqlTable("fichas_custo", {
   
   observacoes: text("observacoes"),
   
-  userId: int("user_id").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

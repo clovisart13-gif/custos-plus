@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/table";
 import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
-import { Loader2, Plus, Search, Pencil, Trash2 } from "lucide-react";
+import { Loader2, Plus, Search, Pencil, Trash2, Eye } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -297,6 +297,14 @@ export default function FichasCusto() {
                           <Button
                             variant="ghost"
                             size="icon"
+                            onClick={() => window.location.href = `/ficha/${ficha.id}`}
+                            title="Visualizar"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => handleDelete(ficha.id)}
                           >
                             <Trash2 className="h-4 w-4" />
@@ -370,6 +378,7 @@ function NovaFichaModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
     tipo: "",
     familia: "",
     cliente: "",
+    fotoUrl: "",
     modelagem: 0,
     piloto: 0,
     corte: 0,
@@ -394,6 +403,7 @@ function NovaFichaModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
         tipo: "",
         familia: "",
         cliente: "",
+        fotoUrl: "",
         modelagem: 0,
         piloto: 0,
         corte: 0,
@@ -481,6 +491,18 @@ function NovaFichaModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                   required
                 />
               </div>
+            </div>
+            <div>
+              <Label htmlFor="fotoUrl">URL da Foto do Produto</Label>
+              <Input
+                id="fotoUrl"
+                value={formData.fotoUrl}
+                onChange={(e) => setFormData({ ...formData, fotoUrl: e.target.value })}
+                placeholder="Cole a URL da imagem aqui"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Dica: Faça upload da imagem em um serviço como Imgur ou Google Drive e cole o link aqui
+              </p>
             </div>
             <div>
               <Label htmlFor="observacoes">Observações</Label>

@@ -10,6 +10,7 @@ const fichaCustoSchema = z.object({
   tipo: z.string().min(1, "Tipo é obrigatório"),
   familia: z.string().min(1, "Família é obrigatória"),
   cliente: z.string().min(1, "Cliente é obrigatório"),
+  fotoUrl: z.string().optional(),
   modelagem: z.number().min(0).default(0),
   piloto: z.number().min(0).default(0),
   corte: z.number().min(0).default(0),

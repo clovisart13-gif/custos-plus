@@ -7,6 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { Navigation } from "./components/Navigation";
 import Dashboard from "./pages/Dashboard";
 import FichasCusto from "./pages/FichasCusto";
+import VisualizarFicha from "./pages/VisualizarFicha";
 
 function Router() {
   return (
@@ -15,6 +16,7 @@ function Router() {
       <Switch>
         <Route path="/" component={Dashboard} />
         <Route path="/fichas-custo" component={FichasCusto} />
+        <Route path="/ficha/:id" component={VisualizarFicha} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>
