@@ -42,6 +42,14 @@ export const appRouter = router({
       return await db.getFichasCustoByUser(ctx.user.id);
     }),
 
+    generateNextCode: protectedProcedure
+      .input(z.object({
+        familia: z.string().min(1),
+      }))
+      .query(async ({ ctx, input }) => {
+        return await db.generateNextReferenceCode(ctx.user.id, input.familia);
+      }),
+
     listFiltered: protectedProcedure
       .input(z.object({
         tipo: z.string().optional(),

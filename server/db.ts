@@ -319,3 +319,53 @@ export async function getCustosMediosPorFamilia(userId: number) {
     };
   });
 }
+
+/**
+ * Gera o próximo código de referência no formato AAFFFF-NNN
+ * Onde: AA = Ano (2 dígitos), FFFF = 3 primeiras letras da família, NNN = sequencial
+ * Exemplo: 26CAM-001, 26BER-002
+ */
+export async function generateNextReferenceCode(userId: number, familia: string): Promise<string> {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  // Obter ano atual (2 dígitos)
+  const ano = new Date().getFullYear().toString().slice(-2);
+  
+  // Obter prefixo da família (3 primeiras letras em maiúsculo)
+  const prefixoFamilia = familia.substring(0, 3).toUpperCase();
+  
+  // Buscar todas as fichas do usuário com o mesmo prefixo e ano
+  const fichas = await db
+    .select()
+    .from(fichasCusto)
+    .where(eq(fichasCusto.userId, userId));
+  
+  // Filtrar fichas que começam com o padrão AAFFFF-
+  const padrao = `${ano}${prefixoFamilia}-`;
+  const fichasDoAnoEFamilia = fichas.filter(f => 
+    f.referencia.startsWith(padrao)
+  );
+  
+  // Extrair números sequenciais e encontrar o maior
+  let maiorNumero = 0;
+  fichasDoAnoEFamilia.forEach(f => {
+    const match = f.referencia.match(/\-(\d+)$/);
+    if (match) {
+      const numero = parseInt(match[1], 10);
+      if (numero > maiorNumero) {
+        maiorNumero = numero;
+      }
+    }
+  });
+  
+  // Próximo número
+  const proximoNumero = maiorNumero + 1;
+  
+  // Formatar com 3 dígitos (001, 002, etc.)
+  const numeroFormatado = proximoNumero.toString().padStart(3, '0');
+  
+  return `${padrao}${numeroFormatado}`;
+}

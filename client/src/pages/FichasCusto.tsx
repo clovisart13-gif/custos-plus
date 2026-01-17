@@ -395,6 +395,21 @@ function NovaFichaModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
   });
 
   const utils = trpc.useUtils();
+  
+  // Gerar código automaticamente quando família é preenchida
+  const handleFamiliaChange = async (familia: string) => {
+    setFormData({ ...formData, familia });
+    
+    if (familia.length >= 3) {
+      try {
+        const codigo = await utils.client.fichasCusto.generateNextCode.query({ familia });
+        setFormData(prev => ({ ...prev, referencia: codigo }));
+      } catch (error) {
+        console.error("Erro ao gerar código:", error);
+      }
+    }
+  };
+
   const createMutation = trpc.fichasCusto.create.useMutation({
     onSuccess: () => {
       utils.fichasCusto.listFiltered.invalidate();
@@ -479,7 +494,7 @@ function NovaFichaModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                 <Input
                   id="familia"
                   value={formData.familia}
-                  onChange={(e) => setFormData({ ...formData, familia: e.target.value })}
+                  onChange={(e) => handleFamiliaChange(e.target.value)}
                   placeholder="Ex: Camiseta, Bermuda"
                   required
                 />

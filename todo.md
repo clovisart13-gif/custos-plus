@@ -105,3 +105,11 @@
 - [ ] Permitir adicionar campos personalizados de mão-de-obra (bordado, silk, etc.)
 - [ ] Remover campos fixos de mão-de-obra e tornar dinâmicos
 - [ ] Sincronizar campos entre dashboard e ficha de custo
+
+## Geração Automática de Código de Referência
+
+- [x] Implementar lógica de geração automática no backend (formato: AAFFFF-NNN)
+- [x] Criar rota tRPC para gerar próximo código
+- [x] Atualizar formulário para gerar código automaticamente
+- [x] Permitir edição manual do código após geração
+- [x] Testar geração com diferentes famílias e anos
