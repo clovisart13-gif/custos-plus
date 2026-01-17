@@ -60,51 +60,9 @@
 - [x] Implementar exportação para PDF
 - [x] Adicionar botão de impressão
 
-## Módulo de Orçamento (Nova Funcionalidade)
+## Correções Urgentes
 
-### Cálculo de Preço de Venda
-- [ ] Implementar cálculo de PV com markup divisor (0,40 / 0,50 / 0,60)
-- [ ] Criar função para calcular margem de lucro
-
-### Banco de Dados
-- [ ] Criar tabela de orçamentos
-- [ ] Adicionar campos: número, data, validade, prazo_entrega, prazo_pagamento, markup_usado, quantidade, observacoes
-- [ ] Criar relação entre orçamento e ficha de custo
-
-### Interface - Modal de Geração
-- [ ] Adicionar botão "Gerar Orçamento" na tabela de fichas
-- [ ] Criar modal com seleção de markup (0,40 / 0,50 / 0,60)
-- [ ] Adicionar campos: quantidade, prazo entrega, prazo pagamento
-- [ ] Mostrar preview dos 3 valores de PV calculados
-- [ ] Implementar salvamento do orçamento
-
-### Interface - Visualização de Orçamento
-- [ ] Criar página de visualização de orçamento
-- [ ] Design profissional com logo e dados da empresa
-- [ ] Tabela com: referência, descrição, quantidade, valor unitário, valor total
-- [ ] Seção de condições comerciais
-- [ ] Botão de exportar para PDF
-
-### Exportação
-- [ ] Implementar geração de PDF do orçamento
-- [ ] Adicionar opção de download
-- [ ] Adicionar opção de impressão
-
-### Listagem de Orçamentos
-- [ ] Criar página para listar todos os orçamentos
-- [ ] Adicionar filtros por cliente, data, status
-- [ ] Implementar busca por número de orçamento
-
-## Bugs Reportados
-
-- [x] Erro 404 corrigido - visualização de ficha funciona
-- [x] Dashboard corrigido - agora mostra todas as 10 colunas (8 etapas de mão-de-obra + Tecido + Aviamento)
-
-## Melhorias Críticas Solicitadas
-
-- [ ] Permitir adicionar campos personalizados de mão-de-obra (bordado, silk, etc.)
-- [ ] Remover campos fixos de mão-de-obra e tornar dinâmicos
-- [ ] Sincronizar campos entre dashboard e ficha de custo
+- [x] Corrigir logo quebrado na visualização de ficha
 
 ## Geração Automática de Código de Referência
 
@@ -113,3 +71,33 @@
 - [x] Atualizar formulário para gerar código automaticamente
 - [x] Permitir edição manual do código após geração
 - [x] Testar geração com diferentes famílias e anos
+
+## Módulo de Orçamento (Em Desenvolvimento)
+
+### Banco de Dados e Backend
+- [x] Criar tabela de orçamentos no schema
+- [x] Criar tabela de itens de orçamento
+- [x] Implementar queries no server/db.ts
+- [x] Criar rotas tRPC para CRUD de orçamentos
+- [x] Implementar geração automática de número de orçamento (ORÇ-YY-NNN)
+
+### Interface de Geração
+- [x] Criar modal de geração de orçamento MANUAL
+- [x] Criar funcionalidade de gerar orçamento A PARTIR DA FICHA DE CUSTO
+- [x] Implementar cálculo de markup divisor (0,40 / 0,50 / 0,60)
+- [x] Adicionar campos de quantidade e prazos
+- [x] Implementar cálculo automático de condições de pagamento
+- [ ] Botão "Gerar Orçamento" na página de Fichas de Custo
+- [ ] Melhorar clareza visual: deixar evidente que múltiplas fichas podem virar um orçamento
+
+### Visualização e Exportação
+- [x] Criar página de visualização de orçamento
+- [x] Implementar layout conforme mockup aprovado
+- [ ] Adicionar exportação para PDF
+- [x] Adicionar botão de impressão
+- [ ] Melhorar layout PDF para mostrar claramente cada ficha como item separado
+
+### Testes
+- [x] Testar geração de orçamento (7 testes passando)
+- [ ] Testar cálculos de preço
+- [ ] Testar exportação para PDF

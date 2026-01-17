@@ -141,6 +141,84 @@ export const appRouter = router({
       return await db.getCustosMediosPorFamilia(ctx.user.id);
     }),
   }),
+
+  orcamentos: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return await db.getOrcamentosByUser(ctx.user.id);
+    }),
+
+    getById: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ ctx, input }) => {
+        return await db.getOrcamentoById(input.id, ctx.user.id);
+      }),
+
+    getItens: protectedProcedure
+      .input(z.object({ orcamentoId: z.number() }))
+      .query(async ({ input }) => {
+        return await db.getItensOrcamento(input.orcamentoId);
+      }),
+
+    generateNextNumber: protectedProcedure.query(async ({ ctx }) => {
+      return await db.generateNextOrcamentoNumber(ctx.user.id);
+    }),
+
+    create: protectedProcedure
+      .input(z.object({
+        nomeCliente: z.string().min(1),
+        marca: z.string().min(1),
+        numeroOrcamento: z.string().min(1),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const result = await db.createOrcamento({
+          userId: ctx.user.id,
+          nomeCliente: input.nomeCliente,
+          marca: input.marca,
+          numeroOrcamento: input.numeroOrcamento,
+        });
+        return result;
+      }),
+
+    createItem: protectedProcedure
+      .input(z.object({
+        orcamentoId: z.number(),
+        fichaId: z.number(),
+        referencia: z.string(),
+        descricao: z.string(),
+        quantidade: z.number().min(1),
+        custo: z.number().min(0),
+        valorUnitario: z.number().min(0),
+        valorTotal: z.number().min(0),
+      }))
+      .mutation(async ({ input }) => {
+        const result = await db.createItemOrcamento({
+          orcamentoId: input.orcamentoId,
+          fichaId: input.fichaId,
+          referencia: input.referencia,
+          descricao: input.descricao,
+          quantidade: input.quantidade,
+          custo: input.custo.toString(),
+          valorUnitario: input.valorUnitario.toString(),
+          valorTotal: input.valorTotal.toString(),
+        });
+        return result;
+      }),
+
+    deleteItem: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await db.deleteItemOrcamento(input.id);
+        return { success: true };
+      }),
+
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        await db.deleteItensOrcamento(input.id);
+        await db.deleteOrcamento(input.id, ctx.user.id);
+        return { success: true };
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

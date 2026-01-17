@@ -86,7 +86,7 @@ export default function VisualizarFicha() {
             <div className="flex items-start justify-between mb-8 pb-6 border-b-2 border-primary">
               <div className="flex items-center gap-4">
                 <img
-                  src="/logo_r2pb.jpeg"
+                  src="/logo-r2pb.jpeg"
                   alt="R2PB Confecções"
                   className="h-16 object-contain"
                 />

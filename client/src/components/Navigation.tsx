@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LayoutDashboard, FileText, LogOut, User } from "lucide-react";
+import { LayoutDashboard, FileText, LogOut, User, FileCheck } from "lucide-react";
 
 export function Navigation() {
   const [location] = useLocation();
@@ -24,6 +24,7 @@ export function Navigation() {
   const navItems = [
     { path: "/", label: "Dashboard", icon: LayoutDashboard },
     { path: "/fichas-custo", label: "Fichas de Custo", icon: FileText },
+    { path: "/orcamentos", label: "Orçamentos", icon: FileCheck },
   ];
 
   return (

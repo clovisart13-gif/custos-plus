@@ -1,6 +1,6 @@
 import { and, desc, eq, gte, like, lte, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { fichasCusto, InsertFichaCusto, InsertUser, users } from "../drizzle/schema";
+import { fichasCusto, InsertFichaCusto, InsertUser, users, orcamentos, InsertOrcamento, Orcamento, itensOrcamento, InsertItemOrcamento, ItemOrcamento } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -368,4 +368,131 @@ export async function generateNextReferenceCode(userId: number, familia: string)
   const numeroFormatado = proximoNumero.toString().padStart(3, '0');
   
   return `${padrao}${numeroFormatado}`;
+}
+
+
+// ============ Orçamentos Queries ============
+
+export async function createOrcamento(data: InsertOrcamento) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db.insert(orcamentos).values(data);
+  return result;
+}
+
+export async function getOrcamentosByUser(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db
+    .select()
+    .from(orcamentos)
+    .where(eq(orcamentos.userId, userId))
+    .orderBy(desc(orcamentos.createdAt));
+}
+
+export async function getOrcamentoById(id: number, userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+
+  const result = await db
+    .select()
+    .from(orcamentos)
+    .where(and(eq(orcamentos.id, id), eq(orcamentos.userId, userId)))
+    .limit(1);
+
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function updateOrcamento(id: number, userId: number, data: Partial<InsertOrcamento>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .update(orcamentos)
+    .set(data)
+    .where(and(eq(orcamentos.id, id), eq(orcamentos.userId, userId)));
+}
+
+export async function deleteOrcamento(id: number, userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .delete(orcamentos)
+    .where(and(eq(orcamentos.id, id), eq(orcamentos.userId, userId)));
+}
+
+// ============ Itens de Orçamento Queries ============
+
+export async function createItemOrcamento(data: InsertItemOrcamento) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  return await db.insert(itensOrcamento).values(data);
+}
+
+export async function getItensOrcamento(orcamentoId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db
+    .select()
+    .from(itensOrcamento)
+    .where(eq(itensOrcamento.orcamentoId, orcamentoId))
+    .orderBy(itensOrcamento.createdAt);
+}
+
+export async function deleteItemOrcamento(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .delete(itensOrcamento)
+    .where(eq(itensOrcamento.id, id));
+}
+
+export async function deleteItensOrcamento(orcamentoId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .delete(itensOrcamento)
+    .where(eq(itensOrcamento.orcamentoId, orcamentoId));
+}
+
+export async function generateNextOrcamentoNumber(userId: number): Promise<string> {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const ano = new Date().getFullYear().toString().slice(-2);
+  
+  const orcamentosDoAno = await db
+    .select()
+    .from(orcamentos)
+    .where(eq(orcamentos.userId, userId));
+  
+  const padrao = `ORÇ-${ano}`;
+  const orcamentosDoAnoFiltrados = orcamentosDoAno.filter(o => 
+    o.numeroOrcamento.startsWith(padrao)
+  );
+  
+  let maiorNumero = 0;
+  orcamentosDoAnoFiltrados.forEach(o => {
+    const match = o.numeroOrcamento.match(/\-(\d+)$/);
+    if (match) {
+      const numero = parseInt(match[1], 10);
+      if (numero > maiorNumero) {
+        maiorNumero = numero;
+      }
+    }
+  });
+  
+  const proximoNumero = maiorNumero + 1;
+  const numeroFormatado = proximoNumero.toString().padStart(3, '0');
+  
+  return `${padrao}-${numeroFormatado}`;
 }

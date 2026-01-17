@@ -1,4 +1,3 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,13 +17,22 @@ import {
 } from "@/components/ui/table";
 import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { Loader2, Plus, Search, Pencil, Trash2, Eye } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default function FichasCusto() {
   const { user, loading: authLoading, isAuthenticated } = useAuth();
@@ -35,6 +43,8 @@ export default function FichasCusto() {
   const [filterCliente, setFilterCliente] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCell, setEditingCell] = useState<{ id: number; field: string } | null>(null);
+  const [showOrcamentoModal, setShowOrcamentoModal] = useState(false);
+  const [selectedFichaForOrcamento, setSelectedFichaForOrcamento] = useState<any>(null);
 
   const utils = trpc.useUtils();
 
@@ -88,6 +98,11 @@ export default function FichasCusto() {
     if (confirm("Tem certeza que deseja deletar esta ficha?")) {
       deleteMutation.mutate({ id });
     }
+  };
+
+  const handleGerarOrcamento = (ficha: any) => {
+    setSelectedFichaForOrcamento(ficha);
+    setShowOrcamentoModal(true);
   };
 
   const handleCellEdit = (id: number, field: string, value: string) => {
@@ -306,6 +321,15 @@ export default function FichasCusto() {
                           </Button>
                           <Button
                             variant="ghost"
+                            size="sm"
+                            onClick={() => handleGerarOrcamento(ficha)}
+                            className="text-xs"
+                            title="Gerar Orçamento"
+                          >
+                            Orçamento
+                          </Button>
+                          <Button
+                            variant="ghost"
                             size="icon"
                             onClick={() => handleDelete(ficha.id)}
                           >
@@ -329,6 +353,45 @@ export default function FichasCusto() {
       </div>
 
       <NovaFichaModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      {/* Modal para gerar orçamento */}
+      <Dialog open={showOrcamentoModal} onOpenChange={setShowOrcamentoModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Gerar Orçamento</DialogTitle>
+            <DialogDescription>
+              Crie um novo orçamento a partir desta ficha de custo. Você poderá adicionar mais itens (fichas) depois.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedFichaForOrcamento && (
+            <div className="space-y-4">
+              <div className="bg-muted p-4 rounded-lg">
+                <p><strong>Referência:</strong> {selectedFichaForOrcamento.referencia}</p>
+                <p><strong>Família:</strong> {selectedFichaForOrcamento.familia}</p>
+                <p><strong>Cliente:</strong> {selectedFichaForOrcamento.cliente}</p>
+                <p><strong>Custo Total:</strong> R$ {calculateTotal(selectedFichaForOrcamento).toFixed(2)}</p>
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  onClick={() => {
+                    setLocation("/orcamentos");
+                    setShowOrcamentoModal(false);
+                  }}
+                  className="flex-1"
+                >
+                  Ir para Orçamentos
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => setShowOrcamentoModal(false)}
+                >
+                  Cancelar
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

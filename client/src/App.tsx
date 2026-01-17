@@ -8,6 +8,8 @@ import { Navigation } from "./components/Navigation";
 import Dashboard from "./pages/Dashboard";
 import FichasCusto from "./pages/FichasCusto";
 import VisualizarFicha from "./pages/VisualizarFicha";
+import Orcamentos from "./pages/Orcamentos";
+import VisualizarOrcamento from "./pages/VisualizarOrcamento";
 
 function Router() {
   return (
@@ -17,6 +19,8 @@ function Router() {
         <Route path="/" component={Dashboard} />
         <Route path="/fichas-custo" component={FichasCusto} />
         <Route path="/ficha/:id" component={VisualizarFicha} />
+        <Route path="/orcamentos" component={Orcamentos} />
+        <Route path="/orcamento/:id" component={VisualizarOrcamento} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>

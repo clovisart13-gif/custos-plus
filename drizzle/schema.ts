@@ -52,3 +52,52 @@ export const fichasCusto = mysqlTable("fichas_custo", {
 
 export type FichaCusto = typeof fichasCusto.$inferSelect;
 export type InsertFichaCusto = typeof fichasCusto.$inferInsert;
+
+
+/**
+ * Orçamentos - Quotations/Budgets
+ */
+export const orcamentos = mysqlTable("orcamentos", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("user_id").notNull(),
+  nomeCliente: varchar("nome_cliente", { length: 100 }).notNull(),
+  marca: varchar("marca", { length: 100 }).notNull(),
+  numeroOrcamento: varchar("numero_orcamento", { length: 50 }).notNull().unique(),
+  dataEmissao: timestamp("data_emissao").defaultNow().notNull(),
+  validade: int("validade").default(30).notNull(),
+  prazoDias: int("prazo_dias").default(30).notNull(),
+  
+  totalPecas: int("total_pecas").default(0).notNull(),
+  subtotal: decimal("subtotal", { precision: 12, scale: 2 }).default("0.00").notNull(),
+  total: decimal("total", { precision: 12, scale: 2 }).default("0.00").notNull(),
+  
+  percentualSinal: decimal("percentual_sinal", { precision: 5, scale: 2 }).default("25.00").notNull(),
+  percentualRetirada: decimal("percentual_retirada", { precision: 5, scale: 2 }).default("25.00").notNull(),
+  percentualPrazo: decimal("percentual_prazo", { precision: 5, scale: 2 }).default("50.00").notNull(),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Orcamento = typeof orcamentos.$inferSelect;
+export type InsertOrcamento = typeof orcamentos.$inferInsert;
+
+/**
+ * Itens de Orçamento - Quotation Items
+ */
+export const itensOrcamento = mysqlTable("itens_orcamento", {
+  id: int("id").autoincrement().primaryKey(),
+  orcamentoId: int("orcamento_id").notNull(),
+  fichaId: int("ficha_id").notNull(),
+  referencia: varchar("referencia", { length: 100 }).notNull(),
+  descricao: text("descricao").notNull(),
+  quantidade: int("quantidade").notNull(),
+  custo: decimal("custo", { precision: 12, scale: 2 }).notNull(),
+  valorUnitario: decimal("valor_unitario", { precision: 12, scale: 2 }).notNull(),
+  valorTotal: decimal("valor_total", { precision: 12, scale: 2 }).notNull(),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ItemOrcamento = typeof itensOrcamento.$inferSelect;
+export type InsertItemOrcamento = typeof itensOrcamento.$inferInsert;
