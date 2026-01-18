@@ -140,3 +140,11 @@
 - [x] ATUALIZAR URL do Kanban (nova URL)
 - [x] ATUALIZAR formato do body (remover envoltório json)
 - [x] Testar integração com nova URL
+
+
+## Bugs Reportados - Sessão Anterior
+
+- [x] Erro "Falha ao criar orçamento" ao clicar em "Criar Orçamento"
+  - Causa: Campos incorretos sendo enviados pelo frontend
+  - Solução: Corrigido CriarOrcamentoSimples.tsx para enviar campos corretos
+  - Status: RESOLVIDO - Testado e funcionando

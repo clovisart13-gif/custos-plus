@@ -51,70 +51,46 @@ export const appRouter = router({
         return await db.generateNextReferenceCode(ctx.user.id, input.familia);
       }),
 
-    listFiltered: protectedProcedure
-      .input(z.object({
-        tipo: z.string().optional(),
-        familia: z.string().optional(),
-        cliente: z.string().optional(),
-        search: z.string().optional(),
-        dataInicio: z.date().optional(),
-        dataFim: z.date().optional(),
-      }))
-      .query(async ({ ctx, input }) => {
-        return await db.getFichasCustoFiltered({
-          userId: ctx.user.id,
-          ...input,
-        });
-      }),
-
     create: protectedProcedure
       .input(fichaCustoSchema)
       .mutation(async ({ ctx, input }) => {
-        await db.createFichaCusto({
-          ...input,
-          modelagem: input.modelagem.toString(),
-          piloto: input.piloto.toString(),
-          corte: input.corte.toString(),
-          beneficiamento: input.beneficiamento.toString(),
-          costura: input.costura.toString(),
-          lavanderia: input.lavanderia.toString(),
-          acabamento: input.acabamento.toString(),
-          passadoria: input.passadoria.toString(),
-          tecido: input.tecido.toString(),
-          aviamento: input.aviamento.toString(),
+        const ficha = await db.createFichaCusto({
           userId: ctx.user.id,
+          referencia: input.referencia,
+          tipo: input.tipo,
+          familia: input.familia,
+          cliente: input.cliente,
+          fotoUrl: input.fotoUrl,
+          modelagem: input.modelagem,
+          piloto: input.piloto,
+          corte: input.corte,
+          beneficiamento: input.beneficiamento,
+          costura: input.costura,
+          lavanderia: input.lavanderia,
+          acabamento: input.acabamento,
+          passadoria: input.passadoria,
+          tecido: input.tecido,
+          aviamento: input.aviamento,
+          observacoes: input.observacoes,
         });
-        return { success: true };
+        return ficha;
+      }),
+
+    getById: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ ctx, input }) => {
+        return await db.getFichaCustoById(input.id, ctx.user.id);
       }),
 
     update: protectedProcedure
       .input(z.object({
         id: z.number(),
-        data: fichaCustoSchema.partial(),
+        ...fichaCustoSchema.shape,
       }))
       .mutation(async ({ ctx, input }) => {
-        const dataToUpdate: any = { ...input.data };
-        const numericFields = ['modelagem', 'piloto', 'corte', 'beneficiamento', 'costura', 'lavanderia', 'acabamento', 'passadoria', 'tecido', 'aviamento'];
-        numericFields.forEach(field => {
-          if (dataToUpdate[field] !== undefined) {
-            dataToUpdate[field] = dataToUpdate[field].toString();
-          }
-        });
-        await db.updateFichaCusto(input.id, ctx.user.id, dataToUpdate);
-        return { success: true };
-      }),
-
-    updateField: protectedProcedure
-      .input(z.object({
-        id: z.number(),
-        field: z.string(),
-        value: z.union([z.string(), z.number()]),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        await db.updateFichaCusto(input.id, ctx.user.id, {
-          [input.field]: input.value,
-        });
-        return { success: true };
+        const { id, ...data } = input;
+        await db.updateFichaCusto(id, ctx.user.id, data);
+        return await db.getFichaCustoById(id, ctx.user.id);
       }),
 
     delete: protectedProcedure
@@ -123,24 +99,6 @@ export const appRouter = router({
         await db.deleteFichaCusto(input.id, ctx.user.id);
         return { success: true };
       }),
-
-    getDistinctValues: protectedProcedure
-      .input(z.object({
-        field: z.enum(['tipo', 'familia', 'cliente']),
-      }))
-      .query(async ({ ctx, input }) => {
-        return await db.getDistinctValues(ctx.user.id, input.field);
-      }),
-  }),
-
-  dashboard: router({
-    kpis: protectedProcedure.query(async ({ ctx }) => {
-      return await db.getKPIs(ctx.user.id);
-    }),
-
-    custosMediosPorFamilia: protectedProcedure.query(async ({ ctx }) => {
-      return await db.getCustosMediosPorFamilia(ctx.user.id);
-    }),
   }),
 
   orcamentos: router({
@@ -171,24 +129,47 @@ export const appRouter = router({
         numeroOrcamento: z.string().min(1),
       }))
       .mutation(async ({ ctx, input }) => {
-        const result = await db.createOrcamento({
-          userId: ctx.user.id,
-          nomeCliente: input.nomeCliente,
-          marca: input.marca,
-          numeroOrcamento: input.numeroOrcamento,
-        });
-        
-        // Obter o ID do orçamento criado
-        const orcamentoId = result.insertId || (result as any).lastInsertRowid;
-        if (!orcamentoId) {
-          throw new Error("Falha ao criar orçamento");
+        try {
+          const result = await db.createOrcamento({
+            userId: ctx.user.id,
+            nomeCliente: input.nomeCliente,
+            marca: input.marca,
+            numeroOrcamento: input.numeroOrcamento,
+          });
+          
+          // Obter o ID do orçamento criado
+          let orcamentoId: number | undefined;
+          
+          // Tentar diferentes formas de obter o ID
+          if ((result as any).insertId) {
+            orcamentoId = (result as any).insertId;
+          } else if ((result as any).lastInsertRowid) {
+            orcamentoId = (result as any).lastInsertRowid;
+          } else if ((result as any)[0]) {
+            orcamentoId = (result as any)[0];
+          } else if (typeof result === 'number') {
+            orcamentoId = result as number;
+          }
+          
+          if (!orcamentoId || orcamentoId === 0) {
+            console.error('Erro ao obter ID do orcamento:', { result, input });
+            throw new Error('ID nao obtido');
+          }
+          
+          // Buscar o orçamento criado para retornar os dados completos
+          const orcamentoCriado = await db.getOrcamentoById(orcamentoId, ctx.user.id);
+          
+          if (!orcamentoCriado) {
+            console.error('Orcamento nao encontrado:', { orcamentoId, userId: ctx.user.id });
+            throw new Error('Orcamento nao recuperado');
+          }
+          
+          return orcamentoCriado;
+        } catch (error) {
+          console.error('Erro ao criar orcamento:', error);
+          const msg = error instanceof Error ? error.message : 'Erro desconhecido';
+          throw new Error(`Falha ao criar orcamento: ${msg}`);
         }
-        
-        // Buscar o orçamento criado para retornar os dados completos
-        const orcamentos = await db.getOrcamentosByUser(ctx.user.id);
-        const orcamentoCriado = orcamentos.find((o: any) => o.id === orcamentoId);
-        
-        return orcamentoCriado || { id: orcamentoId };
       }),
 
     createItem: protectedProcedure
@@ -198,39 +179,33 @@ export const appRouter = router({
         referencia: z.string(),
         descricao: z.string(),
         quantidade: z.number().min(1),
-        custo: z.number().min(0),
         valorUnitario: z.number().min(0),
-        valorTotal: z.number().min(0),
-        markupDivisor: z.number().min(0.1).max(1),
+        markup: z.number().min(0).default(0.5),
       }))
-      .mutation(async ({ input }) => {
-        const result = await db.createItemOrcamento({
+      .mutation(async ({ ctx, input }) => {
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
+        if (!orcamento) {
+          throw new Error("Orçamento não encontrado");
+        }
+
+        const valorTotal = input.quantidade * input.valorUnitario;
+        const valorComMarkup = valorTotal / (1 - input.markup);
+
+        const item = await db.createItemOrcamento({
           orcamentoId: input.orcamentoId,
           fichaId: input.fichaId,
           referencia: input.referencia,
           descricao: input.descricao,
           quantidade: input.quantidade,
-          custo: input.custo.toString(),
-          valorUnitario: input.valorUnitario.toString(),
-          valorTotal: input.valorTotal.toString(),
-          markupDivisor: input.markupDivisor.toString(),
+          valorUnitario: input.valorUnitario,
+          valorTotal,
+          markup: input.markup,
+          valorComMarkup,
         });
-        return result;
-      }),
 
-    updateItemMarkup: protectedProcedure
-      .input(z.object({
-        itemId: z.number(),
-        markupDivisor: z.number().min(0.1).max(1),
-        custo: z.number().min(0),
-      }))
-      .mutation(async ({ input }) => {
-        const result = await db.updateItemMarkup(
-          input.itemId,
-          input.markupDivisor,
-          input.custo
-        );
-        return result;
+        await db.updateOrcamentoTotals(input.orcamentoId);
+
+        return item;
       }),
 
     updateItem: protectedProcedure
@@ -238,40 +213,38 @@ export const appRouter = router({
         itemId: z.number(),
         quantidade: z.number().min(1),
         valorUnitario: z.number().min(0),
+        markup: z.number().min(0),
       }))
       .mutation(async ({ input }) => {
         const valorTotal = input.quantidade * input.valorUnitario;
-        const result = await db.updateItemOrcamento(
+        const valorComMarkup = valorTotal / (1 - input.markup);
+
+        await db.updateItemOrcamento(
           input.itemId,
           input.quantidade,
           input.valorUnitario,
-          valorTotal
+          valorTotal,
+          input.markup,
+          valorComMarkup
         );
-        return result;
-      }),
 
-    deleteItem: protectedProcedure
-      .input(z.object({ id: z.number() }))
-      .mutation(async ({ input }) => {
-        await db.deleteItemOrcamento(input.id);
         return { success: true };
       }),
 
-    delete: protectedProcedure
-      .input(z.object({ id: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        await db.deleteItensOrcamento(input.id);
-        await db.deleteOrcamento(input.id, ctx.user.id);
+    deleteItem: protectedProcedure
+      .input(z.object({ itemId: z.number() }))
+      .mutation(async ({ input }) => {
+        await db.deleteItemOrcamento(input.itemId);
         return { success: true };
       }),
 
     updateStatus: protectedProcedure
       .input(z.object({
-        id: z.number(),
+        orcamentoId: z.number(),
         status: z.enum(["pendente", "aprovado", "reprovado"]),
       }))
       .mutation(async ({ ctx, input }) => {
-        await db.updateOrcamentoStatus(input.id, input.status, ctx.user.id);
+        await db.updateOrcamentoStatus(input.orcamentoId, input.status, ctx.user.id);
         return { success: true };
       }),
 
@@ -280,25 +253,24 @@ export const appRouter = router({
         orcamentoId: z.number(),
       }))
       .mutation(async ({ ctx, input }) => {
-        // Obter orcamento
         const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamento) {
-          throw new Error("Orcamento nao encontrado");
+          throw new Error("Orçamento não encontrado");
         }
 
-        // Validar status
-        if (orcamento.status !== "aprovado") {
-          throw new Error("Orcamento deve estar aprovado para enviar");
-        }
-
-        // Obter itens
         const itens = await db.getItensOrcamento(input.orcamentoId);
 
-        // Preparar payload com valores em centavos
         const payload = {
-          numeroOrcamento: orcamento.numeroOrcamento,
-          nomeCliente: orcamento.nomeCliente,
-          marca: orcamento.marca || "",
+          pedido: orcamento.numeroOrcamento,
+          cliente: orcamento.nomeCliente,
+          email: ctx.user.email || "",
+          telefone: "",
+          referencia: itens.map((i: any) => i.referencia).join(", "),
+          cor: "",
+          descricao: itens.map((i: any) => i.descricao).join(" | "),
+          grade: "",
+          quantidade: orcamento.totalPecas,
+          valorUnitario: Math.round(parseFloat(orcamento.subtotal) * 100),
           prazoDias: orcamento.prazoDias,
           totalPecas: orcamento.totalPecas,
           subtotal: Math.round(parseFloat(orcamento.subtotal) * 100),
@@ -342,23 +314,18 @@ export const appRouter = router({
     uploadImage: protectedProcedure
       .input(z.object({
         filename: z.string(),
-        data: z.string(), // base64
+        data: z.string(),
         mimeType: z.string(),
       }))
       .mutation(async ({ input }) => {
         try {
-          // Converter base64 para buffer
           const base64Data = input.data.split(',')[1] || input.data;
           const buffer = Buffer.from(base64Data, 'base64');
           
-          // storagePut já foi importado no topo do arquivo
-          
-          // Gerar nome único para o arquivo
           const timestamp = Date.now();
           const random = Math.random().toString(36).substring(7);
           const fileKey = `fichas-custo/${timestamp}-${random}-${input.filename}`;
           
-          // Fazer upload para S3
           const result = await storagePut(fileKey, buffer, input.mimeType);
           
           return {

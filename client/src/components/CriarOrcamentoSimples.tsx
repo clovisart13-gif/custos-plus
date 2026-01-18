@@ -83,16 +83,15 @@ export default function CriarOrcamentoSimples({
     setIsAddingItem(true);
 
     try {
+      const markup = 0.5; // 50% de markup padrão
       await createItemMutation.mutateAsync({
         orcamentoId: orcamentoId!,
         fichaId: 0, // Não vinculado a ficha
         referencia: descricao.substring(0, 20),
         descricao,
         quantidade: qtd,
-        custo: 0,
         valorUnitario: valor,
-        valorTotal: valor * qtd,
-        markupDivisor: 1,
+        markup: markup,
       });
 
       // Limpar campos
