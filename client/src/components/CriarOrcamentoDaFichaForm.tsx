@@ -73,10 +73,19 @@ export default function CriarOrcamentoDaFichaForm({
         numeroOrcamento: nextNumber,
       });
 
-      const orcamentoId = (orcamentoResult as any).insertId;
+      // Extrair ID do resultado (pode ser insertId ou um array com o objeto criado)
+      let orcamentoId: number | null = null;
+      
+      if (Array.isArray(orcamentoResult)) {
+        orcamentoId = (orcamentoResult[0] as any)?.id;
+      } else if (typeof orcamentoResult === 'object') {
+        orcamentoId = (orcamentoResult as any)?.insertId || (orcamentoResult as any)?.id;
+      }
 
       if (!orcamentoId) {
-        toast.error("Erro ao criar orçamento");
+        console.error("Resposta do servidor:", orcamentoResult);
+        toast.error("Erro ao criar orçamento: não foi possível obter o ID");
+        setIsCreating(false);
         return;
       }
 
@@ -94,6 +103,7 @@ export default function CriarOrcamentoDaFichaForm({
       });
 
       toast.success("Orçamento criado com sucesso!");
+      setIsCreating(false);
       onSuccess?.();
 
       // 3. Redirecionar para visualização do orçamento
@@ -101,6 +111,7 @@ export default function CriarOrcamentoDaFichaForm({
         setLocation(`/orcamentos/${orcamentoId}`);
       }, 500);
     } catch (error: any) {
+      console.error("Erro ao criar orçamento:", error);
       toast.error("Erro ao criar orçamento: " + error.message);
       setIsCreating(false);
     }
