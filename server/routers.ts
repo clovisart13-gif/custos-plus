@@ -99,6 +99,46 @@ export const appRouter = router({
         await db.deleteFichaCusto(input.id, ctx.user.id);
         return { success: true };
       }),
+
+    getDistinctValues: protectedProcedure
+      .input(z.object({
+        field: z.enum(['tipo', 'familia', 'cliente']),
+      }))
+      .query(async ({ ctx, input }) => {
+        const fichas = await db.getFichasCustoByUser(ctx.user.id);
+        const values = new Set<string>();
+        fichas.forEach((ficha: any) => {
+          const value = ficha[input.field];
+          if (value) values.add(value);
+        });
+        return Array.from(values).sort();
+      }),
+
+    listFiltered: protectedProcedure
+      .input(z.object({
+        tipo: z.string().optional(),
+        familia: z.string().optional(),
+        cliente: z.string().optional(),
+        search: z.string().optional(),
+      }))
+      .query(async ({ ctx, input }) => {
+        const fichas = await db.getFichasCustoByUser(ctx.user.id);
+        return fichas.filter((ficha: any) => {
+          if (input.tipo && ficha.tipo !== input.tipo) return false;
+          if (input.familia && ficha.familia !== input.familia) return false;
+          if (input.cliente && ficha.cliente !== input.cliente) return false;
+          if (input.search) {
+            const search = input.search.toLowerCase();
+            return (
+              ficha.referencia.toLowerCase().includes(search) ||
+              ficha.tipo.toLowerCase().includes(search) ||
+              ficha.familia.toLowerCase().includes(search) ||
+              ficha.cliente.toLowerCase().includes(search)
+            );
+          }
+          return true;
+        });
+      }),
   }),
 
   orcamentos: router({

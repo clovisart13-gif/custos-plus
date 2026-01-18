@@ -165,3 +165,21 @@
   - Causa: Componente ImageUpload usava `document.getElementById()` que causava sincronização incorreta com DOM
   - Solução: Refatorado ImageUpload.tsx para usar `useRef` em vez de `document.getElementById()`
   - Status: RESOLVIDO - Modal abre sem erros, componente funciona corretamente
+
+
+## Bugs Corrigidos - Sessão Atual (18/01/2026 - Noite)
+
+- [x] Erro tRPC "No procedure found on path 'fichasCusto.getDistinctValues'"
+  - Causa: Rota backend faltando
+  - Solução: Adicionada rota getDistinctValues em routers.ts
+  - Status: RESOLVIDO
+
+- [x] Erro tRPC "No procedure found on path 'fichasCusto.listFiltered'"
+  - Causa: Rota backend faltando
+  - Solução: Adicionada rota listFiltered em routers.ts
+  - Status: RESOLVIDO
+
+- [x] Erro HTML "<a> cannot contain a nested <a>"
+  - Causa: Nested anchor tags no componente FichasCusto
+  - Solução: Removido asChild do Button e convertido para onClick
+  - Status: RESOLVIDO
