@@ -105,7 +105,7 @@
 - [x] Simplificar modal para criar orçamento INDIVIDUAL
 - [x] Criar formulario para adicionar itens manualmente
 - [x] Permitir editar descricao, valor unitario e quantidade de cada item
-- [ ] Permitir deletar itens do orcamento
+- [ ] Permitir deletar itens do orcamento (PRÓXIMA TAREFA - Autorizado para amanhã)
 - [x] Testar fluxo completo de criacao e edicao
 
 ### Testes
