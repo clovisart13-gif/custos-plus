@@ -46,6 +46,8 @@ export default function FichasCusto() {
   const [editingCell, setEditingCell] = useState<{ id: number; field: string } | null>(null);
   const [showOrcamentoModal, setShowOrcamentoModal] = useState(false);
   const [selectedFichaForOrcamento, setSelectedFichaForOrcamento] = useState<any>(null);
+  const [selectedFichasForBatch, setSelectedFichasForBatch] = useState<Set<number>>(new Set());
+  const [showBatchOrcamentoModal, setShowBatchOrcamentoModal] = useState(false);
 
   const utils = trpc.useUtils();
 
@@ -357,7 +359,7 @@ export default function FichasCusto() {
 
       {/* Modal para gerar orçamento */}
       <Dialog open={showOrcamentoModal} onOpenChange={setShowOrcamentoModal}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Criar Orçamento</DialogTitle>
             <DialogDescription>

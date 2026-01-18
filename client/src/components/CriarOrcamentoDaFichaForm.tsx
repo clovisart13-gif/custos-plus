@@ -48,14 +48,14 @@ export default function CriarOrcamentoDaFichaForm({
       return;
     }
 
-    setIsCreating(true);
-
     try {
+      setIsCreating(true);
+
       // Criar orçamento
       const orcamentoResult = await createOrcamento.mutateAsync({
-        numero: nextNumber || "ORÇ-26-001",
-        clienteId: ficha.clienteId || null,
-        status: "rascunho",
+        nomeCliente: ficha.cliente || "Cliente",
+        marca: ficha.familia || "Marca",
+        numeroOrcamento: nextNumber || "ORÇ-26-001",
       });
 
       const orcamentoId = (orcamentoResult as any)?.id;
@@ -70,13 +70,17 @@ export default function CriarOrcamentoDaFichaForm({
       await createItem.mutateAsync({
         orcamentoId,
         fichaId: ficha.id,
+        referencia: ficha.referencia,
+        descricao: ficha.familia,
         quantidade: 1,
+        custo: custoTotal,
         markupDivisor: markupDivisor,
         valorUnitario: valorUnitario,
         valorTotal: valorUnitario,
       });
 
       toast.success("Orçamento criado com sucesso!");
+      setIsCreating(false);
       setLocation(`/orcamento/${orcamentoId}`);
       onSuccess?.();
     } catch (error) {

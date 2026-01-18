@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Download, Printer } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import AdicionarItemOrcamento from "@/components/AdicionarItemOrcamento";
 
 export default function VisualizarOrcamento() {
@@ -53,8 +53,7 @@ export default function VisualizarOrcamento() {
   };
 
   const handleDownloadPDF = () => {
-    // TODO: Implementar download de PDF
-    alert("Funcionalidade de download de PDF em desenvolvimento");
+    window.print();
   };
 
   const totalPecas = itens.reduce((sum, item) => sum + item.quantidade, 0);
@@ -156,7 +155,6 @@ export default function VisualizarOrcamento() {
                     <th className="text-left py-2 px-2">Referência</th>
                     <th className="text-left py-2 px-2">Descrição</th>
                     <th className="text-right py-2 px-2">Quantidade</th>
-                    <th className="text-center py-2 px-2">Markup</th>
                     <th className="text-right py-2 px-2">Valor Unitário</th>
                     <th className="text-right py-2 px-2">Total</th>
                     <th className="text-center py-2 px-2">Ações</th>
@@ -168,18 +166,13 @@ export default function VisualizarOrcamento() {
                       <td className="py-2 px-2">{item.referencia}</td>
                       <td className="py-2 px-2">{item.descricao}</td>
                       <td className="text-right py-2 px-2">{item.quantidade}</td>
-                      <td className="text-center py-2 px-2">
-                        <span className="bg-primary/10 px-2 py-1 rounded text-xs font-semibold">
-                          ÷ {Number(item.markupDivisor).toFixed(2)}
-                        </span>
-                      </td>
                       <td className="text-right py-2 px-2">{formatCurrency(Number(item.valorUnitario))}</td>
                       <td className="text-right py-2 px-2 font-semibold">{formatCurrency(Number(item.valorTotal))}</td>
                       <td className="text-center py-2 px-2">
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => alert("Editar markup em desenvolvimento")}
+                          onClick={() => alert("Editar item em desenvolvimento")}
                           className="text-xs"
                         >
                           Editar
