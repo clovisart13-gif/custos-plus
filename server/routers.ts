@@ -273,6 +273,68 @@ export const appRouter = router({
         await db.updateOrcamentoStatus(input.id, input.status, ctx.user.id);
         return { success: true };
       }),
+
+    enviarParaKanban: protectedProcedure
+      .input(z.object({
+        orcamentoId: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        // Obter orcamento
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
+        if (!orcamento) {
+          throw new Error("Orcamento nao encontrado");
+        }
+
+        // Validar status
+        if (orcamento.status !== "aprovado") {
+          throw new Error("Orcamento deve estar aprovado para enviar");
+        }
+
+        // Obter itens
+        const itens = await db.getItensOrcamento(input.orcamentoId);
+
+        // Preparar payload com valores em centavos
+        const payload = {
+          numeroOrcamento: orcamento.numeroOrcamento,
+          nomeCliente: orcamento.nomeCliente,
+          marca: orcamento.marca || "",
+          prazoDias: orcamento.prazoDias,
+          totalPecas: orcamento.totalPecas,
+          subtotal: Math.round(parseFloat(orcamento.subtotal) * 100),
+          total: Math.round(parseFloat(orcamento.total) * 100),
+          percentualSinal: parseFloat(orcamento.percentualSinal),
+          percentualRetirada: parseFloat(orcamento.percentualRetirada),
+          percentualPrazo: parseFloat(orcamento.percentualPrazo),
+          itens: itens.map((item: any) => ({
+            referencia: item.referencia,
+            descricao: item.descricao,
+            quantidade: item.quantidade,
+            valorUnitario: Math.round(parseFloat(item.valorUnitario) * 100),
+            valorTotal: Math.round(parseFloat(item.valorTotal) * 100),
+          })),
+          apiKey: "r2pb-custos-plus-2026",
+        };
+
+        // Enviar para Kanban
+        const response = await fetch(
+          "https://kanban-producao.manus.space/api/trpc/integracao.importarOrcamento",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ input: payload }),
+          }
+        );
+
+        if (!response.ok) {
+          const error = await response.text();
+          throw new Error(`Erro ao enviar para Kanban: ${response.status} - ${error}`);
+        }
+
+        const result = await response.json();
+        return { success: true, result };
+      }),
   }),
 });
 

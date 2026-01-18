@@ -2,7 +2,7 @@ import { useParams, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Download, Printer } from "lucide-react";
+import { ArrowLeft, Download, Printer, Send } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { useState, useRef } from "react";
 import AdicionarItemManual from "@/components/AdicionarItemManual";
@@ -14,11 +14,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+
 export default function VisualizarOrcamento() {
   const { id } = useParams<{ id: string }>();
   const [, navigate] = useLocation();
   const [showAddItem, setShowAddItem] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
+  const [enviandoKanban, setEnviandoKanban] = useState(false);
+  const [enviado, setEnviado] = useState(false);
 
   const orcamentoId = id ? parseInt(id) : 0;
 
@@ -31,6 +34,23 @@ export default function VisualizarOrcamento() {
     { orcamentoId },
     { enabled: orcamentoId > 0 }
   );
+
+  const enviarParaKanbanMutation = trpc.orcamentos.enviarParaKanban.useMutation({
+    onSuccess: () => {
+      setEnviado(true);
+      setEnviandoKanban(false);
+      alert("Orçamento enviado para o Kanban com sucesso!");
+    },
+    onError: (error) => {
+      setEnviandoKanban(false);
+      alert("Erro ao enviar para Kanban: " + (error.message || "Erro desconhecido"));
+    },
+  });
+
+  const handleEnviarKanban = async () => {
+    setEnviandoKanban(true);
+    await enviarParaKanbanMutation.mutateAsync({ orcamentoId });
+  };
 
   if (loadingOrcamento || loadingItens) {
     return (
@@ -55,6 +75,10 @@ export default function VisualizarOrcamento() {
       </div>
     );
   }
+
+  // Debug
+  console.log('Orçamento status:', orcamento.status);
+  console.log('Deve mostrar botão?', orcamento.status === 'aprovado' && !enviado);
 
   const handlePrint = () => {
     window.print();
@@ -93,6 +117,25 @@ export default function VisualizarOrcamento() {
             <Download className="h-4 w-4" />
             PDF
           </Button>
+          {orcamento.status === "aprovado" && !enviado && (
+            <Button 
+              onClick={handleEnviarKanban} 
+              disabled={enviandoKanban}
+              className="gap-2 bg-green-600 hover:bg-green-700"
+            >
+              <Send className="h-4 w-4" />
+              {enviandoKanban ? "Enviando..." : "Enviar para Kanban"}
+            </Button>
+          )}
+          {orcamento.status !== "aprovado" && (
+            <div className="text-sm text-muted-foreground">Status: {orcamento.status}</div>
+          )}
+          {enviado && (
+            <Button disabled variant="outline" className="gap-2">
+              <Send className="h-4 w-4" />
+              Enviado para Kanban ✓
+            </Button>
+          )}
         </div>
       </div>
 

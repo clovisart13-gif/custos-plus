@@ -121,11 +121,11 @@
 - [ ] Histórico de alterações de orçamentos
 
 
-## Integração com Kanban R2PB (Planejada)
-- [ ] Confirmar estrutura de campos do Kanban
-- [ ] Obter URL da API do Kanban
-- [ ] Obter chave de autenticação do Kanban
-- [ ] Implementar rota de aprovação de orçamento
-- [ ] Implementar envio de dados para Kanban
-- [ ] Testar integração completa
-- [ ] Documentar fluxo de sincronização
+## Integração com Kanban R2PB (IMPLEMENTADA)
+- [x] Confirmar estrutura de campos do Kanban
+- [x] Obter URL da API do Kanban
+- [x] Obter chave de autenticação do Kanban
+- [x] Implementar rota de aprovação de orçamento
+- [x] Implementar envio de dados para Kanban
+- [ ] Testar integração completa (aguardando publicação)
+- [x] Documentar fluxo de sincronização
