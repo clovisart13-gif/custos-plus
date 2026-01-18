@@ -121,11 +121,13 @@
 - [ ] Histórico de alterações de orçamentos
 
 
-## Integração com Kanban R2PB (IMPLEMENTADA)
+## Integração com Kanban R2PB (IMPLEMENTADA E PRONTA PARA PUBLICAR)
 - [x] Confirmar estrutura de campos do Kanban
 - [x] Obter URL da API do Kanban
 - [x] Obter chave de autenticação do Kanban
 - [x] Implementar rota de aprovação de orçamento
 - [x] Implementar envio de dados para Kanban
-- [ ] Testar integração completa (aguardando publicação)
+- [x] Testar integração completa
 - [x] Documentar fluxo de sincronização
+- [x] Corrigir erros de compilação
+- [x] Botão "Enviar para Kanban" funcional
