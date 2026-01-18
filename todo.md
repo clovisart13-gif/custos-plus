@@ -148,3 +148,12 @@
   - Causa: Campos incorretos sendo enviados pelo frontend
   - Solução: Corrigido CriarOrcamentoSimples.tsx para enviar campos corretos
   - Status: RESOLVIDO - Testado e funcionando
+
+
+## Bugs Reportados - Sessão Anterior (18/01/2026)
+
+- [x] Erro "No procedure found on path 'dashboard.custosMediosPorFamilia'" ao carregar dashboard
+  - Causa: Rota tRPC faltando no backend
+  - Solução: Adicionadas rotas dashboard.kpis e dashboard.custosMediosPorFamilia em routers.ts
+  - Bonus: Corrigido tratamento de valores NaN para mostrar R$ 0.00 em vez de R$ NaN
+  - Status: RESOLVIDO - Dashboard carregando com todos os dados corretamente
