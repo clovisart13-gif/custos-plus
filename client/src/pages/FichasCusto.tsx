@@ -26,7 +26,7 @@ import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import CriarOrcamentoDaFichaForm from "@/components/CriarOrcamentoDaFichaForm";
-import GerarOrcamentoEmLote from "@/components/GerarOrcamentoEmLote";
+
 import {
   Dialog,
   DialogContent,
@@ -47,8 +47,7 @@ export default function FichasCusto() {
   const [editingCell, setEditingCell] = useState<{ id: number; field: string } | null>(null);
   const [showOrcamentoModal, setShowOrcamentoModal] = useState(false);
   const [selectedFichaForOrcamento, setSelectedFichaForOrcamento] = useState<any>(null);
-  const [selectedFichasForBatch, setSelectedFichasForBatch] = useState<Set<number>>(new Set());
-  const [showBatchOrcamentoModal, setShowBatchOrcamentoModal] = useState(false);
+
 
   const utils = trpc.useUtils();
 
@@ -232,24 +231,7 @@ export default function FichasCusto() {
           </div>
         </div>
 
-        {/* Botao Gerar Orcamento em Lote */}
-        {selectedFichasForBatch.size > 0 && (
-          <div className="mb-6 flex gap-4">
-            <Button
-              onClick={() => setShowBatchOrcamentoModal(true)}
-              className="gap-2 bg-green-600 hover:bg-green-700"
-            >
-              <Plus className="h-4 w-4" />
-              Gerar Orcamento em Lote ({selectedFichasForBatch.size})
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setSelectedFichasForBatch(new Set())}
-            >
-              Limpar Selecao
-            </Button>
-          </div>
-        )}
+
 
         {/* Tabela */}
         <div className="bg-card border rounded-lg overflow-hidden">
@@ -257,20 +239,7 @@ export default function FichasCusto() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[50px]">
-                    <input
-                      type="checkbox"
-                      checked={selectedFichasForBatch.size === fichas?.length && fichas?.length > 0}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedFichasForBatch(new Set(fichas?.map(f => f.id) || []));
-                        } else {
-                          setSelectedFichasForBatch(new Set());
-                        }
-                      }}
-                      className="h-4 w-4 cursor-pointer"
-                    />
-                  </TableHead>
+
                   <TableHead className="w-[120px]">Referência</TableHead>
                   <TableHead>Tipo</TableHead>
                   <TableHead>Família</TableHead>
@@ -299,22 +268,7 @@ export default function FichasCusto() {
                 ) : fichas && fichas.length > 0 ? (
                   fichas.map((ficha) => (
                     <TableRow key={ficha.id}>
-                      <TableCell>
-                        <input
-                          type="checkbox"
-                          checked={selectedFichasForBatch.has(ficha.id)}
-                          onChange={(e) => {
-                            const newSet = new Set(selectedFichasForBatch);
-                            if (e.target.checked) {
-                              newSet.add(ficha.id);
-                            } else {
-                              newSet.delete(ficha.id);
-                            }
-                            setSelectedFichasForBatch(newSet);
-                          }}
-                          className="h-4 w-4 cursor-pointer"
-                        />
-                      </TableCell>
+
                       <TableCell className="font-medium">{ficha.referencia}</TableCell>
                       <TableCell>{ficha.tipo}</TableCell>
                       <TableCell>{ficha.familia}</TableCell>
@@ -407,13 +361,7 @@ export default function FichasCusto() {
 
       <NovaFichaModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
-      {/* Modal para gerar orcamento em lote */}
-      <GerarOrcamentoEmLote
-        isOpen={showBatchOrcamentoModal}
-        onClose={() => setShowBatchOrcamentoModal(false)}
-        fichasIds={Array.from(selectedFichasForBatch)}
-        fichas={fichas || []}
-      />
+
 
       {/* Modal para gerar orcamento */}
       <Dialog open={showOrcamentoModal} onOpenChange={setShowOrcamentoModal}>

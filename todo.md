@@ -107,6 +107,8 @@
 - [x] Permitir editar descricao, valor unitario e quantidade de cada item
 - [ ] Permitir deletar itens do orcamento (PRÓXIMA TAREFA - Autorizado para amanhã)
 - [x] Testar fluxo completo de criacao e edicao
+- [x] REMOVER componente de geração em lote (checkboxes e botão removidos)
+- [x] Testar criação individual sem erros
 
 ### Testes
 - [x] Testar geração de orçamento (14 testes passando)
