@@ -40,8 +40,8 @@ export default function Dashboard() {
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
         <h1 className="text-2xl font-bold">Acesso Restrito</h1>
         <p className="text-muted-foreground">Faça login para acessar esta página</p>
-        <Button asChild>
-          <a href={getLoginUrl()}>Fazer Login</a>
+        <Button onClick={() => window.location.href = getLoginUrl()}>
+          Fazer Login
         </Button>
       </div>
     );
