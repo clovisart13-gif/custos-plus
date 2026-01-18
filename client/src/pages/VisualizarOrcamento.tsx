@@ -66,7 +66,7 @@ export default function VisualizarOrcamento() {
 
   return (
     <div className="container py-8">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 print:hidden">
         <Button variant="ghost" onClick={() => navigate("/orcamentos")} className="gap-2">
           <ArrowLeft className="h-4 w-4" />
           Voltar
@@ -157,7 +157,7 @@ export default function VisualizarOrcamento() {
                     <th className="text-right py-2 px-2">Quantidade</th>
                     <th className="text-right py-2 px-2">Valor Unitário</th>
                     <th className="text-right py-2 px-2">Total</th>
-                    <th className="text-center py-2 px-2">Ações</th>
+                    <th className="text-center py-2 px-2 print:hidden">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -168,7 +168,7 @@ export default function VisualizarOrcamento() {
                       <td className="text-right py-2 px-2">{item.quantidade}</td>
                       <td className="text-right py-2 px-2">{formatCurrency(Number(item.valorUnitario))}</td>
                       <td className="text-right py-2 px-2 font-semibold">{formatCurrency(Number(item.valorTotal))}</td>
-                      <td className="text-center py-2 px-2">
+                      <td className="text-center py-2 px-2 print:hidden">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -214,27 +214,31 @@ export default function VisualizarOrcamento() {
           <CardTitle className="text-base">Condições de Pagamento</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            <div className="flex justify-between p-3 bg-muted rounded">
-              <span>Sinal ({Number(orcamento.percentualSinal)}%):</span>
-              <span className="font-semibold">{formatCurrency(valorSinal)}</span>
+          <div className="space-y-1">
+            <div className="flex justify-between p-2 bg-muted rounded">
+              <span className="text-sm">Sinal ({Number(orcamento.percentualSinal)}%):</span>
+              <span className="font-semibold text-sm">{formatCurrency(valorSinal)}</span>
             </div>
-            <div className="flex justify-between p-3 bg-muted rounded">
-              <span>Retirada ({Number(orcamento.percentualRetirada)}%):</span>
-              <span className="font-semibold">{formatCurrency(valorRetirada)}</span>
+            <div className="flex justify-between p-2 bg-muted rounded">
+              <span className="text-sm">Retirada ({Number(orcamento.percentualRetirada)}%):</span>
+              <span className="font-semibold text-sm">{formatCurrency(valorRetirada)}</span>
             </div>
-            <div className="flex justify-between p-3 bg-muted rounded">
-              <span>30 dias ({Number(orcamento.percentualPrazo)}%):</span>
-              <span className="font-semibold">{formatCurrency(valorPrazo)}</span>
+            <div className="flex justify-between p-2 bg-muted rounded">
+              <span className="text-sm">30 dias ({Number(orcamento.percentualPrazo)}%):</span>
+              <span className="font-semibold text-sm">{formatCurrency(valorPrazo)}</span>
             </div>
           </div>
 
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <p className="text-sm text-blue-900">
-              <strong>PIX:</strong> CNPJ 50.295.280/0001-80<br/>
-              <strong>Email:</strong> comercial@quickthreads.com.br<br/>
+          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200 space-y-1">
+            <div className="text-sm text-blue-900">
+              <strong>PIX:</strong> CNPJ 50.295.280/0001-80
+            </div>
+            <div className="text-sm text-blue-900">
+              <strong>Email:</strong> comercial@quickthreads.com.br
+            </div>
+            <div className="text-sm text-blue-900">
               <strong>Site:</strong> www.r2pbconfeccoes.com.br
-            </p>
+            </div>
           </div>
         </CardContent>
       </Card>

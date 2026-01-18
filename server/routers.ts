@@ -225,6 +225,23 @@ export const appRouter = router({
         return result;
       }),
 
+    updateItem: protectedProcedure
+      .input(z.object({
+        itemId: z.number(),
+        quantidade: z.number().min(1),
+        valorUnitario: z.number().min(0),
+      }))
+      .mutation(async ({ input }) => {
+        const valorTotal = input.quantidade * input.valorUnitario;
+        const result = await db.updateItemOrcamento(
+          input.itemId,
+          input.quantidade,
+          input.valorUnitario,
+          valorTotal
+        );
+        return result;
+      }),
+
     deleteItem: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ input }) => {
