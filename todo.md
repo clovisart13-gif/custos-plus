@@ -119,3 +119,13 @@
 - [ ] Filtros e busca na página de orçamentos
 - [ ] Status de orçamento (Pendente, Aceito, Rejeitado)
 - [ ] Histórico de alterações de orçamentos
+
+
+## Integração com Kanban R2PB (Planejada)
+- [ ] Confirmar estrutura de campos do Kanban
+- [ ] Obter URL da API do Kanban
+- [ ] Obter chave de autenticação do Kanban
+- [ ] Implementar rota de aprovação de orçamento
+- [ ] Implementar envio de dados para Kanban
+- [ ] Testar integração completa
+- [ ] Documentar fluxo de sincronização
