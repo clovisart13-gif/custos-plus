@@ -564,3 +564,36 @@ export async function updateItemOrcamento(
     valorTotal,
   };
 }
+
+
+export async function updateOrcamentoStatus(
+  orcamentoId: number,
+  status: "pendente" | "aprovado" | "reprovado",
+  userId: number
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // Verificar se o orçamento pertence ao usuário
+  const orcamento = await db
+    .select()
+    .from(orcamentos)
+    .where(eq(orcamentos.id, orcamentoId))
+    .limit(1);
+
+  if (!orcamento || orcamento.length === 0) {
+    throw new Error("Orçamento não encontrado");
+  }
+
+  if (orcamento[0].userId !== userId) {
+    throw new Error("Acesso negado");
+  }
+
+  // Atualizar status
+  await db
+    .update(orcamentos)
+    .set({ status })
+    .where(eq(orcamentos.id, orcamentoId));
+
+  return { success: true };
+}

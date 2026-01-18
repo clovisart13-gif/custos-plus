@@ -256,6 +256,16 @@ export const appRouter = router({
         await db.deleteOrcamento(input.id, ctx.user.id);
         return { success: true };
       }),
+
+    updateStatus: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        status: z.enum(["pendente", "aprovado", "reprovado"]),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        await db.updateOrcamentoStatus(input.id, input.status, ctx.user.id);
+        return { success: true };
+      }),
   }),
 });
 
