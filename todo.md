@@ -180,7 +180,7 @@
   - Status: RESOLVIDO
 
 - [x] Erro HTML "<a> cannot contain a nested <a>" (RESOLVIDO PERMANENTEMENTE)
-  - Causa: Nested anchor tags em múltiplos componentes (FichasCusto.tsx e Dashboard.tsx)
-  - Solução: Removido asChild do Button em ambos os componentes e convertido para onClick
-  - Componentes corrigidos: FichasCusto.tsx (linha 158), Dashboard.tsx (linha 43)
-  - Status: RESOLVIDO - Testado em ambas as páginas, nenhum erro no console
+  - Causa: Nested anchor tags em múltiplos componentes
+  - Solução: Removido todas as <a> aninhadas em FichasCusto, Dashboard e Navigation
+  - Componentes corrigidos: FichasCusto.tsx, Dashboard.tsx, Navigation.tsx
+  - Status: RESOLVIDO PERMANENTEMENTE - Console limpo, nenhum erro

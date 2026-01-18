@@ -32,18 +32,16 @@ export function Navigation() {
       <div className="container">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/">
-            <a className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <img 
-                src="/logo-r2pb.jpeg" 
-                alt="R2PB Confecções" 
-                className="h-10 w-auto object-contain"
-              />
-              <span className="text-xl font-semibold text-foreground">
-                Custos Plus
-              </span>
-            </a>
-          </Link>
+          <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <img 
+              src="/logo-r2pb.jpeg" 
+              alt="R2PB Confecções" 
+              className="h-10 w-auto object-contain"
+            />
+            <span className="text-xl font-semibold text-foreground">
+              Custos Plus
+            </span>
+          </a>
 
           {/* Navigation Links */}
           {isAuthenticated && (
@@ -54,16 +52,14 @@ export function Navigation() {
                   const isActive = location === item.path;
                   return (
                     <Link key={item.path} href={item.path}>
-                      <a>
-                        <Button
-                          variant={isActive ? "default" : "ghost"}
-                          size="sm"
-                          className="gap-2"
-                        >
-                          <Icon className="h-4 w-4" />
-                          {item.label}
-                        </Button>
-                      </a>
+                      <Button
+                        variant={isActive ? "default" : "ghost"}
+                        size="sm"
+                        className="gap-2"
+                      >
+                        <Icon className="h-4 w-4" />
+                        {item.label}
+                      </Button>
                     </Link>
                   );
                 })}
