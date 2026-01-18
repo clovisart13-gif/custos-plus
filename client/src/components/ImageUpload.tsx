@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +15,7 @@ interface ImageUploadProps {
 export default function ImageUpload({ value, onChange, label = "Foto do Produto" }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(value || null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadMutation = trpc.storage.uploadImage.useMutation();
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,6 +73,12 @@ export default function ImageUpload({ value, onChange, label = "Foto do Produto"
     onChange("");
   };
 
+  const handleClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   return (
     <div className="space-y-3">
       <Label htmlFor="image-upload">{label}</Label>
@@ -100,6 +107,7 @@ export default function ImageUpload({ value, onChange, label = "Foto do Produto"
           <p className="text-sm font-medium mb-2">Clique para selecionar uma imagem</p>
           <p className="text-xs text-muted-foreground mb-4">PNG, JPG, GIF até 5MB</p>
           <Input
+            ref={fileInputRef}
             id="image-upload"
             type="file"
             accept="image/*"
@@ -111,7 +119,7 @@ export default function ImageUpload({ value, onChange, label = "Foto do Produto"
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => document.getElementById("image-upload")?.click()}
+            onClick={handleClick}
             disabled={isUploading}
           >
             {isUploading ? (

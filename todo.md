@@ -157,3 +157,11 @@
   - Solução: Adicionadas rotas dashboard.kpis e dashboard.custosMediosPorFamilia em routers.ts
   - Bonus: Corrigido tratamento de valores NaN para mostrar R$ 0.00 em vez de R$ NaN
   - Status: RESOLVIDO - Dashboard carregando com todos os dados corretamente
+
+
+## Bugs Corrigidos - Sessão Atual (18/01/2026)
+
+- [x] Erro "NotFoundError: Failed to execute 'insertBefore'" ao fazer upload de imagem
+  - Causa: Componente ImageUpload usava `document.getElementById()` que causava sincronização incorreta com DOM
+  - Solução: Refatorado ImageUpload.tsx para usar `useRef` em vez de `document.getElementById()`
+  - Status: RESOLVIDO - Modal abre sem erros, componente funciona corretamente
