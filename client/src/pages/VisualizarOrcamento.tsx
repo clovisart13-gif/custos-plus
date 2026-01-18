@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Download, Printer } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { useState, useRef } from "react";
-import AdicionarItemOrcamento from "@/components/AdicionarItemOrcamento";
+import AdicionarItemManual from "@/components/AdicionarItemManual";
 import EditarItemOrcamento from "@/components/EditarItemOrcamento";
 import {
   Dialog,
@@ -147,7 +147,7 @@ export default function VisualizarOrcamento() {
         <CardContent>
           {showAddItem && (
             <div className="mb-6 p-4 bg-muted rounded-lg">
-              <AdicionarItemOrcamento 
+              <AdicionarItemManual 
                 orcamentoId={orcamentoId}
                 onSuccess={() => {
                   setShowAddItem(false);

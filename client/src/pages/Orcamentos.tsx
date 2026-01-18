@@ -3,17 +3,10 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Eye, Trash2, Download } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import { toast } from "sonner";
 import { useLocation } from "wouter";
-import NovoOrcamentoModal from "@/components/NovoOrcamentoModal";
+import CriarOrcamentoSimples from "@/components/CriarOrcamentoSimples";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 export default function Orcamentos() {
@@ -57,28 +50,21 @@ export default function Orcamentos() {
           <h1 className="text-3xl font-bold">Orçamentos</h1>
           <p className="text-muted-foreground">Gerencie seus orçamentos de vendas</p>
         </div>
-        <Dialog open={showNovoOrcamento} onOpenChange={setShowNovoOrcamento}>
-          <DialogTrigger asChild>
-            <Button size="lg" className="gap-2">
-              <Plus className="h-4 w-4" />
-              Novo Orçamento
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Novo Orçamento</DialogTitle>
-              <DialogDescription>
-                Crie um novo orçamento manualmente ou a partir de uma ficha de custo
-              </DialogDescription>
-            </DialogHeader>
-            <NovoOrcamentoModal 
-              onSuccess={() => {
-                setShowNovoOrcamento(false);
-                refetch();
-              }}
-            />
-          </DialogContent>
-        </Dialog>
+        <Button 
+          size="lg" 
+          className="gap-2"
+          onClick={() => setShowNovoOrcamento(true)}
+        >
+          <Plus className="h-4 w-4" />
+          Novo Orçamento
+        </Button>
+        <CriarOrcamentoSimples 
+          isOpen={showNovoOrcamento}
+          onClose={() => {
+            setShowNovoOrcamento(false);
+            refetch();
+          }}
+        />
       </div>
 
       {isLoading ? (

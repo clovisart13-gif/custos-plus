@@ -99,7 +99,14 @@
 - [ ] Adicionar exportação para PDF
 - [x] Adicionar botão de impressão
 - [ ] Melhorar layout PDF para mostrar claramente cada ficha como item separado
-- [ ] Implementar botão "Editar Markup" para mudar markup de itens em tempo real
+- [ ] Implementar botão Editar Markup para mudar markup de itens em tempo real
+
+### Geração Simplificada (NOVO FLUXO)
+- [x] Simplificar modal para criar orçamento INDIVIDUAL
+- [x] Criar formulario para adicionar itens manualmente
+- [x] Permitir editar descricao, valor unitario e quantidade de cada item
+- [ ] Permitir deletar itens do orcamento
+- [x] Testar fluxo completo de criacao e edicao
 
 ### Testes
 - [x] Testar geração de orçamento (14 testes passando)

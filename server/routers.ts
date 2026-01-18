@@ -170,17 +170,24 @@ export const appRouter = router({
         numeroOrcamento: z.string().min(1),
       }))
       .mutation(async ({ ctx, input }) => {
-        await db.createOrcamento({
+        const result = await db.createOrcamento({
           userId: ctx.user.id,
           nomeCliente: input.nomeCliente,
           marca: input.marca,
           numeroOrcamento: input.numeroOrcamento,
         });
         
-        const orcamentos = await db.getOrcamentosByUser(ctx.user.id);
-        const ultimoOrcamento = orcamentos[0];
+        // Obter o ID do orçamento criado
+        const orcamentoId = result.insertId || (result as any).lastInsertRowid;
+        if (!orcamentoId) {
+          throw new Error("Falha ao criar orçamento");
+        }
         
-        return { id: ultimoOrcamento?.id || 0 };
+        // Buscar o orçamento criado para retornar os dados completos
+        const orcamentos = await db.getOrcamentosByUser(ctx.user.id);
+        const orcamentoCriado = orcamentos.find((o: any) => o.id === orcamentoId);
+        
+        return orcamentoCriado || { id: orcamentoId };
       }),
 
     createItem: protectedProcedure
