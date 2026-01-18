@@ -1,17 +1,8 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
 import { useLocation } from "wouter";
 
 interface CriarOrcamentoDaFichaFormProps {
@@ -33,7 +24,6 @@ export default function CriarOrcamentoDaFichaForm({
   const createOrcamento = trpc.orcamentos.create.useMutation();
   const createItem = trpc.orcamentos.createItem.useMutation();
 
-  // Calcular custos
   const custoTotal = (
     Number(ficha.modelagem || 0) +
     Number(ficha.piloto || 0) +
@@ -54,117 +44,120 @@ export default function CriarOrcamentoDaFichaForm({
     e.preventDefault();
 
     if (!markup) {
-      toast.error("Selecione um markup");
+      toast.error("Selecione um markup divisor");
       return;
     }
 
-    if (!nextNumber) {
-      toast.error("Erro ao gerar número do orçamento");
-      return;
-    }
+    setIsCreating(true);
 
     try {
-      setIsCreating(true);
-
-      // 1. Criar orçamento
+      // Criar orçamento
       const orcamentoResult = await createOrcamento.mutateAsync({
-        nomeCliente: ficha.cliente,
-        marca: ficha.familia,
-        numeroOrcamento: nextNumber,
+        numero: nextNumber || "ORÇ-26-001",
+        clienteId: ficha.clienteId || null,
+        status: "rascunho",
       });
 
-      // Extrair ID do resultado
       const orcamentoId = (orcamentoResult as any)?.id;
 
       if (!orcamentoId) {
-        console.error("Erro: nao conseguiu extrair ID", orcamentoResult);
         toast.error("Erro ao criar orçamento");
         setIsCreating(false);
         return;
       }
 
-      // 2. Adicionar item ao orçamento
+      // Adicionar item ao orçamento
       await createItem.mutateAsync({
         orcamentoId,
         fichaId: ficha.id,
-        referencia: ficha.referencia,
-        descricao: ficha.familia,
         quantidade: 1,
-        custo: custoTotal,
-        valorUnitario: custoTotal / markupDivisor,
-        valorTotal: custoTotal / markupDivisor,
-        markupDivisor,
+        markupDivisor: markupDivisor,
+        valorUnitario: valorUnitario,
+        valorTotal: valorUnitario,
       });
 
       toast.success("Orçamento criado com sucesso!");
-      setIsCreating(false);
+      setLocation(`/orcamento/${orcamentoId}`);
       onSuccess?.();
-
-      // 3. Redirecionar para visualização do orçamento
-      setTimeout(() => {
-        setLocation(`/orcamentos/${orcamentoId}`);
-      }, 500);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Erro ao criar orçamento:", error);
-      toast.error("Erro ao criar orçamento: " + error.message);
+      toast.error("Erro ao criar orçamento");
       setIsCreating(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="bg-muted p-4 rounded-lg space-y-2">
-        <p>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Informações da Ficha */}
+      <div className="bg-gray-50 p-4 rounded-lg">
+        <h3 className="font-semibold text-gray-900 mb-2">Ficha Selecionada</h3>
+        <p className="text-sm text-gray-600">
           <strong>Referência:</strong> {ficha.referencia}
         </p>
-        <p>
+        <p className="text-sm text-gray-600">
           <strong>Família:</strong> {ficha.familia}
         </p>
-        <p>
-          <strong>Cliente:</strong> {ficha.cliente}
-        </p>
-        <p>
-          <strong>Custo Total:</strong> R${" "}
-          {custoTotal.toFixed(2)}
+        <p className="text-sm text-gray-600">
+          <strong>Custo Total:</strong> R$ {custoTotal.toFixed(2)}
         </p>
       </div>
 
-      <div>
-        <Label htmlFor="markup">Markup Divisor *</Label>
-        <Select value={markup} onValueChange={setMarkup}>
-          <SelectTrigger id="markup">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="0.40">÷ 0,40 (Maior Margem)</SelectItem>
-            <SelectItem value="0.50">÷ 0,50 (Médio)</SelectItem>
-            <SelectItem value="0.60">÷ 0,60 (Menor Margem)</SelectItem>
-          </SelectContent>
-        </Select>
+      {/* Seleção de Markup com Radio Buttons */}
+      <div className="space-y-3">
+        <Label className="text-base font-semibold">Selecione o Markup Divisor</Label>
+        
+        <div className="space-y-2">
+          {['0.40', '0.50', '0.60'].map((value) => (
+            <div key={value} className="flex items-center">
+              <input
+                type="radio"
+                id={`markup-${value}`}
+                name="markup"
+                value={value}
+                checked={markup === value}
+                onChange={(e) => setMarkup(e.target.value)}
+                className="w-4 h-4 text-blue-600 cursor-pointer"
+              />
+              <label
+                htmlFor={`markup-${value}`}
+                className="ml-3 flex-1 cursor-pointer text-sm text-gray-700 hover:text-gray-900"
+              >
+                <span className="font-medium">÷ {value}</span>
+                <span className="text-gray-500 ml-2">
+                  = R$ {(custoTotal / Number(value)).toFixed(2)} por peça
+                </span>
+              </label>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="bg-primary/5 p-3 rounded-lg space-y-2 text-sm">
-        <p>
-          <strong>Valor Unitário:</strong> R$ {valorUnitario.toFixed(2)}
+      {/* Resumo de Valores */}
+      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+        <p className="text-sm text-gray-600">
+          <strong>Markup Selecionado:</strong> ÷ {markup}
         </p>
-        <p className="text-xs text-muted-foreground">
-          A quantidade será definida quando você adicionar itens ao orçamento
+        <p className="text-lg font-semibold text-blue-900 mt-2">
+          Valor Unitário: R$ {valorUnitario.toFixed(2)}
         </p>
       </div>
 
-      <div className="flex gap-2">
+      {/* Botões */}
+      <div className="flex gap-3 justify-end">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={isCreating}
+        >
+          Cancelar
+        </Button>
         <Button
           type="submit"
-          disabled={isCreating || createOrcamento.isPending}
-          className="flex-1 gap-2"
+          disabled={isCreating}
+          className="bg-blue-600 hover:bg-blue-700"
         >
-          {(isCreating || createOrcamento.isPending) && (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          )}
-          Criar Orçamento
-        </Button>
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Cancelar
+          {isCreating ? "Criando..." : "Criar Orçamento"}
         </Button>
       </div>
     </form>
