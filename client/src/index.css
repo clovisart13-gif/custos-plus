@@ -175,3 +175,75 @@
     }
   }
 }
+
+/* Print Styles */
+@media print {
+  /* Hide navigation and buttons */
+  nav,
+  header,
+  footer,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Remove padding and margins */
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Optimize cards for print */
+  .card {
+    page-break-inside: avoid;
+    border: none !important;
+    box-shadow: none !important;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Table optimization */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  /* Remove background colors for print */
+  .bg-muted {
+    background-color: transparent !important;
+  }
+
+  /* Ensure text is visible */
+  * {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  a,
+  a * {
+    text-decoration: underline;
+  }
+
+  /* Hide interactive elements */
+  button,
+  input,
+  select,
+  textarea {
+    display: none !important;
+  }
+}

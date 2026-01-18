@@ -537,3 +537,30 @@ export async function updateItemMarkup(
     valorTotal,
   };
 }
+
+
+export async function updateItemOrcamento(
+  itemId: number,
+  quantidade: number,
+  valorUnitario: number,
+  valorTotal: number
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // Atualizar item com novos valores
+  await db
+    .update(itensOrcamento)
+    .set({
+      quantidade: quantidade,
+      valorUnitario: valorUnitario.toString(),
+      valorTotal: valorTotal.toString(),
+    })
+    .where(eq(itensOrcamento.id, itemId));
+
+  return {
+    quantidade,
+    valorUnitario,
+    valorTotal,
+  };
+}

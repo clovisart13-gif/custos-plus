@@ -6,11 +6,19 @@ import { ArrowLeft, Download, Printer } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { useState, useRef } from "react";
 import AdicionarItemOrcamento from "@/components/AdicionarItemOrcamento";
+import EditarItemOrcamento from "@/components/EditarItemOrcamento";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function VisualizarOrcamento() {
   const { id } = useParams<{ id: string }>();
   const [, navigate] = useLocation();
   const [showAddItem, setShowAddItem] = useState(false);
+  const [editingItem, setEditingItem] = useState<any>(null);
 
   const orcamentoId = id ? parseInt(id) : 0;
 
@@ -65,7 +73,12 @@ export default function VisualizarOrcamento() {
   const valorPrazo = (total * Number(orcamento.percentualPrazo)) / 100;
 
   return (
-    <div className="container py-8">
+    <div className="container py-8" style={{
+      '@media print': {
+        padding: '0',
+        margin: '0',
+      }
+    }}>
       <div className="flex justify-between items-center mb-8 print:hidden">
         <Button variant="ghost" onClick={() => navigate("/orcamentos")} className="gap-2">
           <ArrowLeft className="h-4 w-4" />
@@ -84,7 +97,7 @@ export default function VisualizarOrcamento() {
       </div>
 
       {/* Header da Empresa */}
-      <Card className="mb-8 print:border-0 print:shadow-none">
+      <Card className="mb-8 print:border-0 print:shadow-none print:mb-4">
         <CardHeader>
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-4">
@@ -109,7 +122,7 @@ export default function VisualizarOrcamento() {
       </Card>
 
       {/* Dados do Cliente */}
-      <Card className="mb-8 print:border-0 print:shadow-none">
+      <Card className="mb-8 print:border-0 print:shadow-none print:mb-4">
         <CardHeader>
           <CardTitle className="text-base">Dados do Cliente</CardTitle>
         </CardHeader>
@@ -122,7 +135,7 @@ export default function VisualizarOrcamento() {
       </Card>
 
       {/* Itens do Orçamento */}
-      <Card className="mb-8 print:border-0 print:shadow-none">
+      <Card className="mb-8 print:border-0 print:shadow-none print:mb-4">
         <CardHeader className="flex flex-row justify-between items-center">
           <CardTitle className="text-base">Itens do Orçamento</CardTitle>
           {!showAddItem && (
@@ -172,7 +185,7 @@ export default function VisualizarOrcamento() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => alert("Editar item em desenvolvimento")}
+                          onClick={() => setEditingItem(item)}
                           className="text-xs"
                         >
                           Editar
@@ -188,7 +201,7 @@ export default function VisualizarOrcamento() {
       </Card>
 
       {/* Resumo Financeiro */}
-      <Card className="mb-8 print:border-0 print:shadow-none">
+      <Card className="mb-8 print:border-0 print:shadow-none print:mb-4">
         <CardHeader>
           <CardTitle className="text-base">Resumo Financeiro</CardTitle>
         </CardHeader>
@@ -209,7 +222,7 @@ export default function VisualizarOrcamento() {
       </Card>
 
       {/* Condições de Pagamento */}
-      <Card className="print:border-0 print:shadow-none">
+      <Card className="print:border-0 print:shadow-none print:mb-0">
         <CardHeader>
           <CardTitle className="text-base">Condições de Pagamento</CardTitle>
         </CardHeader>
@@ -242,6 +255,25 @@ export default function VisualizarOrcamento() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Modal de Edição */}
+      <Dialog open={!!editingItem} onOpenChange={(open) => !open && setEditingItem(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar Item</DialogTitle>
+          </DialogHeader>
+          {editingItem && (
+            <EditarItemOrcamento
+              item={editingItem}
+              onSuccess={() => {
+                setEditingItem(null);
+                refetchItens();
+              }}
+              onCancel={() => setEditingItem(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
