@@ -131,3 +131,6 @@
 - [x] Documentar fluxo de sincronização
 - [x] Corrigir erros de compilação
 - [x] Botão "Enviar para Kanban" funcional
+- [x] ATUALIZAR URL do Kanban (nova URL)
+- [x] ATUALIZAR formato do body (remover envoltório json)
+- [x] Testar integração com nova URL

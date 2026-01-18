@@ -317,13 +317,13 @@ export const appRouter = router({
 
         // Enviar para Kanban
         const response = await fetch(
-          "https://kanban-producao.manus.space/api/trpc/integracao.importarOrcamento",
+          "https://kanbanprod-phheyds3.manus.space/api/custos-plus/importar-orcamento",
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ input: payload }),
+            body: JSON.stringify(payload),
           }
         );
 
