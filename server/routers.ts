@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import * as db from "./db";
+import { storagePut } from "./storage";
 
 const fichaCustoSchema = z.object({
   referencia: z.string().min(1, "Referência é obrigatória"),
@@ -334,6 +335,40 @@ export const appRouter = router({
 
         const result = await response.json();
         return { success: true, result };
+      }),
+  }),
+
+  storage: router({
+    uploadImage: protectedProcedure
+      .input(z.object({
+        filename: z.string(),
+        data: z.string(), // base64
+        mimeType: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        try {
+          // Converter base64 para buffer
+          const base64Data = input.data.split(',')[1] || input.data;
+          const buffer = Buffer.from(base64Data, 'base64');
+          
+          // storagePut já foi importado no topo do arquivo
+          
+          // Gerar nome único para o arquivo
+          const timestamp = Date.now();
+          const random = Math.random().toString(36).substring(7);
+          const fileKey = `fichas-custo/${timestamp}-${random}-${input.filename}`;
+          
+          // Fazer upload para S3
+          const result = await storagePut(fileKey, buffer, input.mimeType);
+          
+          return {
+            url: result.url,
+            key: result.key,
+          };
+        } catch (error) {
+          console.error('Erro ao fazer upload:', error);
+          throw new Error('Erro ao fazer upload da imagem');
+        }
       }),
   }),
 });

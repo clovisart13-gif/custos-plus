@@ -25,6 +25,7 @@ import { toast } from "sonner";
 
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import ImageUpload from "@/components/ImageUpload";
 import CriarOrcamentoDaFichaForm from "@/components/CriarOrcamentoDaFichaForm";
 
 import {
@@ -565,16 +566,11 @@ function NovaFichaModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
               </div>
             </div>
             <div>
-              <Label htmlFor="fotoUrl">URL da Foto do Produto</Label>
-              <Input
-                id="fotoUrl"
+              <ImageUpload
                 value={formData.fotoUrl}
-                onChange={(e) => setFormData({ ...formData, fotoUrl: e.target.value })}
-                placeholder="Cole a URL da imagem aqui"
+                onChange={(url) => setFormData({ ...formData, fotoUrl: url })}
+                label="Foto do Produto"
               />
-              <p className="text-xs text-muted-foreground mt-1">
-                Dica: Faça upload da imagem em um serviço como Imgur ou Google Drive e cole o link aqui
-              </p>
             </div>
             <div>
               <Label htmlFor="observacoes">Observações</Label>

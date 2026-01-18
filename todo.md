@@ -63,6 +63,10 @@
 ## Correções Urgentes
 
 - [x] Corrigir logo quebrado na visualização de ficha
+- [x] Corrigir erro de "removeChild" ao criar ficha de custo
+- [x] Restaurar funcionalidade de upload de imagens
+- [x] Corrigir imports duplicados em VisualizarOrcamento.tsx
+- [x] Adicionar rota backend para upload de imagens (storage.uploadImage)
 
 ## Geração Automática de Código de Referência
 
