@@ -73,18 +73,12 @@ export default function CriarOrcamentoDaFichaForm({
         numeroOrcamento: nextNumber,
       });
 
-      // Extrair ID do resultado (pode ser insertId ou um array com o objeto criado)
-      let orcamentoId: number | null = null;
-      
-      if (Array.isArray(orcamentoResult)) {
-        orcamentoId = (orcamentoResult[0] as any)?.id;
-      } else if (typeof orcamentoResult === 'object') {
-        orcamentoId = (orcamentoResult as any)?.insertId || (orcamentoResult as any)?.id;
-      }
+      // Extrair ID do resultado
+      const orcamentoId = (orcamentoResult as any)?.id;
 
       if (!orcamentoId) {
-        console.error("Resposta do servidor:", orcamentoResult);
-        toast.error("Erro ao criar orçamento: não foi possível obter o ID");
+        console.error("Erro: nao conseguiu extrair ID", orcamentoResult);
+        toast.error("Erro ao criar orçamento");
         setIsCreating(false);
         return;
       }

@@ -170,13 +170,17 @@ export const appRouter = router({
         numeroOrcamento: z.string().min(1),
       }))
       .mutation(async ({ ctx, input }) => {
-        const result = await db.createOrcamento({
+        await db.createOrcamento({
           userId: ctx.user.id,
           nomeCliente: input.nomeCliente,
           marca: input.marca,
           numeroOrcamento: input.numeroOrcamento,
         });
-        return result;
+        
+        const orcamentos = await db.getOrcamentosByUser(ctx.user.id);
+        const ultimoOrcamento = orcamentos[0];
+        
+        return { id: ultimoOrcamento?.id || 0 };
       }),
 
     createItem: protectedProcedure
