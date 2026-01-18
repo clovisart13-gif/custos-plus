@@ -25,6 +25,7 @@ import { toast } from "sonner";
 
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import CriarOrcamentoDaFichaForm from "@/components/CriarOrcamentoDaFichaForm";
 import {
   Dialog,
   DialogContent,
@@ -358,37 +359,20 @@ export default function FichasCusto() {
       <Dialog open={showOrcamentoModal} onOpenChange={setShowOrcamentoModal}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Gerar Orçamento</DialogTitle>
+            <DialogTitle>Criar Orçamento</DialogTitle>
             <DialogDescription>
-              Crie um novo orçamento a partir desta ficha de custo. Você poderá adicionar mais itens (fichas) depois.
+              Escolha o markup e a quantidade para esta ficha de custo
             </DialogDescription>
           </DialogHeader>
           {selectedFichaForOrcamento && (
-            <div className="space-y-4">
-              <div className="bg-muted p-4 rounded-lg">
-                <p><strong>Referência:</strong> {selectedFichaForOrcamento.referencia}</p>
-                <p><strong>Família:</strong> {selectedFichaForOrcamento.familia}</p>
-                <p><strong>Cliente:</strong> {selectedFichaForOrcamento.cliente}</p>
-                <p><strong>Custo Total:</strong> R$ {calculateTotal(selectedFichaForOrcamento).toFixed(2)}</p>
-              </div>
-              <div className="flex gap-2">
-                <Button 
-                  onClick={() => {
-                    setLocation("/orcamentos");
-                    setShowOrcamentoModal(false);
-                  }}
-                  className="flex-1"
-                >
-                  Ir para Orçamentos
-                </Button>
-                <Button 
-                  variant="outline"
-                  onClick={() => setShowOrcamentoModal(false)}
-                >
-                  Cancelar
-                </Button>
-              </div>
-            </div>
+            <CriarOrcamentoDaFichaForm
+              ficha={selectedFichaForOrcamento}
+              onSuccess={() => {
+                setShowOrcamentoModal(false);
+                setSelectedFichaForOrcamento(null);
+              }}
+              onCancel={() => setShowOrcamentoModal(false)}
+            />
           )}
         </DialogContent>
       </Dialog>

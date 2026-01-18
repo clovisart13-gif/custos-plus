@@ -91,6 +91,7 @@
 - [x] Melhorar clareza visual: deixar evidente que múltiplas fichas podem virar um orçamento
 - [x] Campo de markup editável ao adicionar item ao orçamento
 - [x] Coluna de markup visível na tabela de itens do orçamento
+- [x] Fluxo automático: clicar "Orçamento" na ficha cria orçamento + adiciona item + redireciona para visualização
 
 ### Visualização e Exportação
 - [x] Criar página de visualização de orçamento
