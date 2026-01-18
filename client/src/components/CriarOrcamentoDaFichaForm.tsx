@@ -26,7 +26,6 @@ export default function CriarOrcamentoDaFichaForm({
   onCancel,
 }: CriarOrcamentoDaFichaFormProps) {
   const [, setLocation] = useLocation();
-  const [quantidade, setQuantidade] = useState("1");
   const [markup, setMarkup] = useState("0.50");
   const [isCreating, setIsCreating] = useState(false);
 
@@ -50,13 +49,12 @@ export default function CriarOrcamentoDaFichaForm({
 
   const markupDivisor = Number(markup);
   const valorUnitario = markupDivisor > 0 ? custoTotal / markupDivisor : 0;
-  const valorTotal = valorUnitario * Number(quantidade);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!quantidade || !markup) {
-      toast.error("Preencha todos os campos obrigatórios");
+    if (!markup) {
+      toast.error("Selecione um markup");
       return;
     }
 
@@ -88,10 +86,10 @@ export default function CriarOrcamentoDaFichaForm({
         fichaId: ficha.id,
         referencia: ficha.referencia,
         descricao: ficha.familia,
-        quantidade: Number(quantidade),
+        quantidade: 1,
         custo: custoTotal,
-        valorUnitario,
-        valorTotal,
+        valorUnitario: custoTotal / markupDivisor,
+        valorTotal: custoTotal / markupDivisor,
         markupDivisor,
       });
 
@@ -126,40 +124,26 @@ export default function CriarOrcamentoDaFichaForm({
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="quantidade">Quantidade *</Label>
-          <Input
-            id="quantidade"
-            type="number"
-            min="1"
-            value={quantidade}
-            onChange={(e) => setQuantidade(e.target.value)}
-            required
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="markup">Markup Divisor *</Label>
-          <Select value={markup} onValueChange={setMarkup}>
-            <SelectTrigger id="markup">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="0.40">÷ 0,40 (Maior Margem)</SelectItem>
-              <SelectItem value="0.50">÷ 0,50 (Médio)</SelectItem>
-              <SelectItem value="0.60">÷ 0,60 (Menor Margem)</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      <div>
+        <Label htmlFor="markup">Markup Divisor *</Label>
+        <Select value={markup} onValueChange={setMarkup}>
+          <SelectTrigger id="markup">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="0.40">÷ 0,40 (Maior Margem)</SelectItem>
+            <SelectItem value="0.50">÷ 0,50 (Médio)</SelectItem>
+            <SelectItem value="0.60">÷ 0,60 (Menor Margem)</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="bg-primary/5 p-3 rounded-lg space-y-2 text-sm">
         <p>
           <strong>Valor Unitário:</strong> R$ {valorUnitario.toFixed(2)}
         </p>
-        <p>
-          <strong>Valor Total:</strong> R$ {valorTotal.toFixed(2)}
+        <p className="text-xs text-muted-foreground">
+          A quantidade será definida quando você adicionar itens ao orçamento
         </p>
       </div>
 
