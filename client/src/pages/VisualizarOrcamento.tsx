@@ -170,7 +170,7 @@ export default function VisualizarOrcamento() {
                     <th className="text-right py-2 px-2">Quantidade</th>
                     <th className="text-right py-2 px-2">Valor Unitário</th>
                     <th className="text-right py-2 px-2">Total</th>
-                    <th className="text-center py-2 px-2 print:hidden">Ações</th>
+                    <th className="text-center py-2 px-2 print:hidden" style={{ display: 'none' }}>Ações</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -185,7 +185,10 @@ export default function VisualizarOrcamento() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => setEditingItem(item)}
+                          onClick={() => {
+                            console.log('Clicou em Editar:', item);
+                            setEditingItem(item);
+                          }}
                           className="text-xs"
                         >
                           Editar

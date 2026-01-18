@@ -28,7 +28,7 @@ export function Navigation() {
   ];
 
   return (
-    <nav className="border-b bg-background">
+    <nav className="border-b bg-background print:hidden">
       <div className="container">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
