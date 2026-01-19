@@ -219,6 +219,7 @@ export const appRouter = router({
         referencia: z.string(),
         descricao: z.string(),
         quantidade: z.number().min(1),
+        custo: z.number().min(0),
         valorUnitario: z.number().min(0),
         markup: z.number().min(0).default(0.5),
       }))
@@ -229,7 +230,6 @@ export const appRouter = router({
         }
 
         const valorTotal = input.quantidade * input.valorUnitario;
-        const valorComMarkup = valorTotal / (1 - input.markup);
 
         const item = await db.createItemOrcamento({
           orcamentoId: input.orcamentoId,
@@ -237,10 +237,10 @@ export const appRouter = router({
           referencia: input.referencia,
           descricao: input.descricao,
           quantidade: input.quantidade,
+          custo: input.custo,
           valorUnitario: input.valorUnitario,
           valorTotal,
-          markup: input.markup,
-          valorComMarkup,
+          markupDivisor: input.markup,
         });
 
         await db.updateOrcamentoTotals(input.orcamentoId);

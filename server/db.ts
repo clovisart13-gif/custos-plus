@@ -379,15 +379,7 @@ export async function createOrcamento(data: InsertOrcamento) {
 
   const result = await db.insert(orcamentos).values(data);
   
-  // Retornar o ID do orçamento criado
-  // Drizzle retorna um objeto com insertId ou lastInsertRowid dependendo do banco
-  if ((result as any).insertId) {
-    return (result as any).insertId;
-  } else if ((result as any).lastInsertRowid) {
-    return (result as any).lastInsertRowid;
-  }
-  
-  // Se não conseguir obter o ID, fazer uma query para buscar o orçamento mais recente
+  // Buscar o orcamento criado para retornar o ID
   const created = await db
     .select()
     .from(orcamentos)

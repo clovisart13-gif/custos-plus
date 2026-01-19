@@ -193,3 +193,12 @@
   - Solução: Modificado createOrcamento em db.ts para retornar o ID do orçamento criado
   - Teste: Criado novo orçamento ORÇ-26-1768695814520 com sucesso
   - Status: RESOLVIDO - Orçamentos criando corretamente
+
+
+## Bugs Corrigidos - Sessão Atual (18/01/2026 - Noite - RESOLVIDO)
+
+- [x] Erro ao criar itens de orçamento: Insert query falhando
+  - Causa: Função createItemOrcamento não estava recebendo campo custo
+  - Solução: Adicionado campo custo ao input em CriarOrcamentoSimples.tsx
+  - Teste: Criado novo orçamento ORÇ-26-1768695814522 com sucesso
+  - Status: RESOLVIDO - Orçamentos com itens criando corretamente

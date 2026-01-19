@@ -90,6 +90,7 @@ export default function CriarOrcamentoSimples({
         referencia: descricao.substring(0, 20),
         descricao,
         quantidade: qtd,
+        custo: valor, // Custo = valor unitário para itens manuais
         valorUnitario: valor,
         markup: markup,
       });
