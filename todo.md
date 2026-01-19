@@ -396,3 +396,12 @@
   - [x] Corrigir SelecionarFichasModal para usar observacoes em vez de referencia
   - [ ] Testar edição de descrição no navegador
   - [ ] Verificar persistência de dados após edição
+
+
+## Bug Crítico - Envio para Kanban (19/01/2026)
+
+- [x] Erro ao enviar orçamento para Kanban: SQL INSERT com campos faltando
+  - Corrigido: Adicionado campo `marca` e valores padrão para evitar NULL
+  - Garantido que `numeroOrcamento`, `nomeCliente` e `itens` sempre têm valores
+  - Prioridade: CRÍTICA - Bloqueia integração com Kanban
+  - Status: CORRIGIDO - Aguardando teste do usuário
