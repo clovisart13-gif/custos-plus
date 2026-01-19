@@ -723,6 +723,21 @@ export async function updateOrcamentoClienteMarca(
   return { success: true };
 }
 
+export async function updateOrcamentoValidadeEPrazo(
+  orcamentoId: number,
+  validade: number,
+  prazoEntregaTexto: string
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .update(orcamentos)
+    .set({ validade, prazoEntregaTexto })
+    .where(eq(orcamentos.id, orcamentoId));
+
+  return { success: true };
+}
 
 export async function updateOrcamentoTotals(orcamentoId: number) {
   const db = await getDb();

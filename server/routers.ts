@@ -344,6 +344,43 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    updateValidadeEPrazo: protectedProcedure
+      .input(z.object({
+        orcamentoId: z.number(),
+        validade: z.number().min(1),
+        prazoEntregaTexto: z.string().min(1),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
+        if (!orcamento) {
+          throw new Error("Orcamento nao encontrado");
+        }
+        await db.updateOrcamentoValidadeEPrazo(input.orcamentoId, input.validade, input.prazoEntregaTexto);
+        return { success: true };
+      }),
+
+    updateCondicoesPagamento: protectedProcedure
+      .input(z.object({
+        orcamentoId: z.number(),
+        percentualSinal: z.number().min(0),
+        percentualRetirada: z.number().min(0),
+        percentualPrazo: z.number().min(0),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
+        if (!orcamento) {
+          throw new Error("Orcamento nao encontrado");
+        }
+        await db.updateOrcamentoPercentuais(
+          input.orcamentoId,
+          undefined,
+          input.percentualSinal,
+          input.percentualRetirada,
+          input.percentualPrazo
+        );
+        return { success: true };
+      }),
+
     enviarParaKanban: protectedProcedure
       .input(z.object({
         orcamentoId: z.number(),

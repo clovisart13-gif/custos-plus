@@ -100,16 +100,16 @@
 ### Visualização e Exportação
 - [x] Criar página de visualização de orçamento
 - [x] Implementar layout conforme mockup aprovado
-- [ ] Adicionar exportação para PDF
+- [x] Adicionar exportação para PDF
 - [x] Adicionar botão de impressão
-- [ ] Melhorar layout PDF para mostrar claramente cada ficha como item separado
-- [ ] Implementar botão Editar Markup para mudar markup de itens em tempo real
+- [x] Melhorar layout PDF para mostrar claramente cada ficha como item separado
+- [x] Implementar botão Editar Markup para mudar markup de itens em tempo real
 
 ### Geração Simplificada (NOVO FLUXO)
 - [x] Simplificar modal para criar orçamento INDIVIDUAL
 - [x] Criar formulario para adicionar itens manualmente
 - [x] Permitir editar descricao, valor unitario e quantidade de cada item
-- [ ] Permitir deletar itens do orcamento (PRÓXIMA TAREFA - Autorizado para amanhã)
+- [x] Permitir deletar itens do orcamento (PRÓXIMA TAREFA - Autorizado para amanhã)
 - [x] Testar fluxo completo de criacao e edicao
 - [x] REMOVER componente de geração em lote (checkboxes e botão removidos)
 - [x] Testar criação individual sem erros

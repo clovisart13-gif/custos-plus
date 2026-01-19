@@ -30,6 +30,13 @@ export default function VisualizarOrcamento() {
   const [editingClienteMarca, setEditingClienteMarca] = useState(false);
   const [nomeClienteEdit, setNomeClienteEdit] = useState("");
   const [marcaEdit, setMarcaEdit] = useState("");
+  const [editingValidadeEPrazo, setEditingValidadeEPrazo] = useState(false);
+  const [validadeEdit, setValidadeEdit] = useState("");
+  const [prazoEdit, setPrazoEdit] = useState("");
+  const [editingCondicoesPagamento, setEditingCondicoesPagamento] = useState(false);
+  const [percentualSinalEdit, setPercentualSinalEdit] = useState("");
+  const [percentualRetiradaEdit, setPercentualRetiradaEdit] = useState("");
+  const [percentualPrazoEdit, setPercentualPrazoEdit] = useState("");
 
   const orcamentoId = id ? parseInt(id) : 0;
 
@@ -48,6 +55,28 @@ export default function VisualizarOrcamento() {
       refetch();
       setEditingClienteMarca(false);
       toast.success("Cliente e marca atualizados!");
+    },
+    onError: (error) => {
+      toast.error("Erro ao atualizar: " + (error.message || "Erro desconhecido"));
+    },
+  });
+
+  const updateValidadeEPrazoMutation = trpc.orcamentos.updateValidadeEPrazo.useMutation({
+    onSuccess: () => {
+      refetch();
+      setEditingValidadeEPrazo(false);
+      toast.success("Validade e prazo atualizados!");
+    },
+    onError: (error) => {
+      toast.error("Erro ao atualizar: " + (error.message || "Erro desconhecido"));
+    },
+  });
+
+  const updateCondicoesPagamentoMutation = trpc.orcamentos.updateCondicoesPagamento.useMutation({
+    onSuccess: () => {
+      refetch();
+      setEditingCondicoesPagamento(false);
+      toast.success("Condicoes de pagamento atualizadas!");
     },
     onError: (error) => {
       toast.error("Erro ao atualizar: " + (error.message || "Erro desconhecido"));
@@ -91,6 +120,31 @@ export default function VisualizarOrcamento() {
       orcamentoId,
       nomeCliente: nomeClienteEdit,
       marca: marcaEdit,
+    });
+  };
+
+  const handleSalvarValidadeEPrazo = async () => {
+    if (!validadeEdit || !prazoEdit) {
+      toast.error("Preencha validade e prazo!");
+      return;
+    }
+    await updateValidadeEPrazoMutation.mutateAsync({
+      orcamentoId,
+      validade: parseInt(validadeEdit),
+      prazoEntregaTexto: prazoEdit,
+    });
+  };
+
+  const handleSalvarCondicoesPagamento = async () => {
+    if (!percentualSinalEdit || !percentualRetiradaEdit || !percentualPrazoEdit) {
+      toast.error("Preencha todos os percentuais!");
+      return;
+    }
+    await updateCondicoesPagamentoMutation.mutateAsync({
+      orcamentoId,
+      percentualSinal: parseFloat(percentualSinalEdit),
+      percentualRetirada: parseFloat(percentualRetiradaEdit),
+      percentualPrazo: parseFloat(percentualPrazoEdit),
     });
   };
 
@@ -263,14 +317,80 @@ export default function VisualizarOrcamento() {
             <>
               <p><strong>Cliente:</strong> {orcamento.nomeCliente}</p>
               <p><strong>Marca/Coleção:</strong> {orcamento.marca}</p>
-              <p><strong>Validade do Orçamento:</strong> {orcamento.validade} dias</p>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Validade e Prazo */}
+      <Card className="mb-8 print:border-0 print:shadow-none print:mb-4">
+        <CardHeader className="flex flex-row justify-between items-center">
+          <CardTitle className="text-base">Validade e Prazo</CardTitle>
+          {!editingValidadeEPrazo && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                setValidadeEdit(orcamento.validade?.toString() || "");
+                setPrazoEdit(orcamento.prazoEntregaTexto || "");
+                setEditingValidadeEPrazo(true);
+              }}
+              className="gap-2 print:hidden"
+            >
+              <Edit2 className="h-4 w-4" />
+              Editar
+            </Button>
+          )}
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {editingValidadeEPrazo ? (
+            <div className="space-y-4 p-4 bg-muted rounded-lg">
+              <div>
+                <Label htmlFor="validadeEdit">Validade (dias)</Label>
+                <Input
+                  id="validadeEdit"
+                  type="number"
+                  value={validadeEdit}
+                  onChange={(e) => setValidadeEdit(e.target.value)}
+                  placeholder="Ex: 30"
+                />
+              </div>
+              <div>
+                <Label htmlFor="prazoEdit">Prazo de Entrega</Label>
+                <Input
+                  id="prazoEdit"
+                  value={prazoEdit}
+                  onChange={(e) => setPrazoEdit(e.target.value)}
+                  placeholder="Ex: 15 dias uteis"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={handleSalvarValidadeEPrazo}
+                  disabled={updateValidadeEPrazoMutation.isPending}
+                >
+                  {updateValidadeEPrazoMutation.isPending ? "Salvando..." : "Salvar"}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setEditingValidadeEPrazo(false)}
+                >
+                  Cancelar
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <p><strong>Validade do Orcamento:</strong> {orcamento.validade} dias</p>
               <p><strong>Prazo de Entrega:</strong> {orcamento.prazoEntregaTexto || orcamento.prazoDias + ' dias'}</p>
             </>
           )}
         </CardContent>
       </Card>
 
-      {/* Itens do Orçamento */}
+      {/* Itens do Orcamento */}
       <Card className="mb-8 print:border-0 print:shadow-none print:mb-4">
         <CardHeader className="flex flex-row justify-between items-center">
           <CardTitle className="text-base">Itens do Orçamento</CardTitle>
@@ -375,48 +495,120 @@ export default function VisualizarOrcamento() {
         </CardContent>
       </Card>
 
-      {/* Condições de Pagamento */}
+      {/* Condicoes de Pagamento */}
       <Card className="print:border-0 print:shadow-none print:mb-0">
-        <CardHeader>
-          <CardTitle className="text-base">Condições de Pagamento</CardTitle>
+        <CardHeader className="flex flex-row justify-between items-center">
+          <CardTitle className="text-base">Condicoes de Pagamento</CardTitle>
+          {!editingCondicoesPagamento && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                setPercentualSinalEdit(orcamento.percentualSinal?.toString() || "0");
+                setPercentualRetiradaEdit(orcamento.percentualRetirada?.toString() || "0");
+                setPercentualPrazoEdit(orcamento.percentualPrazo?.toString() || "0");
+                setEditingCondicoesPagamento(true);
+              }}
+              className="gap-2 print:hidden"
+            >
+              <Edit2 className="h-4 w-4" />
+              Editar
+            </Button>
+          )}
         </CardHeader>
         <CardContent>
-          <div className="space-y-1">
-            {Number(orcamento.percentualSinal) > 0 && (
-              <div className="flex justify-between p-2 bg-muted rounded">
-                <span className="text-sm">Sinal ({Number(orcamento.percentualSinal)}%):</span>
-                <span className="font-semibold text-sm">{formatCurrency(valorSinal)}</span>
+          {editingCondicoesPagamento ? (
+            <div className="space-y-4 p-4 bg-muted rounded-lg">
+              <div>
+                <Label htmlFor="percentualSinalEdit">Sinal (%)</Label>
+                <Input
+                  id="percentualSinalEdit"
+                  type="number"
+                  step="0.01"
+                  value={percentualSinalEdit}
+                  onChange={(e) => setPercentualSinalEdit(e.target.value)}
+                  placeholder="Ex: 50"
+                />
               </div>
-            )}
-            {Number(orcamento.percentualRetirada) > 0 && (
-              <div className="flex justify-between p-2 bg-muted rounded">
-                <span className="text-sm">Retirada ({Number(orcamento.percentualRetirada)}%):</span>
-                <span className="font-semibold text-sm">{formatCurrency(valorRetirada)}</span>
+              <div>
+                <Label htmlFor="percentualRetiradaEdit">Retirada (%)</Label>
+                <Input
+                  id="percentualRetiradaEdit"
+                  type="number"
+                  step="0.01"
+                  value={percentualRetiradaEdit}
+                  onChange={(e) => setPercentualRetiradaEdit(e.target.value)}
+                  placeholder="Ex: 30"
+                />
               </div>
-            )}
-            {Number(orcamento.percentualPrazo) > 0 && (
-              <div className="flex justify-between p-2 bg-muted rounded">
-                <span className="text-sm">30 dias ({Number(orcamento.percentualPrazo)}%):</span>
-                <span className="font-semibold text-sm">{formatCurrency(valorPrazo)}</span>
+              <div>
+                <Label htmlFor="percentualPrazoEdit">30 dias (%)</Label>
+                <Input
+                  id="percentualPrazoEdit"
+                  type="number"
+                  step="0.01"
+                  value={percentualPrazoEdit}
+                  onChange={(e) => setPercentualPrazoEdit(e.target.value)}
+                  placeholder="Ex: 20"
+                />
               </div>
-            )}
-          </div>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={handleSalvarCondicoesPagamento}
+                  disabled={updateCondicoesPagamentoMutation.isPending}
+                >
+                  {updateCondicoesPagamentoMutation.isPending ? "Salvando..." : "Salvar"}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setEditingCondicoesPagamento(false)}
+                >
+                  Cancelar
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-1">
+                  {Number(orcamento.percentualSinal) > 0 && (
+                  <div className="flex justify-between p-2 bg-muted rounded">
+                    <span className="text-sm">Sinal ({Number(orcamento.percentualSinal)}%):</span>
+                    <span className="font-semibold text-sm">{formatCurrency(valorSinal)}</span>
+                  </div>
+                )}
+                {Number(orcamento.percentualRetirada) > 0 && (
+                  <div className="flex justify-between p-2 bg-muted rounded">
+                    <span className="text-sm">Retirada ({Number(orcamento.percentualRetirada)}%):</span>
+                    <span className="font-semibold text-sm">{formatCurrency(valorRetirada)}</span>
+                  </div>
+                )}
+                {Number(orcamento.percentualPrazo) > 0 && (
+                  <div className="flex justify-between p-2 bg-muted rounded">
+                    <span className="text-sm">30 dias ({Number(orcamento.percentualPrazo)}%):</span>
+                    <span className="font-semibold text-sm">{formatCurrency(valorPrazo)}</span>
+                  </div>
+                )}
+              </div>
 
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200 space-y-1">
-            <div className="text-sm text-blue-900">
-              <strong>PIX:</strong> CNPJ 50.295.280/0001-80
-            </div>
-            <div className="text-sm text-blue-900">
-              <strong>Email:</strong> comercial@quickthreads.com.br
-            </div>
-            <div className="text-sm text-blue-900">
-              <strong>Site:</strong> www.r2pbconfeccoes.com.br
-            </div>
-          </div>
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200 space-y-1">
+                <div className="text-sm text-blue-900">
+                  <strong>PIX:</strong> CNPJ 50.295.280/0001-80
+                </div>
+                <div className="text-sm text-blue-900">
+                  <strong>Email:</strong> comercial@quickthreads.com.br
+                </div>
+                <div className="text-sm text-blue-900">
+                  <strong>Site:</strong> www.r2pbconfeccoes.com.br
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
 
-      {/* Modal de Edição */}
+      {/* Modal de Edicao */}
       <Dialog open={!!editingItem} onOpenChange={(open) => !open && setEditingItem(null)}>
         <DialogContent>
           <DialogHeader>
