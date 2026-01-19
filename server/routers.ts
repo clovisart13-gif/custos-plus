@@ -327,8 +327,8 @@ export const appRouter = router({
         const itens = await db.getItensOrcamento(input.orcamentoId);
 
         const payload = {
-          pedido: orcamento.numeroOrcamento,
-          cliente: orcamento.nomeCliente,
+          numeroOrcamento: orcamento.numeroOrcamento,
+          nomeCliente: orcamento.nomeCliente,
           email: ctx.user.email || "",
           telefone: "",
           referencia: itens.map((i: any) => i.referencia).join(", "),
