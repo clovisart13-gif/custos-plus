@@ -143,6 +143,12 @@ export default function EditarItemOrcamento({
         return 0;
       };
 
+      // Serializar TODAS as parcelas em JSON
+      const parcelasJson = JSON.stringify(parcelas.map(p => ({
+        nome: p.nome,
+        percentual: parseFloat(p.percentual.toString())
+      })));
+
       const percentualSinal = findPercentualByName(["Sinal", "Entrada", "Adiantamento"]) || parseFloat(parcelas[0]?.percentual) || 0;
       const percentualRetirada = findPercentualByName(["À Vista", "Retirada", "Entrega"]) || parseFloat(parcelas[1]?.percentual) || 0;
       const percentualPrazo = findPercentualByName(["30 dias", "Prazo", "30DD"]) || parseFloat(parcelas[2]?.percentual) || 0;
@@ -157,10 +163,11 @@ export default function EditarItemOrcamento({
         percentualPrazo,
         prazoDias: parseInt(prazoDias),
         prazoEntregaTexto,
-        observacoes,
+        observacoes: observacoes ? `${observacoes}\n[PARCELAS]${parcelasJson}` : `[PARCELAS]${parcelasJson}`,
       };
       console.log("[EditarItemOrcamento] Enviando payload:", payload);
-      console.log("[EditarItemOrcamento] Parcelas mapeadas:", { percentualSinal, percentualRetirada, percentualPrazo });
+      console.log("[EditarItemOrcamento] Parcelas completas:", parcelas);
+      console.log("[EditarItemOrcamento] Parcelas JSON:", parcelasJson);
       await updateItemMutation.mutateAsync(payload);
       toast.success("Item atualizado com sucesso!");
       utils.orcamentos.getItens.invalidate();
