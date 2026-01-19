@@ -40,21 +40,27 @@ export default function ImageUpload({ value, onChange, label = "Foto do Produto"
       // Ler arquivo como base64
       const reader = new FileReader();
       reader.onload = async (event) => {
-        const base64 = event.target?.result as string;
-        
         try {
+          const base64 = event.target?.result as string;
+          
+          // Mostrar preview imediatamente (local)
+          setPreview(base64);
+          
+          // Fazer upload em background
           const result = await uploadMutation.mutateAsync({
             filename: file.name,
             data: base64,
             mimeType: file.type,
           });
 
+          // Atualizar com URL final do servidor
           setPreview(result.url);
           onChange(result.url);
           toast.success("Imagem enviada com sucesso!");
         } catch (error) {
           console.error("Erro ao fazer upload:", error);
           toast.error("Erro ao fazer upload da imagem");
+          setPreview(null);
         } finally {
           setIsUploading(false);
         }
@@ -89,6 +95,10 @@ export default function ImageUpload({ value, onChange, label = "Foto do Produto"
             src={preview}
             alt="Preview"
             className="w-full h-48 object-cover rounded-lg border border-border"
+            onError={() => {
+              console.error("Erro ao carregar imagem");
+              setPreview(null);
+            }}
           />
           <Button
             type="button"
