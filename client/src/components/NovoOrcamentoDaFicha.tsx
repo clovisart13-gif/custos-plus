@@ -52,7 +52,6 @@ export default function NovoOrcamentoDaFicha({ onSuccess }: NovoOrcamentoDaFicha
     createOrcamento.mutate({
       nomeCliente: selectedFichaData.cliente,
       marca: selectedFichaData.familia,
-      numeroOrcamento: nextNumber || "",
     });
   };
 

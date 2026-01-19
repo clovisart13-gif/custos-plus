@@ -55,7 +55,6 @@ export default function CriarOrcamentoDaFichaForm({
       const orcamentoResult = await createOrcamento.mutateAsync({
         nomeCliente: ficha.cliente || "Cliente",
         marca: ficha.familia || "Marca",
-        numeroOrcamento: nextNumber || "ORÇ-26-001",
       });
 
       const orcamentoId = (orcamentoResult as any)?.id;

@@ -38,7 +38,6 @@ export default function NovoOrcamentoManual({ onSuccess }: NovoOrcamentoManualPr
     createOrcamento.mutate({
       nomeCliente: formData.nomeCliente,
       marca: formData.marca,
-      numeroOrcamento: nextNumber || "",
     });
   };
 

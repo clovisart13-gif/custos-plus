@@ -91,7 +91,6 @@ export default function SelecionarFichasModal({
       const orcamento = await createMutation.mutateAsync({
         nomeCliente,
         marca,
-        numeroOrcamento: `ORÇ-${Date.now()}`,
       });
 
       // Adicionar itens selecionados

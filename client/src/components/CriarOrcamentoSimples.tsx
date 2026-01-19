@@ -57,10 +57,11 @@ export default function CriarOrcamentoSimples({
       const novoOrcamento = await createMutation.mutateAsync({
         nomeCliente,
         marca,
-        numeroOrcamento: `ORQ-${Date.now()}`,
       });
 
       setOrcamentoId(novoOrcamento.id);
+      setNomeCliente('');
+      setMarca('');
       toast.success("Orçamento criado com sucesso!");
     } catch (error: any) {
       console.error("Erro ao criar orçamento:", error);

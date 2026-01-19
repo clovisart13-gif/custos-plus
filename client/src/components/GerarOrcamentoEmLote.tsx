@@ -86,7 +86,6 @@ export default function GerarOrcamentoEmLote({
       const orcamento = await createMutation.mutateAsync({
         nomeCliente,
         marca,
-        numeroOrcamento: `ORQ-${Date.now()}`,
       });
 
       orcamentoIdRef.current = orcamento.id;

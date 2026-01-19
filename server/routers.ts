@@ -179,15 +179,17 @@ export const appRouter = router({
       .input(z.object({
         nomeCliente: z.string().min(1),
         marca: z.string().min(1),
-        numeroOrcamento: z.string().min(1),
       }))
       .mutation(async ({ ctx, input }) => {
         try {
+          // Gerar numeroOrcamento no backend
+          const numeroOrcamento = await db.generateNextOrcamentoNumber(ctx.user.id);
+          
           const result = await db.createOrcamento({
             userId: ctx.user.id,
             nomeCliente: input.nomeCliente,
             marca: input.marca,
-            numeroOrcamento: input.numeroOrcamento,
+            numeroOrcamento,
           });
           
           // Obter o ID do orçamento criado

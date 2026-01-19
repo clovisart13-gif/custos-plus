@@ -405,3 +405,12 @@
   - Garantido que `numeroOrcamento`, `nomeCliente` e `itens` sempre têm valores
   - Prioridade: CRÍTICA - Bloqueia integração com Kanban
   - Status: CORRIGIDO - Aguardando teste do usuário
+
+
+## Melhorias de UX - Numeração de Orçamentos
+
+- [x] Mudar numeração de orçamentos para formato comercial (ORÇ-AAMM-NNN)
+  - Implementado: ORÇ-2601-001 (ano/mês + sequencial)
+  - Testado: Novo orçamento criado com sucesso
+  - Prioridade: MÉDIAsequencial por mês
+  - Testar geração de números
