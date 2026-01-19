@@ -66,7 +66,7 @@ export const orcamentos = mysqlTable("orcamentos", {
   dataEmissao: timestamp("data_emissao").defaultNow().notNull(),
   validade: int("validade").default(30).notNull(),
   prazoDias: int("prazo_dias").default(30).notNull(),
-  prazoEntregaTexto: text("prazo_entrega_texto").notNull(),
+  prazoEntregaTexto: varchar("prazo_entrega_texto", { length: 255 }).default("30 dias").notNull(),
   
   totalPecas: int("total_pecas").default(0).notNull(),
   subtotal: decimal("subtotal", { precision: 12, scale: 2 }).default("0.00").notNull(),

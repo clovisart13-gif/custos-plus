@@ -297,3 +297,12 @@
 3. Filtros no Dashboard (período, família, tipo)
 4. Deletar itens com confirmação
 5. Histórico de alterações de orçamentos
+
+
+## Bug Corrigido - Erro ao Criar Orçamento (19/01/2026 - Noite)
+
+- [x] Erro ao criar orçamento: "Field 'prazo_entrega_texto' doesn't have a default value"
+  - Causa: Campo prazoEntregaTexto foi adicionado como NOT NULL sem default value
+  - Solução: Alterado campo de TEXT para VARCHAR(255) com DEFAULT '30 dias'
+  - Teste: Criado novo orçamento ORÇ-17687846861917 com sucesso
+  - Status: RESOLVIDO - Sistema funcionando 100%

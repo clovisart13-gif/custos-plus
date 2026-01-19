@@ -1,1 +1,0 @@
-ALTER TABLE `orcamentos` MODIFY COLUMN `prazo_entrega_texto` text NOT NULL;

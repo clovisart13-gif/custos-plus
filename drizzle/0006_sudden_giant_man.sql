@@ -1,1 +1,0 @@
-ALTER TABLE `orcamentos` ADD `prazo_entrega_texto` text DEFAULT ('30 dias após aprovação do protótipo') NOT NULL;

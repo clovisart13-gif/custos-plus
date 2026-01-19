@@ -1,1 +1,0 @@
-ALTER TABLE `orcamentos` ADD `status` enum('pendente','aprovado','reprovado') DEFAULT 'pendente' NOT NULL;
