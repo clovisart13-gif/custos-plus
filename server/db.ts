@@ -497,22 +497,20 @@ export async function generateNextOrcamentoNumber(userId: number): Promise<strin
   }
 
   const agora = new Date();
-  const ano = agora.getFullYear().toString().slice(-2);
-  const mes = (agora.getMonth() + 1).toString().padStart(2, '0');
-  const anoMes = `${ano}${mes}`;
+  const ano = agora.getFullYear().toString();
   
-  const orcamentosDoAnoMes = await db
+  const orcamentosDoAno = await db
     .select()
     .from(orcamentos)
     .where(eq(orcamentos.userId, userId));
   
-  const padrao = `ORÇ-${anoMes}`;
-  const orcamentosDoAnoMesFiltrados = orcamentosDoAnoMes.filter(o => 
+  const padrao = `ORC-${ano}`;
+  const orcamentosDoAnoFiltrados = orcamentosDoAno.filter(o => 
     o.numeroOrcamento.startsWith(padrao)
   );
   
   let maiorNumero = 0;
-  orcamentosDoAnoMesFiltrados.forEach(o => {
+  orcamentosDoAnoFiltrados.forEach(o => {
     const match = o.numeroOrcamento.match(/\-(\d+)$/);
     if (match) {
       const numero = parseInt(match[1], 10);

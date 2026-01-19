@@ -409,8 +409,18 @@
 
 ## Melhorias de UX - Numeração de Orçamentos
 
-- [x] Mudar numeração de orçamentos para formato comercial (ORÇ-AAMM-NNN)
-  - Implementado: ORÇ-2601-001 (ano/mês + sequencial)
+- [x] Mudar numeração de orçamentos para formato comercial (ORC-AAAA-NNN)
+  - Implementado: ORC-2026-001 (sem Ç, com ano completo)
   - Testado: Novo orçamento criado com sucesso
-  - Prioridade: MÉDIAsequencial por mês
+  - Prioridade: MÉDIA
+  - Status: CONCLUÍDOsequencial por mês
   - Testar geração de números
+
+
+## Bug Crítico - Envio para Kanban (19/01/2026 - Noite)
+
+- [ ] Erro ao enviar orçamento para Kanban: Campos obrigatórios faltando
+  - Erro: "Campos obrigatórios faltando: numeroOrcamento, nomeCliente e itens são obrigatórios"
+  - Causa: Um ou mais desses campos está chegando como null/undefined no Kanban
+  - Prioridade: CRÍTICA - Bloqueia integração com Kanban
+  - Status: EM INVESTIGAÇÃO

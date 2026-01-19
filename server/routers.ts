@@ -395,6 +395,15 @@ export const appRouter = router({
 
         const itens = await db.getItensOrcamento(input.orcamentoId);
 
+        // Validar campos obrigatórios
+        if (!orcamento.numeroOrcamento || !orcamento.nomeCliente) {
+          throw new Error(`Campos obrigatórios faltando: numeroOrcamento=${orcamento.numeroOrcamento}, nomeCliente=${orcamento.nomeCliente}`);
+        }
+
+        if (!itens || itens.length === 0) {
+          throw new Error("Orçamento não possui itens");
+        }
+
         const payload = {
           numeroOrcamento: orcamento.numeroOrcamento,
           nomeCliente: orcamento.nomeCliente,
@@ -416,6 +425,9 @@ export const appRouter = router({
           apiKey: "r2pb-custos-plus-2026",
         };
 
+        // Log para debug
+        console.log("[Kanban] Payload sendo enviado:", JSON.stringify(payload, null, 2));
+
         // Enviar para Kanban
         const response = await fetch(
           "https://kanbanprod-phheyds3.manus.space/api/custos-plus/importar-orcamento",
@@ -427,6 +439,8 @@ export const appRouter = router({
             body: JSON.stringify(payload),
           }
         );
+
+        console.log("[Kanban] Response status:", response.status);
 
         if (!response.ok) {
           const error = await response.text();
