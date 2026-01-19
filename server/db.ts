@@ -415,23 +415,7 @@ export async function getOrcamentoById(id: number, userId: number) {
     .where(and(eq(orcamentos.id, id), eq(orcamentos.userId, userId)))
     .limit(1);
 
-  if (result.length === 0) return undefined;
-
-  const orcamento = result[0];
-  
-  // Extrair parcelas do campo observacoes se existirem
-  if (orcamento.observacoes && orcamento.observacoes.includes('[PARCELAS]')) {
-    try {
-      const partes = orcamento.observacoes.split('[PARCELAS]');
-      const parcelasJson = partes[1];
-      const parcelas = JSON.parse(parcelasJson);
-      return { ...orcamento, parcelas };
-    } catch (e) {
-      console.warn('[getOrcamentoById] Erro ao parsear parcelas:', e);
-    }
-  }
-
-  return orcamento;
+  return result.length > 0 ? result[0] : undefined;
 }
 
 export async function updateOrcamento(id: number, userId: number, data: Partial<InsertOrcamento>) {

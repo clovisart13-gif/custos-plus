@@ -1,1 +1,0 @@
-ALTER TABLE `orcamentos` ADD `parcelas` text DEFAULT ('[{"nome":"Sinal","percentual":25},{"nome":"Retirada","percentual":25},{"nome":"Prazo","percentual":50}]') NOT NULL;
