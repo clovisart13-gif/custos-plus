@@ -133,7 +133,7 @@ export default function Orcamentos() {
                       <Button
                         size="sm"
                         className="gap-2 bg-green-600 hover:bg-green-700"
-                        onClick={() => updateStatusMutation.mutate({ id: orcamento.id, status: "aprovado" })}
+                        onClick={() => updateStatusMutation.mutate({ orcamentoId: orcamento.id, status: "aprovado" })}
                         disabled={updateStatusMutation.isPending}
                       >
                         Aprovado
@@ -144,7 +144,7 @@ export default function Orcamentos() {
                         variant="destructive"
                         size="sm"
                         className="gap-2"
-                        onClick={() => updateStatusMutation.mutate({ id: orcamento.id, status: "reprovado" })}
+                        onClick={() => updateStatusMutation.mutate({ orcamentoId: orcamento.id, status: "reprovado" })}
                         disabled={updateStatusMutation.isPending}
                       >
                         Reprovado
