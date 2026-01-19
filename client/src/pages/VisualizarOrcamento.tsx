@@ -2,7 +2,7 @@ import { useParams, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Download, Printer, Send } from "lucide-react";
+import { ArrowLeft, Download, Printer, Send, Trash2 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { useState, useRef } from "react";
 import AdicionarItemManual from "@/components/AdicionarItemManual";
@@ -22,6 +22,7 @@ export default function VisualizarOrcamento() {
   const [editingItem, setEditingItem] = useState<any>(null);
   const [enviandoKanban, setEnviandoKanban] = useState(false);
   const [enviado, setEnviado] = useState(false);
+  const [deletingItemId, setDeletingItemId] = useState<number | null>(null);
 
   const orcamentoId = id ? parseInt(id) : 0;
 
@@ -34,6 +35,17 @@ export default function VisualizarOrcamento() {
     { orcamentoId },
     { enabled: orcamentoId > 0 }
   );
+
+  const deleteItemMutation = trpc.orcamentos.deleteItem.useMutation({
+    onSuccess: () => {
+      refetchItens();
+      setDeletingItemId(null);
+    },
+    onError: (error) => {
+      alert("Erro ao deletar item: " + (error.message || "Erro desconhecido"));
+      setDeletingItemId(null);
+    },
+  });
 
   const enviarParaKanbanMutation = trpc.orcamentos.enviarParaKanban.useMutation({
     onSuccess: () => {
@@ -225,17 +237,32 @@ export default function VisualizarOrcamento() {
                       <td className="text-right py-2 px-2">{formatCurrency(Number(item.valorUnitario))}</td>
                       <td className="text-right py-2 px-2 font-semibold">{formatCurrency(Number(item.valorTotal))}</td>
                       <td className="text-center py-2 px-2 print:hidden">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            console.log('Clicou em Editar:', item);
-                            setEditingItem(item);
-                          }}
-                          className="text-xs"
-                        >
-                          Editar
-                        </Button>
+                        <div className="flex gap-1 justify-center">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setEditingItem(item);
+                            }}
+                            className="text-xs"
+                          >
+                            Editar
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              if (confirm('Tem certeza que deseja deletar este item?')) {
+                                setDeletingItemId(item.id);
+                                deleteItemMutation.mutateAsync({ itemId: item.id });
+                              }
+                            }}
+                            disabled={deletingItemId === item.id}
+                            className="text-xs text-red-600 hover:text-red-700"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}

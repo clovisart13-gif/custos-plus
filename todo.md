@@ -211,3 +211,13 @@
   - Solução: Criada função updateOrcamentoTotals que calcula e atualiza totais do orçamento
   - Teste: Criado orçamento ORÇ-26-1768695814524 com sucesso
   - Status: RESOLVIDO PERMANENTEMENTE - Orçamentos funcionando 100%
+
+
+## Funcionalidades de Edição de Orçamento (IMPLEMENTADAS)
+
+- [x] Deletar itens do orçamento - Botão de lixeira funcional com confirmação
+- [x] Editar quantidade e valor unitário dos itens - Modal EditarItemOrcamento funcional
+- [x] Visualizar dados do cliente (cliente, marca, validade, prazo) - Seção completa
+- [x] Visualizar condições de pagamento (percentuais de sinal, retirada, prazo) - Calculadas automaticamente
+- [x] Adicionar itens manualmente - Botão "+Adicionar Item" funcional
+- [x] Atualizar totais automaticamente ao editar itens - updateOrcamentoTotals implementada
