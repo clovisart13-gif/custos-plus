@@ -351,8 +351,15 @@
 ## REFATORAÇÃO - FLUXO DE ORÇAMENTO (ETAPA 1)
 
 ### ETAPA 1: Seleção de Fichas de Custo
-- [ ] Criar modal para seleção de fichas com checkbox
-- [ ] Listar todas as fichas de custo disponíveis
-- [ ] Permitir selecionar múltiplas fichas
-- [ ] Criar orçamento com fichas selecionadas
-- [ ] Testar seleção e criação
+- [x] Criar modal para seleção de fichas com checkbox
+- [x] Listar todas as fichas de custo disponíveis
+- [x] Permitir selecionar múltiplas fichas
+- [x] Criar orçamento com fichas selecionadas
+- [x] Testar seleção e criação
+
+### ETAPA 2: Cálculo Automático de PV com Markup
+- [ ] Adicionar campo de markup único no modal
+- [ ] Calcular PV = Custo × (1 + markup) para cada item
+- [ ] Exibir preview de valores antes de criar
+- [ ] Salvar markup no orçamento
+- [ ] Testar cálculos

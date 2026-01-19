@@ -22,6 +22,7 @@ export default function SelecionarFichasModal({
   const [nomeCliente, setNomeCliente] = useState("");
   const [marca, setMarca] = useState("");
   const [selectedFichas, setSelectedFichas] = useState<number[]>([]);
+  const [markup, setMarkup] = useState("0.5");
   const [isCreating, setIsCreating] = useState(false);
 
   const { data: fichas = [] } = trpc.fichasCusto.list.useQuery();
@@ -69,8 +70,11 @@ export default function SelecionarFichasModal({
 
       // Adicionar itens selecionados
       const selectedFichasData = fichas.filter((f) => selectedFichas.includes(f.id));
+      const markupValue = parseFloat(markup || "0");
 
       for (const ficha of selectedFichasData) {
+        const valorUnitario = (ficha.custo || 0) * (1 + markupValue);
+        
         await createItemMutation.mutateAsync({
           orcamentoId: orcamento.id,
           fichaId: ficha.id,
@@ -78,8 +82,8 @@ export default function SelecionarFichasModal({
           descricao: ficha.descricao || ficha.referencia,
           quantidade: 1,
           custo: ficha.custo || 0,
-          valorUnitario: ficha.custo || 0,
-          markup: 0.5,
+          valorUnitario: valorUnitario,
+          markup: markupValue,
         });
       }
 
@@ -93,6 +97,8 @@ export default function SelecionarFichasModal({
       setIsCreating(false);
     }
   };
+
+  const markupValue = parseFloat(markup || "0");
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -129,6 +135,26 @@ export default function SelecionarFichasModal({
             </div>
           </div>
 
+          {/* Markup */}
+          <div className="space-y-4">
+            <h3 className="font-semibold">Configuração de Preço</h3>
+            <div>
+              <Label htmlFor="markup">Markup (ex: 0.5 = 50%)</Label>
+              <Input
+                id="markup"
+                type="number"
+                step="0.01"
+                min="0"
+                value={markup}
+                onChange={(e) => setMarkup(e.target.value)}
+                placeholder="0.5"
+              />
+              <p className="text-sm text-gray-500 mt-1">
+                Preço de Venda = Custo × (1 + Markup)
+              </p>
+            </div>
+          </div>
+
           {/* Seleção de Fichas */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -149,28 +175,44 @@ export default function SelecionarFichasModal({
               {fichas.length === 0 ? (
                 <p className="text-sm text-gray-500">Nenhuma ficha de custo disponível</p>
               ) : (
-                fichas.map((ficha) => (
-                  <div
-                    key={ficha.id}
-                    className="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded"
-                  >
-                    <Checkbox
-                      id={`ficha-${ficha.id}`}
-                      checked={selectedFichas.includes(ficha.id)}
-                      onCheckedChange={() => handleSelectFicha(ficha.id)}
-                    />
-                    <label
-                      htmlFor={`ficha-${ficha.id}`}
-                      className="flex-1 cursor-pointer"
+                fichas.map((ficha) => {
+                  const pv = (ficha.custo || 0) * (1 + markupValue);
+                  const lucro = pv - (ficha.custo || 0);
+                  
+                  return (
+                    <div
+                      key={ficha.id}
+                      className="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded"
                     >
-                      <div className="font-medium">{ficha.referencia}</div>
-                      <div className="text-sm text-gray-600">{ficha.descricao}</div>
-                      <div className="text-sm text-gray-500">
-                        Custo: R$ {(ficha.custo || 0).toFixed(2)}
-                      </div>
-                    </label>
-                  </div>
-                ))
+                      <Checkbox
+                        id={`ficha-${ficha.id}`}
+                        checked={selectedFichas.includes(ficha.id)}
+                        onCheckedChange={() => handleSelectFicha(ficha.id)}
+                      />
+                      <label
+                        htmlFor={`ficha-${ficha.id}`}
+                        className="flex-1 cursor-pointer"
+                      >
+                        <div className="font-medium">{ficha.referencia}</div>
+                        <div className="text-sm text-gray-600">{ficha.descricao}</div>
+                        <div className="grid grid-cols-3 gap-4 text-sm mt-1">
+                          <div>
+                            <span className="text-gray-500">Custo:</span>
+                            <div className="font-medium">R$ {(ficha.custo || 0).toFixed(2)}</div>
+                          </div>
+                          <div>
+                            <span className="text-gray-500">PV:</span>
+                            <div className="font-medium text-green-600">R$ {pv.toFixed(2)}</div>
+                          </div>
+                          <div>
+                            <span className="text-gray-500">Lucro:</span>
+                            <div className="font-medium text-blue-600">R$ {lucro.toFixed(2)}</div>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                  );
+                })
               )}
             </div>
 
