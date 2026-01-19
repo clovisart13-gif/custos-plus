@@ -491,3 +491,26 @@
   - [x] Corrigir identificação de família mais cara e mais barata
   - [x] Atualizar testes para validar novos nomes de propriedades
   - Status: IMPLEMENTADO - Lógica corrigida em routers.ts
+
+
+## Correções Finalizadas - Dashboard (19/01/2026)
+
+- [x] Custo Médio Geral corrigido
+  - Problema: Conversão de strings para números não estava sendo feita
+  - Solução: Adicionado Number() em todas as operações matemáticas em routers.ts
+  - Resultado: Agora mostra R$ 51.27 (correto!)
+
+- [x] Família Mais Cara e Mais Barata corrigidas
+  - Problema: Lógica de cálculo de média estava incorreta
+  - Solução: Implementada média correta por família
+  - Resultado: Camiseta (mais cara) e Teste (mais barata)
+
+- [x] Filtro por família implementado
+  - Dropdown "Todas as famílias" funcional
+  - Lógica de filtragem em Dashboard.tsx
+  - Tabela filtra corretamente por família selecionada
+
+- [x] Correção de import em Dashboard.tsx
+  - Problema: useAuth não estava importado
+  - Solução: Adicionado import de @/_core/hooks/useAuth
+  - Resultado: Componente renderiza sem erros

@@ -467,9 +467,9 @@ export const appRouter = router({
       const totalReferencias = fichas.length;
       const custoMedioGeral = fichas.length > 0
         ? fichas.reduce((sum, f: any) => {
-            const total = (f.modelagem || 0) + (f.piloto || 0) + (f.corte || 0) + 
-                         (f.beneficiamento || 0) + (f.costura || 0) + (f.lavanderia || 0) + 
-                         (f.acabamento || 0) + (f.passadoria || 0) + (f.tecido || 0) + (f.aviamento || 0);
+            const total = (Number(f.modelagem) || 0) + (Number(f.piloto) || 0) + (Number(f.corte) || 0) + 
+                         (Number(f.beneficiamento) || 0) + (Number(f.costura) || 0) + (Number(f.lavanderia) || 0) + 
+                         (Number(f.acabamento) || 0) + (Number(f.passadoria) || 0) + (Number(f.tecido) || 0) + (Number(f.aviamento) || 0);
             return sum + total;
           }, 0) / fichas.length
         : 0;
@@ -478,9 +478,9 @@ export const appRouter = router({
       const familiasMedias = new Map<string, { familia: string; totalMedio: number; count: number }>();
       
       fichas.forEach((ficha: any) => {
-        const total = (ficha.modelagem || 0) + (ficha.piloto || 0) + (ficha.corte || 0) + 
-                     (ficha.beneficiamento || 0) + (ficha.costura || 0) + (ficha.lavanderia || 0) + 
-                     (ficha.acabamento || 0) + (ficha.passadoria || 0) + (ficha.tecido || 0) + (ficha.aviamento || 0);
+        const total = (Number(ficha.modelagem) || 0) + (Number(ficha.piloto) || 0) + (Number(ficha.corte) || 0) + 
+                     (Number(ficha.beneficiamento) || 0) + (Number(ficha.costura) || 0) + (Number(ficha.lavanderia) || 0) + 
+                     (Number(ficha.acabamento) || 0) + (Number(ficha.passadoria) || 0) + (Number(ficha.tecido) || 0) + (Number(ficha.aviamento) || 0);
         
         if (!familiasMedias.has(ficha.familia)) {
           familiasMedias.set(ficha.familia, { familia: ficha.familia, totalMedio: 0, count: 0 });
@@ -545,16 +545,16 @@ export const appRouter = router({
         }
         
         const familia = familias.get(ficha.familia)!;
-        familia.modelagem += ficha.modelagem || 0;
-        familia.piloto += ficha.piloto || 0;
-        familia.corte += ficha.corte || 0;
-        familia.beneficiamento += ficha.beneficiamento || 0;
-        familia.costura += ficha.costura || 0;
-        familia.lavanderia += ficha.lavanderia || 0;
-        familia.acabamento += ficha.acabamento || 0;
-        familia.passadoria += ficha.passadoria || 0;
-        familia.tecido += ficha.tecido || 0;
-        familia.aviamento += ficha.aviamento || 0;
+        familia.modelagem += Number(ficha.modelagem) || 0;
+        familia.piloto += Number(ficha.piloto) || 0;
+        familia.corte += Number(ficha.corte) || 0;
+        familia.beneficiamento += Number(ficha.beneficiamento) || 0;
+        familia.costura += Number(ficha.costura) || 0;
+        familia.lavanderia += Number(ficha.lavanderia) || 0;
+        familia.acabamento += Number(ficha.acabamento) || 0;
+        familia.passadoria += Number(ficha.passadoria) || 0;
+        familia.tecido += Number(ficha.tecido) || 0;
+        familia.aviamento += Number(ficha.aviamento) || 0;
         familia.count += 1;
       });
       
