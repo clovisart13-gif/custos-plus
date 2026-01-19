@@ -378,7 +378,28 @@ export async function createOrcamento(data: InsertOrcamento) {
   if (!db) throw new Error("Database not available");
 
   const result = await db.insert(orcamentos).values(data);
-  return result;
+  
+  // Retornar o ID do orçamento criado
+  // Drizzle retorna um objeto com insertId ou lastInsertRowid dependendo do banco
+  if ((result as any).insertId) {
+    return (result as any).insertId;
+  } else if ((result as any).lastInsertRowid) {
+    return (result as any).lastInsertRowid;
+  }
+  
+  // Se não conseguir obter o ID, fazer uma query para buscar o orçamento mais recente
+  const created = await db
+    .select()
+    .from(orcamentos)
+    .where(eq(orcamentos.userId, data.userId))
+    .orderBy(desc(orcamentos.createdAt))
+    .limit(1);
+  
+  if (created.length > 0) {
+    return created[0].id;
+  }
+  
+  throw new Error("Nao foi possivel obter o ID do orcamento criado");
 }
 
 export async function getOrcamentosByUser(userId: number) {

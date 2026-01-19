@@ -184,3 +184,12 @@
   - Solução: Removido todas as <a> aninhadas em FichasCusto, Dashboard e Navigation
   - Componentes corrigidos: FichasCusto.tsx, Dashboard.tsx, Navigation.tsx
   - Status: RESOLVIDO PERMANENTEMENTE - Console limpo, nenhum erro
+
+
+## Bugs Corrigidos - Sessão Atual (18/01/2026 - Noite)
+
+- [x] Erro ao criar orçamento: Query SQL recebendo [object Object] em vez de ID
+  - Causa: Função createOrcamento retornava objeto Drizzle em vez de ID
+  - Solução: Modificado createOrcamento em db.ts para retornar o ID do orçamento criado
+  - Teste: Criado novo orçamento ORÇ-26-1768695814520 com sucesso
+  - Status: RESOLVIDO - Orçamentos criando corretamente
