@@ -164,7 +164,7 @@ export default function EditarItemOrcamento({
       await updateItemMutation.mutateAsync(payload);
       toast.success("Item atualizado com sucesso!");
       utils.orcamentos.getItens.invalidate();
-      utils.orcamentos.getOrcamento.invalidate();
+      utils.orcamentos.getById.invalidate();
       onSuccess();
     } catch (error) {
       toast.error("Erro ao atualizar item");
