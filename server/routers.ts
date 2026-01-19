@@ -254,8 +254,14 @@ export const appRouter = router({
         quantidade: z.number().min(1),
         valorUnitario: z.number().min(0),
         markup: z.number().min(0),
+        custo: z.number().optional(),
+        prazoDias: z.number().optional(),
+        percentualSinal: z.number().optional(),
+        percentualRetirada: z.number().optional(),
+        percentualPrazo: z.number().optional(),
+        observacoes: z.string().optional(),
       }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ input, ctx }) => {
         const valorTotal = input.quantidade * input.valorUnitario;
         const valorComMarkup = valorTotal / (1 - input.markup);
 
@@ -267,6 +273,11 @@ export const appRouter = router({
           input.markup,
           valorComMarkup
         );
+
+        // Atualizar dados do orçamento se fornecidos
+        if (input.prazoDias || input.percentualSinal || input.percentualRetirada || input.percentualPrazo || input.observacoes) {
+          // TODO: Implementar atualização de dados do orçamento
+        }
 
         return { success: true };
       }),

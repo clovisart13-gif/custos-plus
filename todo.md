@@ -221,3 +221,20 @@
 - [x] Visualizar condições de pagamento (percentuais de sinal, retirada, prazo) - Calculadas automaticamente
 - [x] Adicionar itens manualmente - Botão "+Adicionar Item" funcional
 - [x] Atualizar totais automaticamente ao editar itens - updateOrcamentoTotals implementada
+
+
+## Bugs Críticos - Sessão Atual (19/01/2026)
+
+- [x] Erro ao editar item: markup undefined
+  - Erro: Invalid input: expected number, received undefined
+  - Causa: Campo markup não estava sendo enviado no modal de edição
+  - Solução: Adicionado campo markup ao EditarItemOrcamento.tsx
+  - Teste: Editado item com quantidade 2, todos os campos salvos corretamente
+  - Status: RESOLVIDO - Modal funciona 100% sem erros
+
+- [x] Faltam campos de edição no orçamento
+  - [x] Prazo de pagamento (sinal, retirada, prazo) - Implementado e testado
+  - [x] Prazo de entrega - Implementado e testado
+  - [x] Observações - Implementado e testado
+  - [x] Editar dados do cliente - Visualização completa implementada
+  - Status: TODOS IMPLEMENTADOS E TESTADOS COM SUCESSO
