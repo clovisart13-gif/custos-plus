@@ -610,3 +610,43 @@ export async function updateOrcamentoStatus(
 
   return { success: true };
 }
+
+
+export async function updateOrcamentoTotals(orcamentoId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // Buscar todos os itens do orçamento
+  const itens = await db
+    .select()
+    .from(itensOrcamento)
+    .where(eq(itensOrcamento.orcamentoId, orcamentoId));
+
+  // Calcular totais
+  let subtotal = 0;
+  let totalPecas = 0;
+
+  itens.forEach((item) => {
+    const valorTotal = parseFloat(item.valorTotal?.toString() || "0");
+    const quantidade = item.quantidade || 0;
+    
+    subtotal += valorTotal;
+    totalPecas += quantidade;
+  });
+
+  // Atualizar orçamento com os totais
+  await db
+    .update(orcamentos)
+    .set({
+      subtotal: subtotal.toString(),
+      total: subtotal.toString(),
+      totalPecas: totalPecas,
+    })
+    .where(eq(orcamentos.id, orcamentoId));
+
+  return {
+    subtotal,
+    total: subtotal,
+    totalPecas,
+  };
+}

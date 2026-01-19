@@ -202,3 +202,12 @@
   - Solução: Adicionado campo custo ao input em CriarOrcamentoSimples.tsx
   - Teste: Criado novo orçamento ORÇ-26-1768695814522 com sucesso
   - Status: RESOLVIDO - Orçamentos com itens criando corretamente
+
+
+## Bugs Corrigidos - Sessão Atual (18/01/2026 - Noite - RESOLVIDO PERMANENTEMENTE)
+
+- [x] Erro ao criar orçamento: "db.updateOrcamentoTotals is not a function"
+  - Causa: Função updateOrcamentoTotals não existia em db.ts
+  - Solução: Criada função updateOrcamentoTotals que calcula e atualiza totais do orçamento
+  - Teste: Criado orçamento ORÇ-26-1768695814524 com sucesso
+  - Status: RESOLVIDO PERMANENTEMENTE - Orçamentos funcionando 100%
