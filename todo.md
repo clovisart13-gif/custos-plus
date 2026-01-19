@@ -346,3 +346,13 @@
 - [ ] Markup Bidirecional: Alterar markup recalcula PV, alterar PV recalcula markup
 - [ ] Parcelas Dinâmicas: Adicionar/remover parcelas com autonomia total do usuário
 - [ ] Sistema deve permitir qualquer combinação de percentuais que somem 100%
+
+
+## REFATORAÇÃO - FLUXO DE ORÇAMENTO (ETAPA 1)
+
+### ETAPA 1: Seleção de Fichas de Custo
+- [ ] Criar modal para seleção de fichas com checkbox
+- [ ] Listar todas as fichas de custo disponíveis
+- [ ] Permitir selecionar múltiplas fichas
+- [ ] Criar orçamento com fichas selecionadas
+- [ ] Testar seleção e criação

@@ -7,11 +7,13 @@ import { Plus, Eye, Trash2, Download } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 import CriarOrcamentoSimples from "@/components/CriarOrcamentoSimples";
+import SelecionarFichasModal from "@/components/SelecionarFichasModal";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 export default function Orcamentos() {
   const [location, navigate] = useLocation();
   const [showNovoOrcamento, setShowNovoOrcamento] = useState(false);
+  const [showSelecionarFichas, setShowSelecionarFichas] = useState(false);
 
   const { data: orcamentos = [], isLoading, refetch } = trpc.orcamentos.list.useQuery();
   const updateStatusMutation = trpc.orcamentos.updateStatus.useMutation({
@@ -50,18 +52,36 @@ export default function Orcamentos() {
           <h1 className="text-3xl font-bold">Orçamentos</h1>
           <p className="text-muted-foreground">Gerencie seus orçamentos de vendas</p>
         </div>
-        <Button 
-          size="lg" 
-          className="gap-2"
-          onClick={() => setShowNovoOrcamento(true)}
-        >
-          <Plus className="h-4 w-4" />
-          Novo Orçamento
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            size="lg" 
+            className="gap-2"
+            onClick={() => setShowNovoOrcamento(true)}
+          >
+            <Plus className="h-4 w-4" />
+            Novo Orçamento Manual
+          </Button>
+          <Button 
+            size="lg" 
+            variant="outline"
+            className="gap-2"
+            onClick={() => setShowSelecionarFichas(true)}
+          >
+            <Plus className="h-4 w-4" />
+            Criar de Fichas
+          </Button>
+        </div>
         <CriarOrcamentoSimples 
           isOpen={showNovoOrcamento}
           onClose={() => {
             setShowNovoOrcamento(false);
+            refetch();
+          }}
+        />
+        <SelecionarFichasModal 
+          isOpen={showSelecionarFichas}
+          onClose={() => {
+            setShowSelecionarFichas(false);
             refetch();
           }}
         />
