@@ -1,0 +1,1 @@
+ALTER TABLE `orcamentos` DROP COLUMN `observacoes`;
