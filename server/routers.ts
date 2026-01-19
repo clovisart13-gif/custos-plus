@@ -263,9 +263,11 @@ export const appRouter = router({
         observacoes: z.string().optional(),
       }))
       .mutation(async ({ input, ctx }) => {
+        console.log("[updateItem] Input recebido:", input);
         const valorTotal = input.quantidade * input.valorUnitario;
         // PV = Custo ÷ Markup (não é 1 - markup!)
         const valorComMarkup = input.valorUnitario / input.markup;
+        console.log("[updateItem] Valores calculados - valorTotal:", valorTotal, "valorComMarkup:", valorComMarkup);
 
         await db.updateItemOrcamento(
           input.itemId,

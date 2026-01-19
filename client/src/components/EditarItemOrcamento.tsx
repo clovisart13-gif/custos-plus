@@ -22,6 +22,7 @@ interface EditarItemOrcamentoProps {
     percentualRetirada?: number;
     percentualPrazo?: number;
     observacoes?: string;
+    prazoEntregaTexto?: string;
   };
   onSuccess: () => void;
   onCancel: () => void;
@@ -37,7 +38,7 @@ export default function EditarItemOrcamento({
   const [valorUnitario, setValorUnitario] = useState(item.valorUnitario);
   const [markup, setMarkup] = useState((item.markupDivisor || 0.5).toString());
   const [custo, setCusto] = useState((item.custo || 0).toString());
-    const [prazoDias, setPrazoDias] = useState(orcamento?.prazoDias?.toString() || "30");
+  const [prazoDias, setPrazoDias] = useState(orcamento?.prazoDias?.toString() || "30");
   const [prazoEntregaTexto, setPrazoEntregaTexto] = useState(orcamento?.prazoEntregaTexto || "30 dias após aprovação do protótipo");
   const [percentualSinal, setPercentualSinal] = useState((orcamento?.percentualSinal || 25).toString());
   const [percentualRetirada, setPercentualRetirada] = useState((orcamento?.percentualRetirada || 25).toString());
@@ -49,9 +50,22 @@ export default function EditarItemOrcamento({
   const updateItemMutation = trpc.orcamentos.updateItem.useMutation();
 
   // Recalcular PV quando markup muda: PV = Custo ÷ Markup
-  const pvRecalculado = parseFloat(custo) > 0 && parseFloat(markup) > 0 
-    ? (parseFloat(custo) / parseFloat(markup)).toFixed(2)
-    : valorUnitario;
+  const handleMarkupChange = (novoMarkup: string) => {
+    setMarkup(novoMarkup);
+    if (parseFloat(novoMarkup) > 0 && parseFloat(custo) > 0) {
+      const novoPV = (parseFloat(custo) / parseFloat(novoMarkup)).toFixed(2);
+      setValorUnitario(novoPV);
+    }
+  };
+
+  // Recalcular Markup quando PV muda: Markup = Custo ÷ PV
+  const handlePVChange = (novoPV: string) => {
+    setValorUnitario(novoPV);
+    if (parseFloat(novoPV) > 0 && parseFloat(custo) > 0) {
+      const novoMarkup = (parseFloat(custo) / parseFloat(novoPV)).toFixed(4);
+      setMarkup(novoMarkup);
+    }
+  };
 
   const valorTotal = (
     parseFloat(quantidade) * parseFloat(valorUnitario)
@@ -60,44 +74,31 @@ export default function EditarItemOrcamento({
   // Mostrar apenas parcelas com % > 0
   const mostrarPrazo = parseFloat(percentualPrazo) > 0;
 
+  // Calcular soma de percentuais
+  const somaPercentuais = parseFloat(percentualSinal) + parseFloat(percentualRetirada) + (mostrarPrazo ? parseFloat(percentualPrazo) : 0);
+  const percentuaisValidos = Math.abs(somaPercentuais - 100) < 0.01;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!quantidade || !valorUnitario || !markup) {
-      toast.error("Preencha todos os campos obrigatórios");
+      toast.error("Preencha todos os campos");
       return;
     }
 
-    if (parseFloat(quantidade) <= 0) {
-      toast.error("Quantidade deve ser maior que zero");
-      return;
-    }
-
-    if (parseFloat(valorUnitario) < 0) {
-      toast.error("Valor unitário não pode ser negativo");
-      return;
-    }
-
-    if (parseFloat(markup) <= 0) {
-      toast.error("Markup deve ser maior que zero");
-      return;
-    }
-
-    // Validar que percentuais somem 100%
-    const somaPercentuais = parseFloat(percentualSinal) + parseFloat(percentualRetirada) + parseFloat(percentualPrazo);
-    if (Math.abs(somaPercentuais - 100) > 0.01) {
-      toast.error(`Percentuais devem somar 100% (atual: ${somaPercentuais.toFixed(1)}%)`);
-      return;
-    }
-
-    if (!prazoEntregaTexto.trim()) {
+    if (!prazoEntregaTexto) {
       toast.error("Preencha o prazo de entrega");
+      return;
+    }
+
+    if (!percentuaisValidos) {
+      toast.error(`Percentuais devem somar 100% (atual: ${somaPercentuais.toFixed(1)}%)`);
       return;
     }
 
     setIsLoading(true);
     try {
-      await updateItemMutation.mutateAsync({
+      const payload = {
         itemId: item.id,
         quantidade: parseFloat(quantidade),
         valorUnitario: parseFloat(valorUnitario),
@@ -108,7 +109,9 @@ export default function EditarItemOrcamento({
         prazoDias: parseInt(prazoDias),
         prazoEntregaTexto,
         observacoes,
-      });
+      };
+      console.log("[EditarItemOrcamento] Enviando payload:", payload);
+      await updateItemMutation.mutateAsync(payload);
       toast.success("Item atualizado com sucesso!");
       utils.orcamentos.getItens.invalidate();
       onSuccess();
@@ -126,166 +129,140 @@ export default function EditarItemOrcamento({
       <div className="space-y-3 pb-3 border-b">
         <div>
           <label className="text-sm font-medium">Referência</label>
-          <Input value={item.referencia} disabled className="mt-1" />
+          <Input value={item.referencia} disabled className="bg-gray-100" />
         </div>
-
         <div>
           <label className="text-sm font-medium">Descrição</label>
-          <Input value={item.descricao} disabled className="mt-1" />
+          <Input value={item.descricao} disabled className="bg-gray-100" />
         </div>
+      </div>
 
-        <div className="grid grid-cols-2 gap-4">
+      {/* Quantidade e Valores */}
+      <div className="space-y-3 pb-3 border-b">
+        <div className="grid grid-cols-2 gap-2">
           <div>
             <label className="text-sm font-medium">Quantidade</label>
             <Input
               type="number"
-              min="1"
-              step="1"
               value={quantidade}
               onChange={(e) => setQuantidade(e.target.value)}
-              className="mt-1"
+              placeholder="Ex: 100"
             />
           </div>
-
           <div>
             <label className="text-sm font-medium">Valor Unitário (R$)</label>
             <Input
               type="number"
-              min="0"
               step="0.01"
               value={valorUnitario}
-              onChange={(e) => setValorUnitario(e.target.value)}
-              className="mt-1"
+              onChange={(e) => handlePVChange(e.target.value)}
+              placeholder="Ex: 40.00"
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-2">
           <div>
             <label className="text-sm font-medium">Markup Divisor</label>
             <Input
               type="number"
-              min="0.01"
               step="0.01"
               value={markup}
-              onChange={(e) => setMarkup(e.target.value)}
-              className="mt-1"
+              onChange={(e) => handleMarkupChange(e.target.value)}
+              placeholder="Ex: 0.50"
             />
           </div>
-
           <div>
             <label className="text-sm font-medium">Custo (R$)</label>
             <Input
               type="number"
-              min="0"
               step="0.01"
               value={custo}
               onChange={(e) => setCusto(e.target.value)}
-              className="mt-1"
+              placeholder="Ex: 20.00"
+              disabled
+              className="bg-gray-100"
             />
           </div>
         </div>
 
-        <div className="p-3 bg-muted rounded">
-          <div className="flex justify-between">
-            <span className="text-sm font-medium">Total:</span>
-            <span className="font-semibold">R$ {parseFloat(valorTotal).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-          </div>
+        <div>
+          <label className="text-sm font-medium">Total: R$ {valorTotal}</label>
         </div>
       </div>
 
-      {/* Prazos e Pagamento */}
+      {/* Prazo de Entrega */}
       <div className="space-y-3 pb-3 border-b">
-        <h3 className="font-semibold text-sm">Prazos e Pagamento</h3>
-        
         <div>
           <label className="text-sm font-medium">Prazo de Entrega</label>
           <Input
             type="text"
-            placeholder="Ex: 30 dias após aprovação do protótipo"
             value={prazoEntregaTexto}
             onChange={(e) => setPrazoEntregaTexto(e.target.value)}
-            className="mt-1"
+            placeholder="Ex: 30 dias após aprovação do protótipo"
+          />
+        </div>
+      </div>
+
+      {/* Percentuais de Pagamento */}
+      <div className="space-y-3 pb-3 border-b">
+        <div>
+          <label className="text-sm font-medium">Sinal (%)</label>
+          <Input
+            type="number"
+            step="0.01"
+            value={percentualSinal}
+            onChange={(e) => setPercentualSinal(e.target.value)}
+            placeholder="Ex: 50"
           />
         </div>
 
-        <div className="grid grid-cols-3 gap-2">
-          <div>
-            <label className="text-sm font-medium">Sinal (%)</label>
-            <Input
-              type="number"
-              min="0"
-              max="100"
-              step="1"
-              value={percentualSinal}
-              onChange={(e) => setPercentualSinal(e.target.value)}
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium">Retirada (%)</label>
-            <Input
-              type="number"
-              min="0"
-              max="100"
-              step="1"
-              value={percentualRetirada}
-              onChange={(e) => setPercentualRetirada(e.target.value)}
-              className="mt-1"
-            />
-          </div>
-
-          {mostrarPrazo && (
-            <div>
-              <label className="text-sm font-medium">Prazo (%)</label>
-              <Input
-                type="number"
-                min="0"
-                max="100"
-                step="1"
-                value={percentualPrazo}
-                onChange={(e) => setPercentualPrazo(e.target.value)}
-                className="mt-1"
-              />
-            </div>
-          )}
-          {!mostrarPrazo && (
-            <Input
-              type="hidden"
-              value={percentualPrazo}
-            />
-          )}
+        <div>
+          <label className="text-sm font-medium">Retirada (%)</label>
+          <Input
+            type="number"
+            step="0.01"
+            value={percentualRetirada}
+            onChange={(e) => setPercentualRetirada(e.target.value)}
+            placeholder="Ex: 50"
+          />
         </div>
-        
-        {/* Indicador de soma de percentuais */}
-        <div className="mt-2 p-2 rounded text-sm">
-          <div className="flex justify-between items-center">
-            <span>Total de percentuais:</span>
-            <span className={`font-semibold ${Math.abs(parseFloat(percentualSinal) + parseFloat(percentualRetirada) + parseFloat(percentualPrazo) - 100) < 0.01 ? 'text-green-600' : 'text-red-600'}`}>
-              {(parseFloat(percentualSinal) + parseFloat(percentualRetirada) + parseFloat(percentualPrazo)).toFixed(1)}%
-            </span>
+
+        {mostrarPrazo && (
+          <div>
+            <label className="text-sm font-medium">Prazo (%)</label>
+            <Input
+              type="number"
+              step="0.01"
+              value={percentualPrazo}
+              onChange={(e) => setPercentualPrazo(e.target.value)}
+              placeholder="Ex: 0"
+            />
           </div>
+        )}
+
+        <div className={`text-sm font-medium ${percentuaisValidos ? 'text-green-600' : 'text-red-600'}`}>
+          Total de percentuais: {somaPercentuais.toFixed(1)}%
         </div>
       </div>
 
       {/* Observações */}
-      <div className="space-y-3">
-        <h3 className="font-semibold text-sm">Observações</h3>
+      <div>
+        <label className="text-sm font-medium">Observações</label>
         <Textarea
           value={observacoes}
           onChange={(e) => setObservacoes(e.target.value)}
           placeholder="Adicione observações sobre este item..."
-          className="mt-1 min-h-20"
+          className="h-20"
         />
       </div>
 
       {/* Botões */}
-      <div className="flex gap-2 justify-end pt-3 border-t">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
+      <div className="flex gap-2 justify-end pt-4">
+        <Button type="button" variant="outline" onClick={onCancel}>
           Cancelar
         </Button>
-        <Button type="submit" disabled={isLoading}>
+        <Button type="submit" disabled={isLoading || !percentuaisValidos}>
           {isLoading ? "Salvando..." : "Salvar"}
         </Button>
       </div>

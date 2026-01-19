@@ -323,3 +323,26 @@
   - Teste: Alterado para 0% Sinal, 50% Retirada, 50% Prazo - Salvou corretamente
   - Resultado: Apenas 2 parcelas aparecem (Retirada e Prazo), Sinal não aparece
   - Status: RESOLVIDO - Percentuais salvos e lógica de filtro funcionando
+
+
+## Bugs Críticos - URGENTE (19/01/2026 - Noite)
+
+- [ ] Percentuais de pagamento NÃO estão sendo salvos
+  - Sintoma: Altera percentuais (ex: 0% Sinal, 50% Retirada, 50% Prazo) mas ao salvar não persiste
+  - Causa: Investigar se a requisição está sendo enviada ou se há erro no backend
+  - Prioridade: CRÍTICA - Bloqueia edição de condições de pagamento
+  - Status: EM INVESTIGAÇÃO
+
+- [ ] Markup não recalcula PV automaticamente (bidirecional)
+  - Problema 1: Alterar markup não recalcula PV automaticamente
+  - Problema 2: Alterar PV não recalcula markup automaticamente
+  - Fórmula: PV = Custo ÷ Markup (ex: Custo R$ 20, Markup 0.50 = PV R$ 40)
+  - Prioridade: CRÍTICA - Bloqueia edição de markup
+  - Status: EM INVESTIGAÇÃO
+
+
+## REQUISITOS CRÍTICOS - MARKUP BIDIRECIONAL E PARCELAS DINÂMICAS
+
+- [ ] Markup Bidirecional: Alterar markup recalcula PV, alterar PV recalcula markup
+- [ ] Parcelas Dinâmicas: Adicionar/remover parcelas com autonomia total do usuário
+- [ ] Sistema deve permitir qualquer combinação de percentuais que somem 100%

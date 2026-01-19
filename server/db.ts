@@ -613,6 +613,14 @@ export async function updateOrcamentoPercentuais(
   percentualPrazo?: number,
   prazoEntregaTexto?: string
 ) {
+  console.log("[updateOrcamentoPercentuais] Chamada com:", {
+    orcamentoId,
+    prazoDias,
+    percentualSinal,
+    percentualRetirada,
+    percentualPrazo,
+    prazoEntregaTexto
+  });
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
