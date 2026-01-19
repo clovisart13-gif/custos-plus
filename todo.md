@@ -343,42 +343,6 @@
 
 ## REQUISITOS CRÍTICOS - MARKUP BIDIRECIONAL E PARCELAS DINÂMICAS
 
-- [x] Markup Bidirecional: Alterar markup recalcula PV, alterar PV recalcula markup
-  - Status: IMPLEMENTADO E TESTADO COM SUCESSO
-  - Teste: PV 130 → Markup 0.4000
-
+- [ ] Markup Bidirecional: Alterar markup recalcula PV, alterar PV recalcula markup
 - [ ] Parcelas Dinâmicas: Adicionar/remover parcelas com autonomia total do usuário
-  - [x] Frontend: Nomes customizáveis, botão + Adicionar Parcela
-  - [ ] Backend: NÃO está salvando parcelas dinâmicas no banco
-  - Problema: Altera parcelas mas ao salvar não persiste
-  - Causa: Backend ainda usa 3 campos fixos
-  - Prioridade: CRÍTICA
-  - Status: EM CORREÇÃO
-
-
-## BUG CRÍTICO - Parcelas Dinâmicas Não Sendo Salvas (20/01/2026)
-
-- [ ] Parcelas dinâmicas não persistem após salvar
-  - Sintoma: Altera parcelas (ex: 0% Sinal, 50% À Vista, 50% 60DD), clica Salvar, mas ao recarregar volta aos valores originais
-  - Causa: updateOrcamentoPercentuais não está salvando os dados no banco de dados
-  - Prioridade: CRÍTICA - Bloqueia toda a funcionalidade de edição de parcelas
-  - Status: EM RESOLUÇÃO FINAL
-
-
-## CORREÇÃO IMPLEMENTADA - SESSÃO 20/01/2026
-
-### Bug Corrigido: Percentuais não sendo salvos
-- [x] PROBLEMA: Percentuais de pagamento não persistiam ao editar item
-- [x] CAUSA: Sistema mapeava parcelas por POSIÇÃO (índice 0,1,2) em vez de NOME
-- [x] SOLUÇÃO: Refatorado EditarItemOrcamento.tsx para mapear por nome
-  - Busca por: "Sinal", "Entrada", "Adiantamento"
-  - Busca por: "À Vista", "Retirada", "Entrega"
-  - Busca por: "30 dias", "Prazo", "30DD"
-- [x] DEBUG: Adicionado console.log completo em updateOrcamentoPercentuais
-- [x] STATUS: PRONTO PARA TESTAR
-
-### Mudanças Implementadas
-1. **EditarItemOrcamento.tsx**: Refatorado handleSubmit para mapear parcelas por nome
-2. **server/db.ts**: Adicionado debug completo em updateOrcamentoPercentuais
-3. **Validação**: Sistema valida que percentuais somem 100% antes de salvar
-4. **Suporte**: Agora suporta qualquer ordem e qualquer nome de parcela
+- [ ] Sistema deve permitir qualquer combinação de percentuais que somem 100%
