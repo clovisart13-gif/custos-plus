@@ -78,6 +78,20 @@
       "when": 1768784789449,
       "tag": "0010_pale_gladiator",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1768790539029,
+      "tag": "0011_last_echo",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1768790565705,
+      "tag": "0012_magenta_slipstream",
+      "breakpoints": true
     }
   ]
 }

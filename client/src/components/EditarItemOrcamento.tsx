@@ -134,22 +134,53 @@ export default function EditarItemOrcamento({
 
     setIsLoading(true);
     try {
+      // Mapear percentuais por nome para suportar qualquer ordem de parcelas
+      const findPercentualByName = (nomesPossiveis: string[]): number => {
+        for (const nome of nomesPossiveis) {
+          const parcela = parcelas.find(p => p.nome.toLowerCase() === nome.toLowerCase());
+          if (parcela) return parseFloat(parcela.percentual.toString());
+        }
+        return 0;
+      };
+
+      // Buscar percentuais por nomes comuns
+      const percentualSinal = findPercentualByName(["Sinal", "Entrada", "Adiantamento"]);
+      const percentualRetirada = findPercentualByName(["À Vista", "Retirada", "Entrega"]);
+      const percentualPrazo = findPercentualByName(["30 dias", "Prazo", "30DD"]);
+
+      // Se não encontrou nenhum mapeamento, usar as 3 primeiras parcelas
+      let finalPercentualSinal = percentualSinal;
+      let finalPercentualRetirada = percentualRetirada;
+      let finalPercentualPrazo = percentualPrazo;
+
+      if (finalPercentualSinal === 0 && parcelas[0]) {
+        finalPercentualSinal = parseFloat(parcelas[0].percentual.toString());
+      }
+      if (finalPercentualRetirada === 0 && parcelas[1]) {
+        finalPercentualRetirada = parseFloat(parcelas[1].percentual.toString());
+      }
+      if (finalPercentualPrazo === 0 && parcelas[2]) {
+        finalPercentualPrazo = parseFloat(parcelas[2].percentual.toString());
+      }
+
       const payload = {
         itemId: item.id,
         quantidade: parseFloat(quantidade),
         valorUnitario: parseFloat(valorUnitario),
         markup: parseFloat(markup),
-        percentualSinal: parseFloat(parcelas[0]?.percentual) || 0,
-        percentualRetirada: parseFloat(parcelas[1]?.percentual) || 0,
-        percentualPrazo: parseFloat(parcelas[2]?.percentual) || 0,
+        percentualSinal: finalPercentualSinal,
+        percentualRetirada: finalPercentualRetirada,
+        percentualPrazo: finalPercentualPrazo,
         prazoDias: parseInt(prazoDias),
         prazoEntregaTexto,
         observacoes,
       };
       console.log("[EditarItemOrcamento] Enviando payload:", payload);
+      console.log("[EditarItemOrcamento] Parcelas originais:", parcelas);
       await updateItemMutation.mutateAsync(payload);
       toast.success("Item atualizado com sucesso!");
       utils.orcamentos.getItens.invalidate();
+      utils.orcamentos.getOrcamento.invalidate();
       onSuccess();
     } catch (error) {
       toast.error("Erro ao atualizar item");
