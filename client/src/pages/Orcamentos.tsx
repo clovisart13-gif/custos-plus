@@ -30,7 +30,7 @@ export default function Orcamentos() {
       toast.success("Orçamento deletado com sucesso");
       refetch();
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.error("Erro ao deletar orçamento: " + error.message);
     },
   });

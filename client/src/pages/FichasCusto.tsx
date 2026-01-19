@@ -87,7 +87,7 @@ export default function FichasCusto() {
     },
   });
 
-  const updateFieldMutation = trpc.fichasCusto.updateField.useMutation({
+  const updateMutation = trpc.fichasCusto.update.useMutation({
     onSuccess: () => {
       utils.fichasCusto.listFiltered.invalidate();
       setEditingCell(null);
@@ -124,7 +124,19 @@ export default function FichasCusto() {
     ];
 
     const finalValue = numericFields.includes(field) ? parseFloat(value) || 0 : value;
-    updateFieldMutation.mutate({ id, field, value: finalValue });
+    const fichaCusto = fichas?.find((f: any) => f.id === id);
+    if (fichaCusto) {
+      const updateData: any = {
+        ...fichaCusto,
+        fotoUrl: fichaCusto.fotoUrl || undefined,
+      };
+      if (numericFields.includes(field)) {
+        updateData[field] = finalValue.toString();
+      } else {
+        updateData[field] = finalValue;
+      }
+      updateMutation.mutate(updateData);
+    }
   };
 
   const calculateTotal = (ficha: any) => {
@@ -567,8 +579,8 @@ function NovaFichaModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
             </div>
             <div>
               <ImageUpload
-                value={formData.fotoUrl}
-                onChange={(url) => setFormData({ ...formData, fotoUrl: url })}
+                value={formData.fotoUrl || ""}
+                onChange={(url: string) => setFormData({ ...formData, fotoUrl: url })}
                 label="Foto do Produto"
               />
             </div>

@@ -37,6 +37,11 @@ export default function CriarOrcamentoSimples({
     { id: orcamentoId || 0 },
     { enabled: !!orcamentoId }
   );
+  const { data: itens = [] } = trpc.orcamentos.getItens.useQuery(
+    { orcamentoId: orcamentoId || 0 },
+    { enabled: !!orcamentoId }
+  );
+  const orcamentoComItens = orcamento ? { ...orcamento, itens } : undefined;
 
   const handleCreateOrcamento = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,7 +118,7 @@ export default function CriarOrcamentoSimples({
 
   const handleDeleteItem = async (itemId: number) => {
     try {
-      await deleteItemMutation.mutateAsync({ id: itemId });
+      await deleteItemMutation.mutateAsync({ itemId });
       utils.orcamentos.getById.invalidate({ id: orcamentoId! });
       toast.success("Item deletado!");
     } catch (error: any) {
@@ -183,7 +188,7 @@ export default function CriarOrcamentoSimples({
   }
 
   // Tela 2: Adicionar itens
-  const totalValor = orcamento?.itens?.reduce((sum, item) => sum + (item.valorTotal || 0), 0) || 0;
+  const totalValor = orcamentoComItens?.itens?.reduce((sum: number, item: any) => sum + (item.valorTotal || 0), 0) || 0;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -212,7 +217,7 @@ export default function CriarOrcamentoSimples({
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Itens</p>
-                <p className="font-semibold">{orcamento?.itens?.length || 0}</p>
+                <p className="font-semibold">{orcamentoComItens?.itens?.length || 0}</p>
               </div>
             </div>
           </div>
@@ -273,7 +278,7 @@ export default function CriarOrcamentoSimples({
           </form>
 
           {/* Lista de itens */}
-          {orcamento?.itens && orcamento.itens.length > 0 && (
+          {orcamentoComItens?.itens && orcamentoComItens.itens.length > 0 && (
             <div className="border rounded-lg overflow-hidden">
               <table className="w-full text-sm">
                 <thead className="bg-muted">
@@ -286,7 +291,7 @@ export default function CriarOrcamentoSimples({
                   </tr>
                 </thead>
                 <tbody>
-                  {orcamento.itens.map((item) => (
+                  {orcamentoComItens.itens.map((item: any) => (
                     <tr key={item.id} className="border-t hover:bg-muted/50">
                       <td className="p-3">{item.descricao}</td>
                       <td className="text-right p-3">R$ {item.valorUnitario?.toFixed(2)}</td>

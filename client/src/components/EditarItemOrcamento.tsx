@@ -45,14 +45,13 @@ export default function EditarItemOrcamento({
   const [valorUnitario, setValorUnitario] = useState(item.valorUnitario);
   const [markup, setMarkup] = useState((item.markupDivisor || 0.5).toString());
   const [custo, setCusto] = useState((item.custo || 0).toString());
-  const [prazoDias, setPrazoDias] = useState(orcamento?.prazoDias?.toString() || "30");
-  const [prazoEntregaTexto, setPrazoEntregaTexto] = useState(orcamento?.prazoEntregaTexto || "");
   const [parcelas, setParcelas] = useState<Parcela[]>([
-    { id: "1", nome: "Sinal", percentual: orcamento?.percentualSinal || 25 },
-    { id: "2", nome: "À Vista", percentual: orcamento?.percentualRetirada || 25 },
-    { id: "3", nome: "30 dias", percentual: orcamento?.percentualPrazo || 50 },
+    { id: '1', nome: 'Sinal', percentual: orcamento?.percentualSinal || 25 },
+    { id: '2', nome: 'Retirada', percentual: orcamento?.percentualRetirada || 25 },
+    { id: '3', nome: '30 dias', percentual: orcamento?.percentualPrazo || 50 },
   ]);
-  const [observacoes, setObservacoes] = useState(orcamento?.observacoes || "");
+  // Prazos e percentuais foram movidos para nível do orçamento
+  // Não editar esses campos aqui
   const [isLoading, setIsLoading] = useState(false);
 
   const utils = trpc.useUtils();
@@ -101,7 +100,7 @@ export default function EditarItemOrcamento({
 
   // Atualizar parcela
   const handleAtualizarParcela = (id: string, campo: "nome" | "percentual", valor: string | number) => {
-    setParcelas(parcelas.map(p => 
+    setParcelas(parcelas.map((p: any) => 
       p.id === id 
         ? { ...p, [campo]: campo === "percentual" ? parseFloat(valor.toString()) : valor }
         : p
@@ -116,21 +115,7 @@ export default function EditarItemOrcamento({
       return;
     }
 
-    if (!prazoEntregaTexto) {
-      toast.error("Preencha o prazo de entrega");
-      return;
-    }
 
-    if (!percentuaisValidos) {
-      toast.error(`Percentuais devem somar 100% (atual: ${somaPercentuais.toFixed(1)}%)`);
-      return;
-    }
-
-    // Validar que todas as parcelas têm nome
-    if (parcelas.some(p => !p.nome.trim())) {
-      toast.error("Todas as parcelas devem ter um nome");
-      return;
-    }
 
     setIsLoading(true);
     try {
@@ -139,12 +124,6 @@ export default function EditarItemOrcamento({
         quantidade: parseFloat(quantidade),
         valorUnitario: parseFloat(valorUnitario),
         markup: parseFloat(markup),
-        percentualSinal: parseFloat(parcelas[0]?.percentual) || 0,
-        percentualRetirada: parseFloat(parcelas[1]?.percentual) || 0,
-        percentualPrazo: parseFloat(parcelas[2]?.percentual) || 0,
-        prazoDias: parseInt(prazoDias),
-        prazoEntregaTexto,
-        observacoes,
       };
       console.log("[EditarItemOrcamento] Enviando payload:", payload);
       await updateItemMutation.mutateAsync(payload);
@@ -227,89 +206,7 @@ export default function EditarItemOrcamento({
         </div>
       </div>
 
-      {/* Prazo de Entrega */}
-      <div className="space-y-3 pb-3 border-b">
-        <div>
-          <label className="text-sm font-medium">Prazo de Entrega</label>
-          <Input
-            type="text"
-            value={prazoEntregaTexto}
-            onChange={(e) => setPrazoEntregaTexto(e.target.value)}
-            placeholder="Ex: 30 dias após aprovação do protótipo"
-          />
-        </div>
-      </div>
-
-      {/* Percentuais de Pagamento Dinâmicos */}
-      <div className="space-y-3 pb-3 border-b">
-        <div className="flex justify-between items-center">
-          <label className="text-sm font-medium">Formas de Pagamento</label>
-          <div className={`text-sm font-medium ${percentuaisValidos ? 'text-green-600' : 'text-red-600'}`}>
-            {somaPercentuais.toFixed(1)}%
-          </div>
-        </div>
-
-        {/* Lista de Parcelas */}
-        <div className="space-y-2">
-          {parcelas.map((parcela, index) => (
-            <div key={parcela.id} className="flex gap-2 items-end">
-              <div className="flex-1">
-                <label className="text-xs font-medium">Nome</label>
-                <Input
-                  type="text"
-                  value={parcela.nome}
-                  onChange={(e) => handleAtualizarParcela(parcela.id, "nome", e.target.value)}
-                  placeholder="Ex: Sinal, À Vista, 30DD"
-                  className="text-sm"
-                />
-              </div>
-              <div className="w-24">
-                <label className="text-xs font-medium">%</label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={parcela.percentual}
-                  onChange={(e) => handleAtualizarParcela(parcela.id, "percentual", e.target.value)}
-                  placeholder="0"
-                  className="text-sm"
-                />
-              </div>
-              {parcelas.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => handleRemoverParcela(parcela.id)}
-                  className="p-2 hover:bg-red-100 rounded"
-                >
-                  <X className="w-4 h-4 text-red-600" />
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Botão Adicionar Parcela */}
-        {!percentuaisValidos && somaPercentuais < 100 && (
-          <button
-            type="button"
-            onClick={handleAdicionarParcela}
-            className="w-full flex items-center justify-center gap-2 p-2 border border-dashed border-blue-400 rounded hover:bg-blue-50 text-blue-600 text-sm font-medium"
-          >
-            <Plus className="w-4 h-4" />
-            Adicionar Parcela
-          </button>
-        )}
-      </div>
-
-      {/* Observações */}
-      <div>
-        <label className="text-sm font-medium">Observações</label>
-        <Textarea
-          value={observacoes}
-          onChange={(e) => setObservacoes(e.target.value)}
-          placeholder="Adicione observações sobre este item..."
-          className="h-20"
-        />
-      </div>
+      {/* Nota: Prazo de Entrega, Percentuais de Pagamento e Observações foram movidos para o nível do orçamento */}
 
       {/* Botões */}
       <div className="flex gap-2 justify-end pt-4">

@@ -74,9 +74,8 @@ export default function CriarOrcamentoDaFichaForm({
         descricao: ficha.familia,
         quantidade: 1,
         custo: custoTotal,
-        markupDivisor: markupDivisor,
+        markup: markupDivisor,
         valorUnitario: valorUnitario,
-        valorTotal: valorUnitario,
       });
 
       toast.success("Orçamento criado com sucesso!");

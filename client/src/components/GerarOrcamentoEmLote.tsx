@@ -117,8 +117,7 @@ export default function GerarOrcamentoEmLote({
           quantidade: 1,
           custo: custoTotal,
           valorUnitario: valorUnitario,
-          valorTotal: valorTotal,
-          markupDivisor: markupNum,
+          markup: markupNum,
         });
       }
     } catch (error: any) {

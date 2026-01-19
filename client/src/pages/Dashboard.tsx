@@ -139,7 +139,7 @@ export default function Dashboard() {
               {kpisLoading ? (
                 <Loader2 className="h-6 w-6 animate-spin" />
               ) : (
-                <div className="text-2xl font-bold">{kpis?.familiaMaisCara || "-"}</div>
+                <div className="text-2xl font-bold">{kpis?.familiasMaisCaras || "-"}</div>
               )}
             </CardContent>
           </Card>
@@ -155,7 +155,7 @@ export default function Dashboard() {
               {kpisLoading ? (
                 <Loader2 className="h-6 w-6 animate-spin" />
               ) : (
-                <div className="text-2xl font-bold">{kpis?.familiaMaisBarata || "-"}</div>
+                <div className="text-2xl font-bold">{kpis?.familiasMaisBaratas || "-"}</div>
               )}
             </CardContent>
           </Card>

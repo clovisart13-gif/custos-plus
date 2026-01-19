@@ -363,3 +363,25 @@
 - [ ] Exibir preview de valores antes de criar
 - [ ] Salvar markup no orçamento
 - [ ] Testar cálculos
+
+
+## MELHORIAS SOLICITADAS - ETAPA 4 (19/01/2026 - Noite)
+
+- [ ] Mover prazos para nível do orçamento (remover de itens individuais)
+  - [ ] Remover campos de prazo da edição de itens (EditarItemOrcamento)
+  - [ ] Criar seção separada para editar prazos do orçamento inteiro
+  - [ ] Testar que prazos atualizam corretamente no orçamento
+
+- [x] Pré-preencher cliente no modal de criação
+  - [x] Quando selecionar cliente no filtro, carregar automaticamente no campo "Nome do Cliente"
+  - [x] Testar que cliente vem pré-preenchido
+
+- [ ] Adicionar campo de descrição livre
+  - [ ] Remover repetição de código de referência no campo "Descrição"
+  - [ ] Criar campo de texto livre para descrição do orçamento
+  - [ ] Testar que descrição pode ser editada
+
+- [x] Permitir editar cliente e marca após criar orçamento
+  - [x] Adicionar botão "Editar" na página de detalhes do orçamento
+  - [x] Permitir editar campos cliente e marca
+  - [x] Testar que edições são persistidas no banco

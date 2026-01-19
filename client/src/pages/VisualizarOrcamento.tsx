@@ -13,6 +13,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Edit2 } from "lucide-react";
+import { toast } from "sonner";
 
 
 export default function VisualizarOrcamento() {
@@ -23,6 +27,9 @@ export default function VisualizarOrcamento() {
   const [enviandoKanban, setEnviandoKanban] = useState(false);
   const [enviado, setEnviado] = useState(false);
   const [deletingItemId, setDeletingItemId] = useState<number | null>(null);
+  const [editingClienteMarca, setEditingClienteMarca] = useState(false);
+  const [nomeClienteEdit, setNomeClienteEdit] = useState("");
+  const [marcaEdit, setMarcaEdit] = useState("");
 
   const orcamentoId = id ? parseInt(id) : 0;
 
@@ -35,6 +42,17 @@ export default function VisualizarOrcamento() {
     { orcamentoId },
     { enabled: orcamentoId > 0 }
   );
+
+  const updateClienteMarcaMutation = trpc.orcamentos.updateClienteMarca.useMutation({
+    onSuccess: () => {
+      refetch();
+      setEditingClienteMarca(false);
+      toast.success("Cliente e marca atualizados!");
+    },
+    onError: (error) => {
+      toast.error("Erro ao atualizar: " + (error.message || "Erro desconhecido"));
+    },
+  });
 
   const deleteItemMutation = trpc.orcamentos.deleteItem.useMutation({
     onSuccess: () => {
@@ -62,6 +80,18 @@ export default function VisualizarOrcamento() {
   const handleEnviarKanban = async () => {
     setEnviandoKanban(true);
     await enviarParaKanbanMutation.mutateAsync({ orcamentoId });
+  };
+
+  const handleSalvarClienteMarca = async () => {
+    if (!nomeClienteEdit || !marcaEdit) {
+      toast.error("Preencha cliente e marca!");
+      return;
+    }
+    await updateClienteMarcaMutation.mutateAsync({
+      orcamentoId,
+      nomeCliente: nomeClienteEdit,
+      marca: marcaEdit,
+    });
   };
 
   if (loadingOrcamento || loadingItens) {
@@ -109,12 +139,7 @@ export default function VisualizarOrcamento() {
   const valorPrazo = (total * Number(orcamento.percentualPrazo)) / 100;
 
   return (
-    <div className="container py-8" style={{
-      '@media print': {
-        padding: '0',
-        margin: '0',
-      }
-    }}>
+    <div className="container py-8 print:p-0 print:m-0">
       <div className="flex justify-between items-center mb-8 print:hidden">
         <Button variant="ghost" onClick={() => navigate("/orcamentos")} className="gap-2">
           <ArrowLeft className="h-4 w-4" />
@@ -178,14 +203,70 @@ export default function VisualizarOrcamento() {
 
       {/* Dados do Cliente */}
       <Card className="mb-8 print:border-0 print:shadow-none print:mb-4">
-        <CardHeader>
+        <CardHeader className="flex flex-row justify-between items-center">
           <CardTitle className="text-base">Dados do Cliente</CardTitle>
+          {!editingClienteMarca && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                setNomeClienteEdit(orcamento.nomeCliente);
+                setMarcaEdit(orcamento.marca);
+                setEditingClienteMarca(true);
+              }}
+              className="gap-2 print:hidden"
+            >
+              <Edit2 className="h-4 w-4" />
+              Editar
+            </Button>
+          )}
         </CardHeader>
         <CardContent className="space-y-2">
-          <p><strong>Cliente:</strong> {orcamento.nomeCliente}</p>
-          <p><strong>Marca/Coleção:</strong> {orcamento.marca}</p>
-          <p><strong>Validade do Orçamento:</strong> {orcamento.validade} dias</p>
-          <p><strong>Prazo de Entrega:</strong> {orcamento.prazoEntregaTexto || orcamento.prazoDias + ' dias'}</p>
+          {editingClienteMarca ? (
+            <div className="space-y-4 p-4 bg-muted rounded-lg">
+              <div>
+                <Label htmlFor="nomeClienteEdit">Cliente</Label>
+                <Input
+                  id="nomeClienteEdit"
+                  value={nomeClienteEdit}
+                  onChange={(e) => setNomeClienteEdit(e.target.value)}
+                  placeholder="Nome do cliente"
+                />
+              </div>
+              <div>
+                <Label htmlFor="marcaEdit">Marca/Coleção</Label>
+                <Input
+                  id="marcaEdit"
+                  value={marcaEdit}
+                  onChange={(e) => setMarcaEdit(e.target.value)}
+                  placeholder="Marca ou coleção"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={handleSalvarClienteMarca}
+                  disabled={updateClienteMarcaMutation.isPending}
+                >
+                  {updateClienteMarcaMutation.isPending ? "Salvando..." : "Salvar"}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setEditingClienteMarca(false)}
+                >
+                  Cancelar
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <p><strong>Cliente:</strong> {orcamento.nomeCliente}</p>
+              <p><strong>Marca/Coleção:</strong> {orcamento.marca}</p>
+              <p><strong>Validade do Orçamento:</strong> {orcamento.validade} dias</p>
+              <p><strong>Prazo de Entrega:</strong> {orcamento.prazoEntregaTexto || orcamento.prazoDias + ' dias'}</p>
+            </>
+          )}
         </CardContent>
       </Card>
 

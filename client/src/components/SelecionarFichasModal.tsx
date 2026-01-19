@@ -22,6 +22,7 @@ export default function SelecionarFichasModal({
   const [, navigate] = useLocation();
   const [nomeCliente, setNomeCliente] = useState("");
   const [marca, setMarca] = useState("");
+  const [descricao, setDescricao] = useState("");
   const [selectedFichas, setSelectedFichas] = useState<number[]>([]);
   const [markup, setMarkup] = useState("0.5");
   const [isCreating, setIsCreating] = useState(false);
@@ -45,6 +46,14 @@ export default function SelecionarFichasModal({
     if (!filtroCliente || filtroCliente === "__all__") return fichas;
     return fichas.filter((f) => f.cliente === filtroCliente);
   }, [fichas, filtroCliente]);
+
+  // Pré-preencher cliente quando filtro muda
+  const handleFiltroClienteChange = (cliente: string) => {
+    setFiltroCliente(cliente);
+    if (cliente && cliente !== "__all__") {
+      setNomeCliente(cliente);
+    }
+  };
 
   const handleSelectFicha = (fichaId: number) => {
     setSelectedFichas((prev) =>
@@ -96,7 +105,7 @@ export default function SelecionarFichasModal({
           orcamentoId: orcamento.id,
           fichaId: ficha.id,
           referencia: ficha.referencia,
-          descricao: ficha.descricao || ficha.referencia,
+          descricao: ficha.referencia,
           quantidade: 1,
           custo: ficha.custo || 0,
           valorUnitario: valorUnitario,
@@ -155,6 +164,20 @@ export default function SelecionarFichasModal({
             </div>
           </div>
 
+          {/* Descrição do Orçamento */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-sm">Descrição do Orçamento</h3>
+            <div>
+              <Label htmlFor="descricao">Descrição (opcional)</Label>
+              <Input
+                id="descricao"
+                placeholder="Ex: Coleção Verão 2026"
+                value={descricao}
+                onChange={(e) => setDescricao(e.target.value)}
+              />
+            </div>
+          </div>
+
           {/* Configuração de Preço */}
           <div className="space-y-4">
             <h3 className="font-semibold text-sm">Configuração de Preço</h3>
@@ -197,7 +220,7 @@ export default function SelecionarFichasModal({
                 <select
                   id="filtroCliente"
                   value={filtroCliente}
-                  onChange={(e) => setFiltroCliente(e.target.value)}
+                  onChange={(e) => handleFiltroClienteChange(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-sm"
                 >
                   <option value="__all__">Todos os clientes</option>

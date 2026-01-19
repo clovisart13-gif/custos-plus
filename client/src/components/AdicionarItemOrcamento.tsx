@@ -75,8 +75,7 @@ export default function AdicionarItemOrcamento({
       quantidade: Number(quantidade),
       custo: custoTotal,
       valorUnitario,
-      valorTotal,
-      markupDivisor: markupDivisor,
+      markup: markupDivisor,
     });
   };
 

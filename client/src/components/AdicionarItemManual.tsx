@@ -51,8 +51,7 @@ export default function AdicionarItemManual({
         quantidade: qtd,
         custo: 0,
         valorUnitario: valor,
-        valorTotal: valor * qtd,
-        markupDivisor: 1,
+        markup: 1,
       });
 
       toast.success("Item adicionado com sucesso!");

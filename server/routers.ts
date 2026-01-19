@@ -61,16 +61,16 @@ export const appRouter = router({
           familia: input.familia,
           cliente: input.cliente,
           fotoUrl: input.fotoUrl,
-          modelagem: input.modelagem,
-          piloto: input.piloto,
-          corte: input.corte,
-          beneficiamento: input.beneficiamento,
-          costura: input.costura,
-          lavanderia: input.lavanderia,
-          acabamento: input.acabamento,
-          passadoria: input.passadoria,
-          tecido: input.tecido,
-          aviamento: input.aviamento,
+          modelagem: input.modelagem.toString(),
+          piloto: input.piloto.toString(),
+          corte: input.corte.toString(),
+          beneficiamento: input.beneficiamento.toString(),
+          costura: input.costura.toString(),
+          lavanderia: input.lavanderia.toString(),
+          acabamento: input.acabamento.toString(),
+          passadoria: input.passadoria.toString(),
+          tecido: input.tecido.toString(),
+          aviamento: input.aviamento.toString(),
           observacoes: input.observacoes,
         });
         return ficha;
@@ -89,7 +89,20 @@ export const appRouter = router({
       }))
       .mutation(async ({ ctx, input }) => {
         const { id, ...data } = input;
-        await db.updateFichaCusto(id, ctx.user.id, data);
+        const convertedData = {
+          ...data,
+          modelagem: (data.modelagem as number).toString(),
+          piloto: (data.piloto as number).toString(),
+          corte: (data.corte as number).toString(),
+          beneficiamento: (data.beneficiamento as number).toString(),
+          costura: (data.costura as number).toString(),
+          lavanderia: (data.lavanderia as number).toString(),
+          acabamento: (data.acabamento as number).toString(),
+          passadoria: (data.passadoria as number).toString(),
+          tecido: (data.tecido as number).toString(),
+          aviamento: (data.aviamento as number).toString(),
+        };
+        await db.updateFichaCusto(id, ctx.user.id, convertedData);
         return await db.getFichaCustoById(id, ctx.user.id);
       }),
 
@@ -237,10 +250,10 @@ export const appRouter = router({
           referencia: input.referencia,
           descricao: input.descricao,
           quantidade: input.quantidade,
-          custo: input.custo,
-          valorUnitario: input.valorUnitario,
-          valorTotal,
-          markupDivisor: input.markup,
+          custo: input.custo.toString(),
+          valorUnitario: input.valorUnitario.toString(),
+          valorTotal: valorTotal.toString(),
+          markupDivisor: input.markup.toString(),
         });
 
         await db.updateOrcamentoTotals(input.orcamentoId);
@@ -314,6 +327,21 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    updateClienteMarca: protectedProcedure
+      .input(z.object({
+        orcamentoId: z.number(),
+        nomeCliente: z.string().min(1),
+        marca: z.string().min(1),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
+        if (!orcamento) {
+          throw new Error("Orçamento não encontrado");
+        }
+        await db.updateOrcamentoClienteMarca(input.orcamentoId, input.nomeCliente, input.marca);
+        return { success: true };
+      }),
+
     enviarParaKanban: protectedProcedure
       .input(z.object({
         orcamentoId: z.number(),
@@ -341,9 +369,9 @@ export const appRouter = router({
           totalPecas: orcamento.totalPecas,
           subtotal: Math.round(parseFloat(orcamento.subtotal) * 100),
           total: Math.round(parseFloat(orcamento.total) * 100),
-          percentualSinal: parseFloat(orcamento.percentualSinal),
-          percentualRetirada: parseFloat(orcamento.percentualRetirada),
-          percentualPrazo: parseFloat(orcamento.percentualPrazo),
+          percentualSinal: typeof orcamento.percentualSinal === 'string' ? parseFloat(orcamento.percentualSinal) : orcamento.percentualSinal,
+          percentualRetirada: typeof orcamento.percentualRetirada === 'string' ? parseFloat(orcamento.percentualRetirada) : orcamento.percentualRetirada,
+          percentualPrazo: typeof orcamento.percentualPrazo === 'string' ? parseFloat(orcamento.percentualPrazo) : orcamento.percentualPrazo,
           itens: itens.map((item: any) => ({
             referencia: item.referencia,
             descricao: item.descricao,
@@ -374,6 +402,13 @@ export const appRouter = router({
         const result = await response.json();
         return { success: true, result };
       }),
+
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        await db.deleteOrcamento(input.id, ctx.user.id);
+        return { success: true };
+      }),
   }),
 
   dashboard: router({
@@ -392,7 +427,7 @@ export const appRouter = router({
         : 0;
       
       const familiasMaisCaras = fichas.length > 0
-        ? [...new Map(fichas.map((f: any) => [
+        ? Array.from(new Map(fichas.map((f: any) => [
             f.familia,
             {
               familia: f.familia,
@@ -400,7 +435,7 @@ export const appRouter = router({
                     (f.beneficiamento || 0) + (f.costura || 0) + (f.lavanderia || 0) + 
                     (f.acabamento || 0) + (f.passadoria || 0) + (f.tecido || 0) + (f.aviamento || 0)
             }
-          ])).values()]
+          ])).values())
           .sort((a: any, b: any) => b.total - a.total)
           .slice(0, 1)
           .map((item: any) => item.familia)
@@ -408,7 +443,7 @@ export const appRouter = router({
         : 'N/A';
       
       const familiasMaisBaratas = fichas.length > 0
-        ? [...new Map(fichas.map((f: any) => [
+        ? Array.from(new Map(fichas.map((f: any) => [
             f.familia,
             {
               familia: f.familia,
@@ -416,7 +451,7 @@ export const appRouter = router({
                     (f.beneficiamento || 0) + (f.costura || 0) + (f.lavanderia || 0) + 
                     (f.acabamento || 0) + (f.passadoria || 0) + (f.tecido || 0) + (f.aviamento || 0)
             }
-          ])).values()]
+          ])).values())
           .sort((a: any, b: any) => a.total - b.total)
           .slice(0, 1)
           .map((item: any) => item.familia)

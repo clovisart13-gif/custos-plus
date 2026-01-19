@@ -421,7 +421,16 @@ export async function getOrcamentoById(id: number, userId: number) {
     .where(and(eq(orcamentos.id, id), eq(orcamentos.userId, userId)))
     .limit(1);
 
-  return result.length > 0 ? result[0] : undefined;
+  if (result.length > 0) {
+    const orcamento = result[0];
+    return {
+      ...orcamento,
+      percentualSinal: typeof orcamento.percentualSinal === 'string' ? parseFloat(orcamento.percentualSinal) : orcamento.percentualSinal,
+      percentualRetirada: typeof orcamento.percentualRetirada === 'string' ? parseFloat(orcamento.percentualRetirada) : orcamento.percentualRetirada,
+      percentualPrazo: typeof orcamento.percentualPrazo === 'string' ? parseFloat(orcamento.percentualPrazo) : orcamento.percentualPrazo,
+    };
+  }
+  return undefined;
 }
 
 export async function updateOrcamento(id: number, userId: number, data: Partial<InsertOrcamento>) {
@@ -639,13 +648,13 @@ export async function updateOrcamentoPercentuais(
     updateData.prazoEntregaTexto = prazoEntregaTexto;
   }
   if (percentualSinal !== undefined) {
-    updateData.percentualSinal = percentualSinal;
+    updateData.percentualSinal = percentualSinal.toString();
   }
   if (percentualRetirada !== undefined) {
-    updateData.percentualRetirada = percentualRetirada;
+    updateData.percentualRetirada = percentualRetirada.toString();
   }
   if (percentualPrazo !== undefined) {
-    updateData.percentualPrazo = percentualPrazo;
+    updateData.percentualPrazo = percentualPrazo.toString();
   }
 
   if (Object.keys(updateData).length === 0) {
@@ -688,6 +697,22 @@ export async function updateOrcamentoStatus(
   await db
     .update(orcamentos)
     .set({ status })
+    .where(eq(orcamentos.id, orcamentoId));
+
+  return { success: true };
+}
+
+export async function updateOrcamentoClienteMarca(
+  orcamentoId: number,
+  nomeCliente: string,
+  marca: string
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .update(orcamentos)
+    .set({ nomeCliente, marca })
     .where(eq(orcamentos.id, orcamentoId));
 
   return { success: true };
