@@ -344,6 +344,7 @@ export default function VisualizarOrcamento() {
           {editingItem && (
             <EditarItemOrcamento
               item={editingItem}
+              orcamento={orcamento}
               onSuccess={() => {
                 setEditingItem(null);
                 refetchItens();

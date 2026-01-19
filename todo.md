@@ -306,3 +306,20 @@
   - Solução: Alterado campo de TEXT para VARCHAR(255) com DEFAULT '30 dias'
   - Teste: Criado novo orçamento ORÇ-17687846861917 com sucesso
   - Status: RESOLVIDO - Sistema funcionando 100%
+
+
+## Bugs Críticos - Markup e Percentuais (19/01/2026 - Noite) - RESOLVIDOS
+
+- [x] Markup não recalcula PV quando alterado
+  - Fórmula correta: PV = Custo ÷ Markup (não multiplicação!)
+  - Exemplo: Custo R$ 20,00, Markup 0.50 → PV = R$ 40,00
+  - Solução: Implementada lógica de recálculo no EditarItemOrcamento
+  - Status: RESOLVIDO
+
+- [x] Percentuais de pagamento não são salvos no banco
+  - Problema: Alterou para 0% sinal, 50% à vista, mas continuou mostrando valores antigos
+  - Causa: Componente EditarItemOrcamento não recebia prop orcamento com dados corretos
+  - Solução: Adicionado prop orcamento em VisualizarOrcamento.tsx
+  - Teste: Alterado para 0% Sinal, 50% Retirada, 50% Prazo - Salvou corretamente
+  - Resultado: Apenas 2 parcelas aparecem (Retirada e Prazo), Sinal não aparece
+  - Status: RESOLVIDO - Percentuais salvos e lógica de filtro funcionando

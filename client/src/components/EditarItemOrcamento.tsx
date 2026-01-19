@@ -37,8 +37,8 @@ export default function EditarItemOrcamento({
   const [valorUnitario, setValorUnitario] = useState(item.valorUnitario);
   const [markup, setMarkup] = useState((item.markupDivisor || 0.5).toString());
   const [custo, setCusto] = useState((item.custo || 0).toString());
-    const [prazoDias, setPrazoDias] = useState(item?.prazoDias?.toString() || "30");
-  const [prazoEntregaTexto, setPrazoEntregaTexto] = useState(item?.prazoEntregaTexto || "30 dias após aprovação do protótipo");
+    const [prazoDias, setPrazoDias] = useState(orcamento?.prazoDias?.toString() || "30");
+  const [prazoEntregaTexto, setPrazoEntregaTexto] = useState(orcamento?.prazoEntregaTexto || "30 dias após aprovação do protótipo");
   const [percentualSinal, setPercentualSinal] = useState((orcamento?.percentualSinal || 25).toString());
   const [percentualRetirada, setPercentualRetirada] = useState((orcamento?.percentualRetirada || 25).toString());
   const [percentualPrazo, setPercentualPrazo] = useState((orcamento?.percentualPrazo || 50).toString());
@@ -48,9 +48,17 @@ export default function EditarItemOrcamento({
   const utils = trpc.useUtils();
   const updateItemMutation = trpc.orcamentos.updateItem.useMutation();
 
+  // Recalcular PV quando markup muda: PV = Custo ÷ Markup
+  const pvRecalculado = parseFloat(custo) > 0 && parseFloat(markup) > 0 
+    ? (parseFloat(custo) / parseFloat(markup)).toFixed(2)
+    : valorUnitario;
+
   const valorTotal = (
     parseFloat(quantidade) * parseFloat(valorUnitario)
   ).toFixed(2);
+
+  // Mostrar apenas parcelas com % > 0
+  const mostrarPrazo = parseFloat(percentualPrazo) > 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -228,18 +236,26 @@ export default function EditarItemOrcamento({
             />
           </div>
 
-          <div>
-            <label className="text-sm font-medium">Prazo (%)</label>
+          {mostrarPrazo && (
+            <div>
+              <label className="text-sm font-medium">Prazo (%)</label>
+              <Input
+                type="number"
+                min="0"
+                max="100"
+                step="1"
+                value={percentualPrazo}
+                onChange={(e) => setPercentualPrazo(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+          )}
+          {!mostrarPrazo && (
             <Input
-              type="number"
-              min="0"
-              max="100"
-              step="1"
+              type="hidden"
               value={percentualPrazo}
-              onChange={(e) => setPercentualPrazo(e.target.value)}
-              className="mt-1"
             />
-          </div>
+          )}
         </div>
         
         {/* Indicador de soma de percentuais */}

@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, percentual_sinal, percentual_retirada, percentual_prazo FROM orcamentos WHERE id = 90021;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute SELECT id, percentual_sinal, percentual_retirada, percentual_prazo FROM orcamentos WHERE id = 90021;",
+  "rows": [
+    {
+      "id": "90021",
+      "percentual_sinal": "0.00",
+      "percentual_retirada": "50.00",
+      "percentual_prazo": "50.00"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tpercentual_sinal\tpercentual_retirada\tpercentual_prazo\n90021\t0.00\t50.00\t50.00\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}

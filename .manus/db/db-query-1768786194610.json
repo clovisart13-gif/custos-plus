@@ -1,0 +1,30 @@
+{
+  "query": "SELECT * FROM orcamentos WHERE id = 90021 LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute SELECT * FROM orcamentos WHERE id = 90021 LIMIT 1;",
+  "rows": [
+    {
+      "id": "90021",
+      "user_id": "1",
+      "nome_cliente": "thamara p santos",
+      "marca": "bermuda",
+      "numero_orcamento": "ORÇ-26-1768695814528",
+      "data_emissao": "2026-01-19 01:12:19",
+      "validade": "30",
+      "prazo_dias": "30",
+      "total_pecas": "1",
+      "subtotal": "265.00",
+      "total": "265.00",
+      "percentual_sinal": "0.00",
+      "percentual_retirada": "50.00",
+      "percentual_prazo": "50.00",
+      "createdAt": "2026-01-19 01:12:19",
+      "updatedAt": "2026-01-19 01:29:17",
+      "status": "pendente",
+      "prazo_entrega_texto": "30 dias após aprovação do protótipo"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuser_id\tnome_cliente\tmarca\tnumero_orcamento\tdata_emissao\tvalidade\tprazo_dias\ttotal_pecas\tsubtotal\ttotal\tpercentual_sinal\tpercentual_retirada\tpercentual_prazo\tcreatedAt\tupdatedAt\tstatus\tprazo_entrega_texto\n90021\t1\tthamara p santos\tbermuda\tORÇ-26-1768695814528\t2026-01-19 01:12:19\t30\t30\t1\t265.00\t265.00\t0.00\t50.00\t50.00\t2026-01-19 01:12:19\t2026-01-19 01:29:17\tpendente\t30 dias após aprovação do protótipo\n",
+  "stderr": "",
+  "execution_time_ms": 51
+}
