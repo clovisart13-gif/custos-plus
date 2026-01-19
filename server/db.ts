@@ -102,11 +102,17 @@ export async function getFichasCustoByUser(userId: number) {
   const db = await getDb();
   if (!db) return [];
 
-  return await db
+  const fichas = await db
     .select()
     .from(fichasCusto)
     .where(eq(fichasCusto.userId, userId))
     .orderBy(desc(fichasCusto.createdAt));
+
+  // Calcular custo total para cada ficha
+  return fichas.map(ficha => ({
+    ...ficha,
+    custo: Number(ficha.modelagem || 0) + Number(ficha.piloto || 0) + Number(ficha.corte || 0) + Number(ficha.beneficiamento || 0) + Number(ficha.costura || 0) + Number(ficha.lavanderia || 0) + Number(ficha.acabamento || 0) + Number(ficha.passadoria || 0) + Number(ficha.tecido || 0) + Number(ficha.aviamento || 0)
+  }));
 }
 
 export async function getFichaCustoById(id: number, userId: number) {

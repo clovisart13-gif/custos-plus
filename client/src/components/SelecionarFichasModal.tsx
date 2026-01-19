@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -194,19 +194,19 @@ export default function SelecionarFichasModal({
             {clientesUnicos.length > 0 && (
               <div>
                 <Label htmlFor="filtroCliente">Filtrar por Cliente</Label>
-                <Select value={filtroCliente} onValueChange={setFiltroCliente}>
-                  <SelectTrigger id="filtroCliente">
-                    <SelectValue placeholder="Todos os clientes" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="__all__">Todos os clientes</SelectItem>
-                    {clientesUnicos.map((cliente) => (
-                      <SelectItem key={cliente} value={cliente}>
-                        {cliente}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <select
+                  id="filtroCliente"
+                  value={filtroCliente}
+                  onChange={(e) => setFiltroCliente(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-sm"
+                >
+                  <option value="__all__">Todos os clientes</option>
+                  {clientesUnicos.map((cliente) => (
+                    <option key={cliente} value={cliente}>
+                      {cliente}
+                    </option>
+                  ))}
+                </select>
                 <p className="text-xs text-gray-500 mt-1">
                   {fichasFiltradas.length} ficha(s) encontrada(s)
                 </p>
@@ -218,7 +218,7 @@ export default function SelecionarFichasModal({
               {fichasFiltradas.length === 0 ? (
                 <p className="text-sm text-gray-500">Nenhuma ficha encontrada</p>
               ) : (
-                fichasFiltradas.map((ficha) => {
+                fichasFiltradas.map((ficha, index) => {
                   const markupValue = parseFloat(markup || "0");
                   const pv = (ficha.custo || 0) * (1 + markupValue);
                   const lucro = pv - (ficha.custo || 0);
