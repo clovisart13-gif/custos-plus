@@ -573,7 +573,8 @@ export async function updateItemOrcamento(
   valorUnitario: number,
   valorTotal: number,
   markup?: number,
-  valorComMarkup?: number
+  valorComMarkup?: number,
+  descricao?: string
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -587,6 +588,10 @@ export async function updateItemOrcamento(
 
   if (markup !== undefined) {
     updateData.markupDivisor = markup;
+  }
+
+  if (descricao !== undefined) {
+    updateData.descricao = descricao;
   }
 
   await db

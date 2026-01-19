@@ -105,7 +105,7 @@ export default function SelecionarFichasModal({
           orcamentoId: orcamento.id,
           fichaId: ficha.id,
           referencia: ficha.referencia,
-          descricao: ficha.referencia,
+          descricao: ficha.observacoes || ficha.referencia,
           quantidade: 1,
           custo: ficha.custo || 0,
           valorUnitario: valorUnitario,

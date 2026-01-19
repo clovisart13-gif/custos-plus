@@ -385,3 +385,14 @@
   - [x] Adicionar botão "Editar" na página de detalhes do orçamento
   - [x] Permitir editar campos cliente e marca
   - [x] Testar que edições são persistidas no banco
+
+## Correções de Bugs - Fase 4
+
+- [ ] Corrigir campo de descrição em edição de itens
+  - [x] Adicionar estado para descricao editável em EditarItemOrcamento
+  - [x] Permitir edição do campo de descrição
+  - [x] Passar descricao para updateItem em routers.ts
+  - [x] Adicionar descricao em updateItemOrcamento em db.ts
+  - [x] Corrigir SelecionarFichasModal para usar observacoes em vez de referencia
+  - [ ] Testar edição de descrição no navegador
+  - [ ] Verificar persistência de dados após edição

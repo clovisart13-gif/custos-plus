@@ -45,6 +45,7 @@ export default function EditarItemOrcamento({
   const [valorUnitario, setValorUnitario] = useState(item.valorUnitario);
   const [markup, setMarkup] = useState((item.markupDivisor || 0.5).toString());
   const [custo, setCusto] = useState((item.custo || 0).toString());
+  const [descricao, setDescricao] = useState(item.descricao);
   const [parcelas, setParcelas] = useState<Parcela[]>([
     { id: '1', nome: 'Sinal', percentual: orcamento?.percentualSinal || 25 },
     { id: '2', nome: 'Retirada', percentual: orcamento?.percentualRetirada || 25 },
@@ -124,6 +125,7 @@ export default function EditarItemOrcamento({
         quantidade: parseFloat(quantidade),
         valorUnitario: parseFloat(valorUnitario),
         markup: parseFloat(markup),
+        descricao: descricao,
       };
       console.log("[EditarItemOrcamento] Enviando payload:", payload);
       await updateItemMutation.mutateAsync(payload);
@@ -148,7 +150,11 @@ export default function EditarItemOrcamento({
         </div>
         <div>
           <label className="text-sm font-medium">Descrição</label>
-          <Input value={item.descricao} disabled className="bg-gray-100" />
+          <Input 
+            value={descricao} 
+            onChange={(e) => setDescricao(e.target.value)}
+            placeholder="Ex: Camiseta Verão 2024"
+          />
         </div>
       </div>
 

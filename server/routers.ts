@@ -267,6 +267,7 @@ export const appRouter = router({
         quantidade: z.number().min(1),
         valorUnitario: z.number().min(0),
         markup: z.number().min(0),
+        descricao: z.string().optional(),
         custo: z.number().optional(),
         prazoDias: z.number().optional(),
         prazoEntregaTexto: z.string().optional(),
@@ -288,7 +289,8 @@ export const appRouter = router({
           input.valorUnitario,
           valorTotal,
           input.markup,
-          valorComMarkup
+          valorComMarkup,
+          input.descricao
         );
 
         // Atualizar dados do orçamento se fornecidos
