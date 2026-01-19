@@ -238,3 +238,62 @@
   - [x] Observações - Implementado e testado
   - [x] Editar dados do cliente - Visualização completa implementada
   - Status: TODOS IMPLEMENTADOS E TESTADOS COM SUCESSO
+
+
+## Bug Reportado - Sessão Atual (19/01/2026 - Tarde)
+
+- [ ] Percentuais de pagamento não estão sendo salvos ao editar item
+  - Sintoma: Alterou 50% sinal + 50% à vista, mas os valores não mudaram
+  - Causa: Investigando - backend pode não estar aceitando/salvando percentuais
+  - Prioridade: CRÍTICA - Bloqueia edição de condições de pagamento
+  - Status: EM INVESTIGAÇÃO
+
+
+## Requisitos de Percentuais de Pagamento (Novo)
+
+- [ ] Percentuais de pagamento devem somar 100%
+  - [ ] Validar no modal de edição que Sinal + Retirada + Prazo = 100%
+  - [ ] Mostrar mensagem de erro se não somar 100%
+  - [ ] Impedir salvar se não somar 100%
+
+- [ ] Mostrar apenas parcelas com valor > 0%
+  - [ ] Se Sinal = 50% e Retirada = 50%, não mostrar "30 dias"
+  - [ ] Se Sinal = 100%, não mostrar Retirada e Prazo
+  - [ ] Atualizar visualização para filtrar parcelas dinamicamente
+
+- [ ] Garantir que percentuais sejam salvos no banco de dados
+  - [ ] Verificar se updateOrcamentoPercentuais está funcionando
+  - [ ] Testar com diferentes combinações de percentuais
+  - [ ] Validar que valores são persistidos após reload
+
+
+## RESUMO DE CONCLUSÃO - SESSÃO 19/01/2026 (NOITE)
+
+### ✅ TODOS OS BUGS CORRIGIDOS COM SUCESSO
+
+**Percentuais de Pagamento - SISTEMA 100% FUNCIONAL:**
+- [x] Percentuais somam 100% com validação em tempo real
+- [x] Indicador visual: verde quando 100%, vermelho quando diferente
+- [x] Apenas parcelas com % > 0 aparecem na visualização
+- [x] Dados persistidos no banco de dados com sucesso
+- [x] Testado: 50% sinal + 50% retirada + 0% prazo = apenas 2 parcelas aparecem
+
+**Prazo de Entrega - MUDANÇA IMPLEMENTADA:**
+- [x] Campo alterado de INT (prazoDias) para TEXT (prazoEntregaTexto)
+- [x] Aceita texto livre: "30 dias após aprovação do protótipo"
+- [x] Aceita texto livre: "40/60 dias após aprovação do protótipo"
+- [x] Testado com sucesso - valores sendo salvos e exibidos corretamente
+
+**Edição de Itens - TOTALMENTE FUNCIONAL:**
+- [x] Modal de edição com todos os 9 campos
+- [x] Validação de percentuais somando 100%
+- [x] Cálculo automático de totais
+- [x] Dados persistidos no banco
+- [x] Sem erros no console
+
+### PRÓXIMAS TAREFAS (SUGERIDAS):
+1. Edição de Dados do Cliente (cliente, marca, validade)
+2. Exportação PDF aprimorada com layout melhorado
+3. Filtros no Dashboard (período, família, tipo)
+4. Deletar itens com confirmação
+5. Histórico de alterações de orçamentos

@@ -1,0 +1,22 @@
+{
+  "query": "SELECT id, percentual_sinal, percentual_retirada, percentual_prazo FROM orcamentos WHERE id = 90019 LIMIT 1 \\G",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute SELECT id, percentual_sinal, percentual_retirada, percentual_prazo FROM orcamentos WHERE id = 90019 LIMIT 1 \\G",
+  "rows": [
+    {
+      "*************************** 1. row ***************************": "                 id: 90019"
+    },
+    {
+      "*************************** 1. row ***************************": "   percentual_sinal: 50.00"
+    },
+    {
+      "*************************** 1. row ***************************": "percentual_retirada: 50.00"
+    },
+    {
+      "*************************** 1. row ***************************": "   percentual_prazo: 0.00"
+    }
+  ],
+  "messages": [],
+  "stdout": "*************************** 1. row ***************************\n                 id: 90019\n   percentual_sinal: 50.00\npercentual_retirada: 50.00\n   percentual_prazo: 0.00\n",
+  "stderr": "",
+  "execution_time_ms": 97
+}

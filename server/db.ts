@@ -556,26 +556,94 @@ export async function updateItemOrcamento(
   itemId: number,
   quantidade: number,
   valorUnitario: number,
-  valorTotal: number
+  valorTotal: number,
+  markup?: number,
+  valorComMarkup?: number
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
   // Atualizar item com novos valores
+  const updateData: any = {
+    quantidade: quantidade,
+    valorUnitario: valorUnitario.toString(),
+    valorTotal: valorTotal.toString(),
+  };
+
+  if (markup !== undefined) {
+    updateData.markupDivisor = markup;
+  }
+
   await db
     .update(itensOrcamento)
-    .set({
-      quantidade: quantidade,
-      valorUnitario: valorUnitario.toString(),
-      valorTotal: valorTotal.toString(),
-    })
+    .set(updateData)
     .where(eq(itensOrcamento.id, itemId));
 
   return {
     quantidade,
     valorUnitario,
     valorTotal,
+    markup,
+    valorComMarkup,
   };
+}
+
+export async function getOrcamentoIdFromItem(itemId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const item = await db
+    .select({ orcamentoId: itensOrcamento.orcamentoId })
+    .from(itensOrcamento)
+    .where(eq(itensOrcamento.id, itemId))
+    .limit(1);
+
+  if (!item || item.length === 0) {
+    throw new Error("Item não encontrado");
+  }
+
+  return item[0].orcamentoId;
+}
+
+export async function updateOrcamentoPercentuais(
+  orcamentoId: number,
+  prazoDias?: number,
+  percentualSinal?: number,
+  percentualRetirada?: number,
+  percentualPrazo?: number,
+  prazoEntregaTexto?: string
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const updateData: any = {};
+
+  if (prazoDias !== undefined) {
+    updateData.prazoDias = prazoDias;
+  }
+  if (prazoEntregaTexto !== undefined) {
+    updateData.prazoEntregaTexto = prazoEntregaTexto;
+  }
+  if (percentualSinal !== undefined) {
+    updateData.percentualSinal = percentualSinal;
+  }
+  if (percentualRetirada !== undefined) {
+    updateData.percentualRetirada = percentualRetirada;
+  }
+  if (percentualPrazo !== undefined) {
+    updateData.percentualPrazo = percentualPrazo;
+  }
+
+  if (Object.keys(updateData).length === 0) {
+    return { success: true };
+  }
+
+  await db
+    .update(orcamentos)
+    .set(updateData)
+    .where(eq(orcamentos.id, orcamentoId));
+
+  return { success: true };
 }
 
 

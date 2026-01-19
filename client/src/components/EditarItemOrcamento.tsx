@@ -37,7 +37,8 @@ export default function EditarItemOrcamento({
   const [valorUnitario, setValorUnitario] = useState(item.valorUnitario);
   const [markup, setMarkup] = useState((item.markupDivisor || 0.5).toString());
   const [custo, setCusto] = useState((item.custo || 0).toString());
-  const [prazoDias, setPrazoDias] = useState((orcamento?.prazoDias || 30).toString());
+    const [prazoDias, setPrazoDias] = useState(item?.prazoDias?.toString() || "30");
+  const [prazoEntregaTexto, setPrazoEntregaTexto] = useState(item?.prazoEntregaTexto || "30 dias após aprovação do protótipo");
   const [percentualSinal, setPercentualSinal] = useState((orcamento?.percentualSinal || 25).toString());
   const [percentualRetirada, setPercentualRetirada] = useState((orcamento?.percentualRetirada || 25).toString());
   const [percentualPrazo, setPercentualPrazo] = useState((orcamento?.percentualPrazo || 50).toString());
@@ -74,6 +75,18 @@ export default function EditarItemOrcamento({
       return;
     }
 
+    // Validar que percentuais somem 100%
+    const somaPercentuais = parseFloat(percentualSinal) + parseFloat(percentualRetirada) + parseFloat(percentualPrazo);
+    if (Math.abs(somaPercentuais - 100) > 0.01) {
+      toast.error(`Percentuais devem somar 100% (atual: ${somaPercentuais.toFixed(1)}%)`);
+      return;
+    }
+
+    if (!prazoEntregaTexto.trim()) {
+      toast.error("Preencha o prazo de entrega");
+      return;
+    }
+
     setIsLoading(true);
     try {
       await updateItemMutation.mutateAsync({
@@ -81,14 +94,13 @@ export default function EditarItemOrcamento({
         quantidade: parseFloat(quantidade),
         valorUnitario: parseFloat(valorUnitario),
         markup: parseFloat(markup),
-        custo: parseFloat(custo) || 0,
-        prazoDias: parseFloat(prazoDias) || 30,
-        percentualSinal: parseFloat(percentualSinal) || 25,
-        percentualRetirada: parseFloat(percentualRetirada) || 25,
-        percentualPrazo: parseFloat(percentualPrazo) || 50,
-        observacoes: observacoes,
+        percentualSinal: parseFloat(percentualSinal),
+        percentualRetirada: parseFloat(percentualRetirada),
+        percentualPrazo: parseFloat(percentualPrazo),
+        prazoDias: parseInt(prazoDias),
+        prazoEntregaTexto,
+        observacoes,
       });
-
       toast.success("Item atualizado com sucesso!");
       utils.orcamentos.getItens.invalidate();
       onSuccess();
@@ -179,13 +191,12 @@ export default function EditarItemOrcamento({
         <h3 className="font-semibold text-sm">Prazos e Pagamento</h3>
         
         <div>
-          <label className="text-sm font-medium">Prazo de Entrega (dias)</label>
+          <label className="text-sm font-medium">Prazo de Entrega</label>
           <Input
-            type="number"
-            min="1"
-            step="1"
-            value={prazoDias}
-            onChange={(e) => setPrazoDias(e.target.value)}
+            type="text"
+            placeholder="Ex: 30 dias após aprovação do protótipo"
+            value={prazoEntregaTexto}
+            onChange={(e) => setPrazoEntregaTexto(e.target.value)}
             className="mt-1"
           />
         </div>
@@ -228,6 +239,16 @@ export default function EditarItemOrcamento({
               onChange={(e) => setPercentualPrazo(e.target.value)}
               className="mt-1"
             />
+          </div>
+        </div>
+        
+        {/* Indicador de soma de percentuais */}
+        <div className="mt-2 p-2 rounded text-sm">
+          <div className="flex justify-between items-center">
+            <span>Total de percentuais:</span>
+            <span className={`font-semibold ${Math.abs(parseFloat(percentualSinal) + parseFloat(percentualRetirada) + parseFloat(percentualPrazo) - 100) < 0.01 ? 'text-green-600' : 'text-red-600'}`}>
+              {(parseFloat(percentualSinal) + parseFloat(percentualRetirada) + parseFloat(percentualPrazo)).toFixed(1)}%
+            </span>
           </div>
         </div>
       </div>

@@ -43,6 +43,20 @@
       "when": 1768707156856,
       "tag": "0005_skinny_randall_flagg",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1768783967866,
+      "tag": "0006_sudden_giant_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1768783994971,
+      "tag": "0007_careless_black_panther",
+      "breakpoints": true
     }
   ]
 }

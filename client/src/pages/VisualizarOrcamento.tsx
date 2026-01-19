@@ -185,7 +185,7 @@ export default function VisualizarOrcamento() {
           <p><strong>Cliente:</strong> {orcamento.nomeCliente}</p>
           <p><strong>Marca/Coleção:</strong> {orcamento.marca}</p>
           <p><strong>Validade do Orçamento:</strong> {orcamento.validade} dias</p>
-          <p><strong>Prazo de Entrega:</strong> {orcamento.prazoDias} dias</p>
+          <p><strong>Prazo de Entrega:</strong> {orcamento.prazoEntregaTexto || orcamento.prazoDias + ' dias'}</p>
         </CardContent>
       </Card>
 
@@ -301,18 +301,24 @@ export default function VisualizarOrcamento() {
         </CardHeader>
         <CardContent>
           <div className="space-y-1">
-            <div className="flex justify-between p-2 bg-muted rounded">
-              <span className="text-sm">Sinal ({Number(orcamento.percentualSinal)}%):</span>
-              <span className="font-semibold text-sm">{formatCurrency(valorSinal)}</span>
-            </div>
-            <div className="flex justify-between p-2 bg-muted rounded">
-              <span className="text-sm">Retirada ({Number(orcamento.percentualRetirada)}%):</span>
-              <span className="font-semibold text-sm">{formatCurrency(valorRetirada)}</span>
-            </div>
-            <div className="flex justify-between p-2 bg-muted rounded">
-              <span className="text-sm">30 dias ({Number(orcamento.percentualPrazo)}%):</span>
-              <span className="font-semibold text-sm">{formatCurrency(valorPrazo)}</span>
-            </div>
+            {Number(orcamento.percentualSinal) > 0 && (
+              <div className="flex justify-between p-2 bg-muted rounded">
+                <span className="text-sm">Sinal ({Number(orcamento.percentualSinal)}%):</span>
+                <span className="font-semibold text-sm">{formatCurrency(valorSinal)}</span>
+              </div>
+            )}
+            {Number(orcamento.percentualRetirada) > 0 && (
+              <div className="flex justify-between p-2 bg-muted rounded">
+                <span className="text-sm">Retirada ({Number(orcamento.percentualRetirada)}%):</span>
+                <span className="font-semibold text-sm">{formatCurrency(valorRetirada)}</span>
+              </div>
+            )}
+            {Number(orcamento.percentualPrazo) > 0 && (
+              <div className="flex justify-between p-2 bg-muted rounded">
+                <span className="text-sm">30 dias ({Number(orcamento.percentualPrazo)}%):</span>
+                <span className="font-semibold text-sm">{formatCurrency(valorPrazo)}</span>
+              </div>
+            )}
           </div>
 
           <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200 space-y-1">

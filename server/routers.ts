@@ -256,6 +256,7 @@ export const appRouter = router({
         markup: z.number().min(0),
         custo: z.number().optional(),
         prazoDias: z.number().optional(),
+        prazoEntregaTexto: z.string().optional(),
         percentualSinal: z.number().optional(),
         percentualRetirada: z.number().optional(),
         percentualPrazo: z.number().optional(),
@@ -275,8 +276,19 @@ export const appRouter = router({
         );
 
         // Atualizar dados do orçamento se fornecidos
-        if (input.prazoDias || input.percentualSinal || input.percentualRetirada || input.percentualPrazo || input.observacoes) {
-          // TODO: Implementar atualização de dados do orçamento
+        if (input.prazoDias !== undefined || input.prazoEntregaTexto !== undefined || input.percentualSinal !== undefined || input.percentualRetirada !== undefined || input.percentualPrazo !== undefined) {
+          // Buscar o orcamentoId do item
+          const orcamentoId = await db.getOrcamentoIdFromItem(input.itemId);
+          
+          // Atualizar percentuais e prazo do orçamento
+          await db.updateOrcamentoPercentuais(
+            orcamentoId,
+            input.prazoDias,
+            input.percentualSinal,
+            input.percentualRetirada,
+            input.percentualPrazo,
+            input.prazoEntregaTexto
+          );
         }
 
         return { success: true };

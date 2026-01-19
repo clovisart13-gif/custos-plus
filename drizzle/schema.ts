@@ -66,6 +66,7 @@ export const orcamentos = mysqlTable("orcamentos", {
   dataEmissao: timestamp("data_emissao").defaultNow().notNull(),
   validade: int("validade").default(30).notNull(),
   prazoDias: int("prazo_dias").default(30).notNull(),
+  prazoEntregaTexto: text("prazo_entrega_texto").notNull(),
   
   totalPecas: int("total_pecas").default(0).notNull(),
   subtotal: decimal("subtotal", { precision: 12, scale: 2 }).default("0.00").notNull(),
@@ -83,6 +84,9 @@ export const orcamentos = mysqlTable("orcamentos", {
 
 export type Orcamento = typeof orcamentos.$inferSelect;
 export type InsertOrcamento = typeof orcamentos.$inferInsert;
+
+// Adicionar tipo para update que torna prazoEntregaTexto opcional
+export type UpdateOrcamento = Partial<InsertOrcamento>;
 
 /**
  * Itens de Orçamento - Quotation Items
