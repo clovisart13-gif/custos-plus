@@ -2,11 +2,12 @@ import { useParams, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Download, Printer, Send, Trash2 } from "lucide-react";
+import { ArrowLeft, Download, Printer, Send, Trash2, Edit2 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { useState, useRef } from "react";
 import AdicionarItemManual from "@/components/AdicionarItemManual";
 import EditarItemOrcamento from "@/components/EditarItemOrcamento";
+import ParcelasEditor from "@/components/ParcelasEditor";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +21,7 @@ export default function VisualizarOrcamento() {
   const [, navigate] = useLocation();
   const [showAddItem, setShowAddItem] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
+  const [editingParcelas, setEditingParcelas] = useState(false);
   const [enviandoKanban, setEnviandoKanban] = useState(false);
   const [enviado, setEnviado] = useState(false);
   const [deletingItemId, setDeletingItemId] = useState<number | null>(null);
@@ -296,42 +298,66 @@ export default function VisualizarOrcamento() {
 
       {/* Condições de Pagamento */}
       <Card className="print:border-0 print:shadow-none print:mb-0">
-        <CardHeader>
+        <CardHeader className="flex flex-row justify-between items-center">
           <CardTitle className="text-base">Condições de Pagamento</CardTitle>
+          {!editingParcelas && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setEditingParcelas(true)}
+              className="gap-2"
+            >
+              <Edit2 className="h-4 w-4" />
+              Editar Parcelas
+            </Button>
+          )}
         </CardHeader>
         <CardContent>
-          <div className="space-y-1">
-            {Number(orcamento.percentualSinal) > 0 && (
-              <div className="flex justify-between p-2 bg-muted rounded">
-                <span className="text-sm">Sinal ({Number(orcamento.percentualSinal)}%):</span>
-                <span className="font-semibold text-sm">{formatCurrency(valorSinal)}</span>
+          {editingParcelas ? (
+            <ParcelasEditor
+              orcamento={orcamento}
+              onSuccess={() => {
+                setEditingParcelas(false);
+                refetch();
+              }}
+              onCancel={() => setEditingParcelas(false)}
+            />
+          ) : (
+            <>
+              <div className="space-y-1">
+                {Number(orcamento.percentualSinal) > 0 && (
+                  <div className="flex justify-between p-2 bg-muted rounded">
+                    <span className="text-sm">Sinal ({Number(orcamento.percentualSinal)}%):</span>
+                    <span className="font-semibold text-sm">{formatCurrency(valorSinal)}</span>
+                  </div>
+                )}
+                {Number(orcamento.percentualRetirada) > 0 && (
+                  <div className="flex justify-between p-2 bg-muted rounded">
+                    <span className="text-sm">Retirada ({Number(orcamento.percentualRetirada)}%):</span>
+                    <span className="font-semibold text-sm">{formatCurrency(valorRetirada)}</span>
+                  </div>
+                )}
+                {Number(orcamento.percentualPrazo) > 0 && (
+                  <div className="flex justify-between p-2 bg-muted rounded">
+                    <span className="text-sm">30 dias ({Number(orcamento.percentualPrazo)}%):</span>
+                    <span className="font-semibold text-sm">{formatCurrency(valorPrazo)}</span>
+                  </div>
+                )}
               </div>
-            )}
-            {Number(orcamento.percentualRetirada) > 0 && (
-              <div className="flex justify-between p-2 bg-muted rounded">
-                <span className="text-sm">Retirada ({Number(orcamento.percentualRetirada)}%):</span>
-                <span className="font-semibold text-sm">{formatCurrency(valorRetirada)}</span>
-              </div>
-            )}
-            {Number(orcamento.percentualPrazo) > 0 && (
-              <div className="flex justify-between p-2 bg-muted rounded">
-                <span className="text-sm">30 dias ({Number(orcamento.percentualPrazo)}%):</span>
-                <span className="font-semibold text-sm">{formatCurrency(valorPrazo)}</span>
-              </div>
-            )}
-          </div>
 
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200 space-y-1">
-            <div className="text-sm text-blue-900">
-              <strong>PIX:</strong> CNPJ 50.295.280/0001-80
-            </div>
-            <div className="text-sm text-blue-900">
-              <strong>Email:</strong> comercial@quickthreads.com.br
-            </div>
-            <div className="text-sm text-blue-900">
-              <strong>Site:</strong> www.r2pbconfeccoes.com.br
-            </div>
-          </div>
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200 space-y-1">
+                <div className="text-sm text-blue-900">
+                  <strong>PIX:</strong> CNPJ 50.295.280/0001-80
+                </div>
+                <div className="text-sm text-blue-900">
+                  <strong>Email:</strong> comercial@quickthreads.com.br
+                </div>
+                <div className="text-sm text-blue-900">
+                  <strong>Site:</strong> www.r2pbconfeccoes.com.br
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
 

@@ -363,3 +363,22 @@
 - [ ] Exibir preview de valores antes de criar
 - [ ] Salvar markup no orçamento
 - [ ] Testar cálculos
+
+
+## ETAPA 2 - Cálculo Automático de PV com Markup (CONCLUÍDA)
+
+- [x] Adicionar campo de markup único no modal SelecionarFichasModal
+- [x] Implementar cálculo automático: PV = Custo × (1 + markup)
+- [x] Mostrar preview em tempo real: Custo, PV e Lucro
+- [x] Adicionar botão "Selecionar Todas" / "Desselecionar Todas"
+- [x] Validar que cliente e marca são obrigatórios
+- [x] Criar itens com PV calculado automaticamente
+
+## ETAPA 3 - Percentuais Unificados (CONCLUÍDA)
+
+- [x] Adicionar seção "Parcelas" na página de detalhes do orçamento
+- [x] Criar componente ParcelasEditor para editar Sinal, Retirada e Prazo
+- [x] Validar que percentuais somam 100%
+- [x] Garantir que todos os itens usam os mesmos percentuais
+- [x] Implementar persistência dos percentuais no banco
+- [x] Testar fluxo completo de edição de percentuais
