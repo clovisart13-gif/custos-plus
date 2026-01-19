@@ -134,37 +134,22 @@ export default function EditarItemOrcamento({
 
     setIsLoading(true);
     try {
-      // Mapear percentuais por nome em vez de posição
-      const findPercentualByName = (nomesPossiveis: string[]): number => {
-        for (const nome of nomesPossiveis) {
-          const parcela = parcelas.find(p => p.nome.toLowerCase() === nome.toLowerCase());
-          if (parcela) return parseFloat(parcela.percentual.toString());
-        }
-        return 0;
-      };
-
-      const percentualSinal = findPercentualByName(["Sinal", "Entrada", "Adiantamento"]) || parseFloat(parcelas[0]?.percentual) || 0;
-      const percentualRetirada = findPercentualByName(["À Vista", "Retirada", "Entrega"]) || parseFloat(parcelas[1]?.percentual) || 0;
-      const percentualPrazo = findPercentualByName(["30 dias", "Prazo", "30DD"]) || parseFloat(parcelas[2]?.percentual) || 0;
-
       const payload = {
         itemId: item.id,
         quantidade: parseFloat(quantidade),
         valorUnitario: parseFloat(valorUnitario),
         markup: parseFloat(markup),
-        percentualSinal,
-        percentualRetirada,
-        percentualPrazo,
+        percentualSinal: parseFloat(parcelas[0]?.percentual) || 0,
+        percentualRetirada: parseFloat(parcelas[1]?.percentual) || 0,
+        percentualPrazo: parseFloat(parcelas[2]?.percentual) || 0,
         prazoDias: parseInt(prazoDias),
         prazoEntregaTexto,
         observacoes,
       };
       console.log("[EditarItemOrcamento] Enviando payload:", payload);
-      console.log("[EditarItemOrcamento] Parcelas mapeadas:", { percentualSinal, percentualRetirada, percentualPrazo });
       await updateItemMutation.mutateAsync(payload);
       toast.success("Item atualizado com sucesso!");
       utils.orcamentos.getItens.invalidate();
-      utils.orcamentos.getById.invalidate();
       onSuccess();
     } catch (error) {
       toast.error("Erro ao atualizar item");

@@ -278,11 +278,11 @@ export const appRouter = router({
           valorComMarkup
         );
 
-        // Obter o orcamentoId do item
-        const orcamentoId = await db.getOrcamentoIdFromItem(input.itemId);
-
         // Atualizar dados do orçamento se fornecidos
         if (input.prazoDias !== undefined || input.prazoEntregaTexto !== undefined || input.percentualSinal !== undefined || input.percentualRetirada !== undefined || input.percentualPrazo !== undefined) {
+          // Buscar o orcamentoId do item
+          const orcamentoId = await db.getOrcamentoIdFromItem(input.itemId);
+          
           // Atualizar percentuais e prazo do orçamento
           await db.updateOrcamentoPercentuais(
             orcamentoId,
@@ -292,13 +292,9 @@ export const appRouter = router({
             input.percentualPrazo,
             input.prazoEntregaTexto
           );
-          console.log("[updateItem] Orçamento atualizado:", { orcamentoId, prazoDias: input.prazoDias, percentualSinal: input.percentualSinal, percentualRetirada: input.percentualRetirada, percentualPrazo: input.percentualPrazo });
         }
 
-        // Retornar o orçamento atualizado
-        const orcamentoAtualizado = await db.getOrcamentoById(orcamentoId, ctx.user.id);
-        console.log("[updateItem] Retornando orçamento:", orcamentoAtualizado);
-        return orcamentoAtualizado || { success: true };
+        return { success: true };
       }),
 
     deleteItem: protectedProcedure

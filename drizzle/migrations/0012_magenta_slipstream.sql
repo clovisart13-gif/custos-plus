@@ -1,1 +1,0 @@
-ALTER TABLE `orcamentos` MODIFY COLUMN `parcelas` text NOT NULL;
