@@ -99,6 +99,27 @@
       "when": 1768791334676,
       "tag": "0013_cold_chronomancer",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "5",
+      "when": 1768792268047,
+      "tag": "0014_famous_flatman",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "5",
+      "when": 1768792579032,
+      "tag": "0015_sweet_the_executioner",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "5",
+      "when": 1768792816217,
+      "tag": "0016_high_loa",
+      "breakpoints": true
     }
   ]
 }

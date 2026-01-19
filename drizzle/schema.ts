@@ -76,6 +76,9 @@ export const orcamentos = mysqlTable("orcamentos", {
   percentualRetirada: decimal("percentual_retirada", { precision: 5, scale: 2 }).default("25.00").notNull(),
   percentualPrazo: decimal("percentual_prazo", { precision: 5, scale: 2 }).default("50.00").notNull(),
   
+  // Parcelas dinâmicas em JSON (nullable para compatibilidade)
+  parcelasJson: text("parcelas_json"),
+  
   status: mysqlEnum("status", ["pendente", "aprovado", "reprovado"]).default("pendente").notNull(),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
