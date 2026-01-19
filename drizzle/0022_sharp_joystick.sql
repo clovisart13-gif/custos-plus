@@ -1,0 +1,1 @@
+ALTER TABLE `orcamentos` MODIFY COLUMN `marca` varchar(100) NOT NULL;

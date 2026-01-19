@@ -30,8 +30,8 @@ export default function NovoOrcamentoManual({ onSuccess }: NovoOrcamentoManualPr
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.nomeCliente || !formData.marca) {
-      toast.error("Preencha todos os campos obrigatórios");
+    if (!formData.nomeCliente) {
+      toast.error("Preencha nome do cliente!");
       return;
     }
 
@@ -50,18 +50,16 @@ export default function NovoOrcamentoManual({ onSuccess }: NovoOrcamentoManualPr
           placeholder="Ex: Empresa XYZ"
           value={formData.nomeCliente}
           onChange={(e) => setFormData({ ...formData, nomeCliente: e.target.value })}
-          required
         />
       </div>
 
       <div>
-        <Label htmlFor="marca">Marca/Coleção *</Label>
+        <Label htmlFor="marca">Marca/Coleção (Opcional)</Label>
         <Input
           id="marca"
           placeholder="Ex: Coleção Verão 2024"
           value={formData.marca}
           onChange={(e) => setFormData({ ...formData, marca: e.target.value })}
-          required
         />
       </div>
 

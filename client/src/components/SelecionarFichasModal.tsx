@@ -74,8 +74,8 @@ export default function SelecionarFichasModal({
   const handleCreateOrcamento = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!nomeCliente || !marca) {
-      toast.error("Preencha nome do cliente e marca!");
+    if (!nomeCliente) {
+      toast.error("Preencha nome do cliente!");
       return;
     }
 
@@ -104,7 +104,7 @@ export default function SelecionarFichasModal({
           orcamentoId: orcamento.id,
           fichaId: ficha.id,
           referencia: ficha.referencia,
-          descricao: ficha.observacoes || ficha.referencia,
+          descricao: ficha.familia,
           quantidade: 1,
           custo: ficha.custo || 0,
           valorUnitario: valorUnitario,
@@ -152,7 +152,7 @@ export default function SelecionarFichasModal({
                 />
               </div>
               <div>
-                <Label htmlFor="marca">Marca</Label>
+                <Label htmlFor="marca">Marca (Opcional)</Label>
                 <Input
                   id="marca"
                   placeholder="Ex: Nike"

@@ -59,8 +59,8 @@ export default function GerarOrcamentoEmLote({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!nomeCliente || !marca) {
-      toast.error("Preencha todos os campos!");
+    if (!nomeCliente) {
+      toast.error("Preencha nome do cliente!");
       return;
     }
 
@@ -112,7 +112,7 @@ export default function GerarOrcamentoEmLote({
           orcamentoId: orcamento.id,
           fichaId: ficha.id,
           referencia: ficha.referencia,
-          descricao: ficha.observacoes || ficha.referencia,
+          descricao: ficha.familia,
           quantidade: 1,
           custo: custoTotal,
           valorUnitario: valorUnitario,
@@ -197,13 +197,12 @@ export default function GerarOrcamentoEmLote({
             </div>
 
             <div>
-              <Label htmlFor="marca">Marca/Colecao *</Label>
+              <Label htmlFor="marca">Marca/Coleção (Opcional)</Label>
               <Input
                 id="marca"
                 value={marca}
                 onChange={(e) => setMarca(e.target.value)}
-                placeholder="Ex: Colecao Verao"
-                required
+                placeholder="Ex: Coleção Verão"
               />
             </div>
 

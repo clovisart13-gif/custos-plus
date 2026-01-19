@@ -46,8 +46,8 @@ export default function CriarOrcamentoSimples({
   const handleCreateOrcamento = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!nomeCliente || !marca) {
-      toast.error("Preencha nome do cliente e marca!");
+    if (!nomeCliente) {
+      toast.error("Preencha nome do cliente!");
       return;
     }
 
@@ -157,13 +157,12 @@ export default function CriarOrcamentoSimples({
             </div>
 
             <div>
-              <Label htmlFor="marca">Marca/Coleção *</Label>
+              <Label htmlFor="marca">Marca/Coleção (Opcional)</Label>
               <Input
                 id="marca"
                 value={marca}
                 onChange={(e) => setMarca(e.target.value)}
                 placeholder="Ex: Verão 2026"
-                required
               />
             </div>
 

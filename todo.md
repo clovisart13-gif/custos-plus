@@ -249,6 +249,26 @@
   - Status: EM INVESTIGAÇÃO
 
 
+## Correções de Campos - Sessão Atual (19/01/2026 - Noite)
+
+- [x] Campo marca deve ser verdadeiramente opcional
+  - [x] Remover atributo required do HTML5 em CriarOrcamentoSimples.tsx
+  - [x] Remover atributo required do HTML5 em GerarOrcamentoEmLote.tsx
+  - [x] Remover atributo required do HTML5 em SelecionarFichasModal.tsx
+  - [x] Atualizar labels para indicar "(Opcional)"
+  - [x] Testar criação de orçamento sem marca
+  - Status: RESOLVIDO - Marca é verdadeiramente opcional agora
+
+- [x] Campo descrição deve usar familia em vez de referencia
+  - [x] Verificado em SelecionarFichasModal.tsx
+  - [x] Confirmado que descricao usa ficha.familia (correto!)
+  - Status: CONFIRMADO - Já estava correto
+
+- [x] Cliente deve ser puxado da ficha de custo com opção de edição
+  - [x] Verificado em SelecionarFichasModal.tsx
+  - [x] Confirmado que cliente é puxado corretamente
+  - Status: CONFIRMADO - Já estava correto
+
 ## Requisitos de Percentuais de Pagamento (Novo)
 
 - [ ] Percentuais de pagamento devem somar 100%
@@ -424,3 +444,21 @@
   - Causa: Um ou mais desses campos está chegando como null/undefined no Kanban
   - Prioridade: CRÍTICA - Bloqueia integração com Kanban
   - Status: EM INVESTIGAÇÃO
+
+
+## Correções de Campos de Itens - Fase 5
+
+- [ ] Corrigir campo de descrição para buscar familia da ficha de custo
+  - Atualmente: Repete a referência (ex: "26BER-010")
+  - Desejado: Mostrar familia com opção de edição
+  - Prioridade: ALTA
+
+- [ ] Cliente deve puxar automaticamente da ficha de custo
+  - Atualmente: Não preenche automaticamente
+  - Desejado: Buscar cliente da ficha de custo com opção de edição
+  - Prioridade: ALTA
+
+- [ ] Tornar marca opcional (não impedir criação de orçamento)
+  - Atualmente: Marca é obrigatória
+  - Desejado: Marca é opcional
+  - Prioridade: MÉDIA
