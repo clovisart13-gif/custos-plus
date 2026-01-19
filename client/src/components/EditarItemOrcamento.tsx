@@ -4,6 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import { X, Plus } from "lucide-react";
+
+interface Parcela {
+  id: string;
+  nome: string;
+  percentual: number;
+}
 
 interface EditarItemOrcamentoProps {
   item: {
@@ -39,10 +46,12 @@ export default function EditarItemOrcamento({
   const [markup, setMarkup] = useState((item.markupDivisor || 0.5).toString());
   const [custo, setCusto] = useState((item.custo || 0).toString());
   const [prazoDias, setPrazoDias] = useState(orcamento?.prazoDias?.toString() || "30");
-  const [prazoEntregaTexto, setPrazoEntregaTexto] = useState(orcamento?.prazoEntregaTexto || "30 dias após aprovação do protótipo");
-  const [percentualSinal, setPercentualSinal] = useState((orcamento?.percentualSinal || 25).toString());
-  const [percentualRetirada, setPercentualRetirada] = useState((orcamento?.percentualRetirada || 25).toString());
-  const [percentualPrazo, setPercentualPrazo] = useState((orcamento?.percentualPrazo || 50).toString());
+  const [prazoEntregaTexto, setPrazoEntregaTexto] = useState(orcamento?.prazoEntregaTexto || "");
+  const [parcelas, setParcelas] = useState<Parcela[]>([
+    { id: "1", nome: "Sinal", percentual: orcamento?.percentualSinal || 25 },
+    { id: "2", nome: "À Vista", percentual: orcamento?.percentualRetirada || 25 },
+    { id: "3", nome: "30 dias", percentual: orcamento?.percentualPrazo || 50 },
+  ]);
   const [observacoes, setObservacoes] = useState(orcamento?.observacoes || "");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -71,12 +80,33 @@ export default function EditarItemOrcamento({
     parseFloat(quantidade) * parseFloat(valorUnitario)
   ).toFixed(2);
 
-  // Mostrar apenas parcelas com % > 0
-  const mostrarPrazo = parseFloat(percentualPrazo) > 0;
-
   // Calcular soma de percentuais
-  const somaPercentuais = parseFloat(percentualSinal) + parseFloat(percentualRetirada) + (mostrarPrazo ? parseFloat(percentualPrazo) : 0);
+  const somaPercentuais = parcelas.reduce((sum, p) => sum + (Number(p.percentual) || 0), 0);
   const percentuaisValidos = Math.abs(somaPercentuais - 100) < 0.01;
+
+  // Adicionar nova parcela
+  const handleAdicionarParcela = () => {
+    const novaId = (Math.max(...parcelas.map(p => parseInt(p.id)), 0) + 1).toString();
+    setParcelas([...parcelas, { id: novaId, nome: "", percentual: 0 }]);
+  };
+
+  // Remover parcela
+  const handleRemoverParcela = (id: string) => {
+    if (parcelas.length > 1) {
+      setParcelas(parcelas.filter(p => p.id !== id));
+    } else {
+      toast.error("Deve haver pelo menos uma parcela");
+    }
+  };
+
+  // Atualizar parcela
+  const handleAtualizarParcela = (id: string, campo: "nome" | "percentual", valor: string | number) => {
+    setParcelas(parcelas.map(p => 
+      p.id === id 
+        ? { ...p, [campo]: campo === "percentual" ? parseFloat(valor.toString()) : valor }
+        : p
+    ));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,6 +126,12 @@ export default function EditarItemOrcamento({
       return;
     }
 
+    // Validar que todas as parcelas têm nome
+    if (parcelas.some(p => !p.nome.trim())) {
+      toast.error("Todas as parcelas devem ter um nome");
+      return;
+    }
+
     setIsLoading(true);
     try {
       const payload = {
@@ -103,9 +139,9 @@ export default function EditarItemOrcamento({
         quantidade: parseFloat(quantidade),
         valorUnitario: parseFloat(valorUnitario),
         markup: parseFloat(markup),
-        percentualSinal: parseFloat(percentualSinal),
-        percentualRetirada: parseFloat(percentualRetirada),
-        percentualPrazo: parseFloat(percentualPrazo),
+        percentualSinal: parseFloat(parcelas[0]?.percentual) || 0,
+        percentualRetirada: parseFloat(parcelas[1]?.percentual) || 0,
+        percentualPrazo: parseFloat(parcelas[2]?.percentual) || 0,
         prazoDias: parseInt(prazoDias),
         prazoEntregaTexto,
         observacoes,
@@ -204,46 +240,64 @@ export default function EditarItemOrcamento({
         </div>
       </div>
 
-      {/* Percentuais de Pagamento */}
+      {/* Percentuais de Pagamento Dinâmicos */}
       <div className="space-y-3 pb-3 border-b">
-        <div>
-          <label className="text-sm font-medium">Sinal (%)</label>
-          <Input
-            type="number"
-            step="0.01"
-            value={percentualSinal}
-            onChange={(e) => setPercentualSinal(e.target.value)}
-            placeholder="Ex: 50"
-          />
-        </div>
-
-        <div>
-          <label className="text-sm font-medium">Retirada (%)</label>
-          <Input
-            type="number"
-            step="0.01"
-            value={percentualRetirada}
-            onChange={(e) => setPercentualRetirada(e.target.value)}
-            placeholder="Ex: 50"
-          />
-        </div>
-
-        {mostrarPrazo && (
-          <div>
-            <label className="text-sm font-medium">Prazo (%)</label>
-            <Input
-              type="number"
-              step="0.01"
-              value={percentualPrazo}
-              onChange={(e) => setPercentualPrazo(e.target.value)}
-              placeholder="Ex: 0"
-            />
+        <div className="flex justify-between items-center">
+          <label className="text-sm font-medium">Formas de Pagamento</label>
+          <div className={`text-sm font-medium ${percentuaisValidos ? 'text-green-600' : 'text-red-600'}`}>
+            {somaPercentuais.toFixed(1)}%
           </div>
-        )}
-
-        <div className={`text-sm font-medium ${percentuaisValidos ? 'text-green-600' : 'text-red-600'}`}>
-          Total de percentuais: {somaPercentuais.toFixed(1)}%
         </div>
+
+        {/* Lista de Parcelas */}
+        <div className="space-y-2">
+          {parcelas.map((parcela, index) => (
+            <div key={parcela.id} className="flex gap-2 items-end">
+              <div className="flex-1">
+                <label className="text-xs font-medium">Nome</label>
+                <Input
+                  type="text"
+                  value={parcela.nome}
+                  onChange={(e) => handleAtualizarParcela(parcela.id, "nome", e.target.value)}
+                  placeholder="Ex: Sinal, À Vista, 30DD"
+                  className="text-sm"
+                />
+              </div>
+              <div className="w-24">
+                <label className="text-xs font-medium">%</label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={parcela.percentual}
+                  onChange={(e) => handleAtualizarParcela(parcela.id, "percentual", e.target.value)}
+                  placeholder="0"
+                  className="text-sm"
+                />
+              </div>
+              {parcelas.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => handleRemoverParcela(parcela.id)}
+                  className="p-2 hover:bg-red-100 rounded"
+                >
+                  <X className="w-4 h-4 text-red-600" />
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Botão Adicionar Parcela */}
+        {!percentuaisValidos && somaPercentuais < 100 && (
+          <button
+            type="button"
+            onClick={handleAdicionarParcela}
+            className="w-full flex items-center justify-center gap-2 p-2 border border-dashed border-blue-400 rounded hover:bg-blue-50 text-blue-600 text-sm font-medium"
+          >
+            <Plus className="w-4 h-4" />
+            Adicionar Parcela
+          </button>
+        )}
       </div>
 
       {/* Observações */}
