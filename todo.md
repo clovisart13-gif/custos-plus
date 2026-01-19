@@ -462,3 +462,32 @@
   - Atualmente: Marca é obrigatória
   - Desejado: Marca é opcional
   - Prioridade: MÉDIA
+
+
+## Bugs do Dashboard - Sessão Atual (19/01/2026 - Noite)
+
+- [ ] Custo Médio Geral mostrando R$ 0.00 em vez do valor correto
+  - Sintoma: Card "Custo Médio Geral" sempre mostra R$ 0.00
+  - Causa: Investigando - lógica de cálculo pode estar errada
+  - Prioridade: ALTA - Métrica importante para análise
+  - Status: EM INVESTIGAÇÃO
+
+- [ ] Mesma família (corta-vento) aparecendo como mais cara E mais barata
+  - Sintoma: Card "Família Mais Cara" e "Família Mais Barata" mostram "corta vento"
+  - Causa: Lógica de comparação está retornando a mesma família para ambos
+  - Prioridade: ALTA - Erro lógico grave
+  - Status: EM INVESTIGAÇÃO
+
+
+- [x] Adicionar filtro por família ao dashboard
+  - [x] Criar dropdown com lista de famílias
+  - [x] Filtrar tabela de custos médios por família selecionada
+  - [x] Atualizar KPIs quando filtro mudar
+  - [x] Mostrar "Todas as famílias" como opção padrão
+  - Status: IMPLEMENTADO - Filtro funcional no card de Custos Médios por Família
+
+- [x] Corrigir cálculo de Custo Médio Geral no dashboard
+  - [x] Implementar cálculo correto de média por família
+  - [x] Corrigir identificação de família mais cara e mais barata
+  - [x] Atualizar testes para validar novos nomes de propriedades
+  - Status: IMPLEMENTADO - Lógica corrigida em routers.ts

@@ -474,33 +474,40 @@ export const appRouter = router({
           }, 0) / fichas.length
         : 0;
       
-      const familiasMaisCaras = fichas.length > 0
-        ? Array.from(new Map(fichas.map((f: any) => [
-            f.familia,
-            {
-              familia: f.familia,
-              total: (f.modelagem || 0) + (f.piloto || 0) + (f.corte || 0) + 
-                    (f.beneficiamento || 0) + (f.costura || 0) + (f.lavanderia || 0) + 
-                    (f.acabamento || 0) + (f.passadoria || 0) + (f.tecido || 0) + (f.aviamento || 0)
-            }
-          ])).values())
-          .sort((a: any, b: any) => b.total - a.total)
+      // Calcular média por família para encontrar a mais cara e mais barata
+      const familiasMedias = new Map<string, { familia: string; totalMedio: number; count: number }>();
+      
+      fichas.forEach((ficha: any) => {
+        const total = (ficha.modelagem || 0) + (ficha.piloto || 0) + (ficha.corte || 0) + 
+                     (ficha.beneficiamento || 0) + (ficha.costura || 0) + (ficha.lavanderia || 0) + 
+                     (ficha.acabamento || 0) + (ficha.passadoria || 0) + (ficha.tecido || 0) + (ficha.aviamento || 0);
+        
+        if (!familiasMedias.has(ficha.familia)) {
+          familiasMedias.set(ficha.familia, { familia: ficha.familia, totalMedio: 0, count: 0 });
+        }
+        
+        const familia = familiasMedias.get(ficha.familia)!;
+        familia.totalMedio += total;
+        familia.count += 1;
+      });
+      
+      // Calcular média de cada família
+      const familiasComMedia = Array.from(familiasMedias.values()).map(f => ({
+        ...f,
+        totalMedio: f.count > 0 ? f.totalMedio / f.count : 0
+      }));
+      
+      const familiasMaisCaras = familiasComMedia.length > 0
+        ? familiasComMedia
+          .sort((a: any, b: any) => b.totalMedio - a.totalMedio)
           .slice(0, 1)
           .map((item: any) => item.familia)
           .join(', ')
         : 'N/A';
       
-      const familiasMaisBaratas = fichas.length > 0
-        ? Array.from(new Map(fichas.map((f: any) => [
-            f.familia,
-            {
-              familia: f.familia,
-              total: (f.modelagem || 0) + (f.piloto || 0) + (f.corte || 0) + 
-                    (f.beneficiamento || 0) + (f.costura || 0) + (f.lavanderia || 0) + 
-                    (f.acabamento || 0) + (f.passadoria || 0) + (f.tecido || 0) + (f.aviamento || 0)
-            }
-          ])).values())
-          .sort((a: any, b: any) => a.total - b.total)
+      const familiasMaisBaratas = familiasComMedia.length > 0
+        ? familiasComMedia
+          .sort((a: any, b: any) => a.totalMedio - b.totalMedio)
           .slice(0, 1)
           .map((item: any) => item.familia)
           .join(', ')

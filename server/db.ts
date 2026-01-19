@@ -94,8 +94,8 @@ export async function createFichaCusto(data: InsertFichaCusto) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  const result = await db.insert(fichasCusto).values(data);
-  return result;
+  await db.insert(fichasCusto).values(data);
+  return { success: true };
 }
 
 export async function getFichasCustoByUser(userId: number) {

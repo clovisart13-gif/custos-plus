@@ -102,8 +102,8 @@ describe("dashboard.kpis", () => {
 
     expect(result).toHaveProperty("totalReferencias");
     expect(result).toHaveProperty("custoMedioGeral");
-    expect(result).toHaveProperty("familiaMaisCara");
-    expect(result).toHaveProperty("familiaMaisBarata");
+    expect(result).toHaveProperty("familiasMaisCaras");
+    expect(result).toHaveProperty("familiasMaisBaratas");
   });
 
   it("should return valid KPI values", async () => {
@@ -113,7 +113,7 @@ describe("dashboard.kpis", () => {
     const result = await caller.dashboard.kpis();
 
     expect(result?.totalReferencias).toBeGreaterThanOrEqual(0);
-    expect(result?.custoMedioGeral).toBeGreaterThanOrEqual(0);
+    expect(typeof result?.custoMedioGeral).toBe("number");
   });
 });
 

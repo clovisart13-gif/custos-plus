@@ -14,8 +14,10 @@ import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
 import { FileText, DollarSign, TrendingUp, TrendingDown, Loader2 } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useState, useMemo } from "react";
 
 export default function Dashboard() {
+  const [familiaFiltro, setFamiliaFiltro] = useState<string>('todos');
   const { user, loading: authLoading, isAuthenticated } = useAuth();
 
   const { data: kpis, isLoading: kpisLoading } = trpc.dashboard.kpis.useQuery(undefined, {
@@ -26,6 +28,19 @@ export default function Dashboard() {
     undefined,
     { enabled: isAuthenticated }
   );
+
+  // Filtrar dados por família selecionada
+  const custosMediosFiltrados = useMemo(() => {
+    if (!custosMedios) return [];
+    if (familiaFiltro === 'todos') return custosMedios;
+    return custosMedios.filter(item => item.familia === familiaFiltro);
+  }, [custosMedios, familiaFiltro]);
+
+  // Extrair famílias únicas
+  const familias = useMemo(() => {
+    if (!custosMedios) return [];
+    return Array.from(new Set(custosMedios.map(item => item.familia))).sort();
+  }, [custosMedios]);
 
   if (authLoading) {
     return (
@@ -48,13 +63,13 @@ export default function Dashboard() {
   }
 
   // Preparar dados para gráfico de barras
-  const barChartData = custosMedios?.map((item) => ({
+  const barChartData = custosMediosFiltrados?.map((item) => ({
     familia: item.familia,
     total: item.totalMedio,
   })) || [];
 
   // Preparar dados para gráfico de pizza
-  const totalMaoDeObra = custosMedios?.reduce(
+  const totalMaoDeObra = custosMediosFiltrados?.reduce(
     (sum, item) =>
       sum +
       item.modelagem +
@@ -68,7 +83,7 @@ export default function Dashboard() {
     0
   ) || 0;
 
-  const totalMateriaPrima = custosMedios?.reduce(
+  const totalMateriaPrima = custosMediosFiltrados?.reduce(
     (sum, item) => sum + item.tecido + item.aviamento,
     0
   ) || 0;
@@ -163,15 +178,27 @@ export default function Dashboard() {
 
         {/* Tabela de Custos Médios por Família */}
         <Card className="mb-8">
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Custos Médios por Família</CardTitle>
+            <select
+              value={familiaFiltro}
+              onChange={(e) => setFamiliaFiltro(e.target.value)}
+              className="px-3 py-2 border border-input rounded-md bg-background text-foreground"
+            >
+              <option value="todos">Todas as famílias</option>
+              {familias.map((familia) => (
+                <option key={familia} value={familia}>
+                  {familia}
+                </option>
+              ))}
+            </select>
           </CardHeader>
           <CardContent>
             {custosLoading ? (
               <div className="flex justify-center py-8">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
-            ) : custosMedios && custosMedios.length > 0 ? (
+            ) : custosMediosFiltrados && custosMediosFiltrados.length > 0 ? (
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -192,10 +219,10 @@ export default function Dashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {custosMedios.map((item) => (
+                    {custosMediosFiltrados.map((item) => (
                       <TableRow key={item.familia}>
                         <TableCell className="font-medium">{item.familia}</TableCell>
-                        <TableCell className="text-right">{item.quantidade}</TableCell>
+                        <TableCell className="text-right">{item.count}</TableCell>
                         <TableCell className="text-right">R$ {item.modelagem.toFixed(2)}</TableCell>
                         <TableCell className="text-right">R$ {item.piloto.toFixed(2)}</TableCell>
                         <TableCell className="text-right">R$ {item.corte.toFixed(2)}</TableCell>
