@@ -304,30 +304,6 @@ export const appRouter = router({
         return { success: true };
       }),
 
-    update: protectedProcedure
-      .input(z.object({
-        id: z.number(),
-        percentualSinal: z.number().optional(),
-        percentualRetirada: z.number().optional(),
-        percentualPrazo: z.number().optional(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        const orcamento = await db.getOrcamentoById(input.id, ctx.user.id);
-        if (!orcamento) {
-          throw new Error("Orcamento nao encontrado");
-        }
-
-        const updateData: any = {};
-        if (input.percentualSinal !== undefined) updateData.percentualSinal = input.percentualSinal;
-        if (input.percentualRetirada !== undefined) updateData.percentualRetirada = input.percentualRetirada;
-        if (input.percentualPrazo !== undefined) updateData.percentualPrazo = input.percentualPrazo;
-
-        await db.updateOrcamento(input.id, ctx.user.id, updateData);
-        
-        const orcamentoAtualizado = await db.getOrcamentoById(input.id, ctx.user.id);
-        return orcamentoAtualizado;
-      }),
-
     updateStatus: protectedProcedure
       .input(z.object({
         orcamentoId: z.number(),

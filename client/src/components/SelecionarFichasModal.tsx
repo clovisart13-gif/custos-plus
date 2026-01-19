@@ -1,10 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -25,26 +24,10 @@ export default function SelecionarFichasModal({
   const [selectedFichas, setSelectedFichas] = useState<number[]>([]);
   const [markup, setMarkup] = useState("0.5");
   const [isCreating, setIsCreating] = useState(false);
-  const [filtroCliente, setFiltroCliente] = useState<string>("");
 
   const { data: fichas = [] } = trpc.fichasCusto.list.useQuery();
   const createMutation = trpc.orcamentos.create.useMutation();
   const createItemMutation = trpc.orcamentos.createItem.useMutation();
-
-  // Extrair clientes únicos das fichas
-  const clientesUnicos = useMemo(() => {
-    const clientes = new Set<string>();
-    fichas.forEach((f) => {
-      if (f.cliente) clientes.add(f.cliente);
-    });
-    return Array.from(clientes).sort();
-  }, [fichas]);
-
-  // Filtrar fichas por cliente selecionado
-  const fichasFiltradas = useMemo(() => {
-    if (!filtroCliente || filtroCliente === "__all__") return fichas;
-    return fichas.filter((f) => f.cliente === filtroCliente);
-  }, [fichas, filtroCliente]);
 
   const handleSelectFicha = (fichaId: number) => {
     setSelectedFichas((prev) =>
@@ -55,10 +38,10 @@ export default function SelecionarFichasModal({
   };
 
   const handleSelectAll = () => {
-    if (selectedFichas.length === fichasFiltradas.length && fichasFiltradas.length > 0) {
+    if (selectedFichas.length === fichas.length) {
       setSelectedFichas([]);
     } else {
-      setSelectedFichas(fichasFiltradas.map((f) => f.id));
+      setSelectedFichas(fichas.map((f) => f.id));
     }
   };
 
@@ -86,10 +69,10 @@ export default function SelecionarFichasModal({
       });
 
       // Adicionar itens selecionados
-      const fichasCompletas = fichas.filter((f) => selectedFichas.includes(f.id));
+      const selectedFichasData = fichas.filter((f) => selectedFichas.includes(f.id));
       const markupValue = parseFloat(markup || "0");
 
-      for (const ficha of fichasCompletas) {
+      for (const ficha of selectedFichasData) {
         const valorUnitario = (ficha.custo || 0) * (1 + markupValue);
         
         await createItemMutation.mutateAsync({
@@ -98,34 +81,24 @@ export default function SelecionarFichasModal({
           referencia: ficha.referencia,
           descricao: ficha.descricao || ficha.referencia,
           quantidade: 1,
-          valorUnitario,
-          markup: markupValue,
           custo: ficha.custo || 0,
+          valorUnitario: valorUnitario,
+          markup: markupValue,
         });
       }
 
-      toast.success("Orçamento criado com sucesso!");
-      setNomeCliente("");
-      setMarca("");
-      setSelectedFichas([]);
-      setMarkup("0.5");
-      setFiltroCliente("");
+      toast.success(`Orçamento criado com ${selectedFichasData.length} itens!`);
       onClose();
-      navigate(`/orcamento/${orcamento.id}`);
+      navigate(`/orcamentos/${orcamento.id}`);
     } catch (error) {
-      console.error("Erro ao criar orçamento:", error);
-      toast.error("Erro ao criar orçamento");
+      toast.error("Erro ao criar orçamento!");
+      console.error(error);
     } finally {
       setIsCreating(false);
     }
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value);
-  };
+  const markupValue = parseFloat(markup || "0");
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -134,18 +107,18 @@ export default function SelecionarFichasModal({
           <DialogTitle>Criar Orçamento a partir de Fichas de Custo</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleCreateOrcamento} className="space-y-4">
+        <form onSubmit={handleCreateOrcamento} className="space-y-6">
           {/* Dados do Cliente */}
-          <div className="space-y-2">
+          <div className="space-y-4">
             <h3 className="font-semibold">Dados do Cliente</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="nomeCliente">Nome do Cliente</Label>
                 <Input
                   id="nomeCliente"
-                  placeholder="Ex: Acme Corp"
                   value={nomeCliente}
                   onChange={(e) => setNomeCliente(e.target.value)}
+                  placeholder="Ex: Acme Corp"
                   required
                 />
               </div>
@@ -153,17 +126,17 @@ export default function SelecionarFichasModal({
                 <Label htmlFor="marca">Marca</Label>
                 <Input
                   id="marca"
-                  placeholder="Ex: Nike"
                   value={marca}
                   onChange={(e) => setMarca(e.target.value)}
+                  placeholder="Ex: Nike"
                   required
                 />
               </div>
             </div>
           </div>
 
-          {/* Configuração de Preço */}
-          <div className="space-y-2">
+          {/* Markup */}
+          <div className="space-y-4">
             <h3 className="font-semibold">Configuração de Preço</h3>
             <div>
               <Label htmlFor="markup">Markup (ex: 0.5 = 50%)</Label>
@@ -171,10 +144,10 @@ export default function SelecionarFichasModal({
                 id="markup"
                 type="number"
                 step="0.01"
-                placeholder="0.5"
+                min="0"
                 value={markup}
                 onChange={(e) => setMarkup(e.target.value)}
-                required
+                placeholder="0.5"
               />
               <p className="text-sm text-gray-500 mt-1">
                 Preço de Venda = Custo × (1 + Markup)
@@ -183,56 +156,33 @@ export default function SelecionarFichasModal({
           </div>
 
           {/* Seleção de Fichas */}
-          <div className="space-y-2">
-            <h3 className="font-semibold">Selecione as Fichas de Custo</h3>
-            <div className="flex justify-between items-center">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold">Selecione as Fichas de Custo</h3>
               <Button
                 type="button"
                 variant="outline"
+                size="sm"
                 onClick={handleSelectAll}
               >
-                {selectedFichas.length === fichasFiltradas.length && fichasFiltradas.length > 0
+                {selectedFichas.length === fichas.length
                   ? "Desselecionar Todas"
                   : "Selecionar Todas"}
               </Button>
-              <span className="text-sm text-gray-600">
-                {fichasFiltradas.length} ficha(s) encontrada(s)
-              </span>
             </div>
 
-            {/* Filtro por Cliente */}
-            <div>
-              <Label htmlFor="filtroCliente">Filtrar por Cliente</Label>
-              <Select value={filtroCliente} onValueChange={setFiltroCliente}>
-                <SelectTrigger id="filtroCliente">
-                  <SelectValue placeholder="Todos os clientes" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__all__">Todos os clientes</SelectItem>
-                  {clientesUnicos.map((cliente) => (
-                    <SelectItem key={cliente} value={cliente}>
-                      {cliente}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Lista de Fichas */}
-            <div className="space-y-2 max-h-64 overflow-y-auto border rounded-lg p-3">
-              {fichasFiltradas.length === 0 ? (
-                <p className="text-sm text-gray-500">Nenhuma ficha encontrada</p>
+            <div className="border rounded-lg p-4 space-y-2 max-h-96 overflow-y-auto">
+              {fichas.length === 0 ? (
+                <p className="text-sm text-gray-500">Nenhuma ficha de custo disponível</p>
               ) : (
-                fichasFiltradas.map((ficha) => {
-                  const custo = ficha.custo || 0;
-                  const markupValue = parseFloat(markup || "0");
-                  const pv = custo * (1 + markupValue);
-                  const lucro = pv - custo;
-
+                fichas.map((ficha) => {
+                  const pv = (ficha.custo || 0) * (1 + markupValue);
+                  const lucro = pv - (ficha.custo || 0);
+                  
                   return (
                     <div
                       key={ficha.id}
-                      className="flex items-center space-x-2 p-2 hover:bg-gray-50 rounded"
+                      className="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded"
                     >
                       <Checkbox
                         id={`ficha-${ficha.id}`}
@@ -241,36 +191,58 @@ export default function SelecionarFichasModal({
                       />
                       <label
                         htmlFor={`ficha-${ficha.id}`}
-                        className="flex-1 cursor-pointer text-sm"
+                        className="flex-1 cursor-pointer"
                       >
-                        {ficha.referencia} {ficha.descricao && `- ${ficha.descricao}`}
-                        <br />
-                        <span className="text-xs text-gray-500">
-                          Custo: {formatCurrency(custo)} • PV: {formatCurrency(pv)} • Lucro:{" "}
-                          <span className="text-green-600 font-semibold">
-                            {formatCurrency(lucro)}
-                          </span>
-                        </span>
+                        <div className="font-medium">{ficha.referencia}</div>
+                        <div className="text-sm text-gray-600">{ficha.descricao}</div>
+                        <div className="grid grid-cols-3 gap-4 text-sm mt-1">
+                          <div>
+                            <span className="text-gray-500">Custo:</span>
+                            <div className="font-medium">R$ {(ficha.custo || 0).toFixed(2)}</div>
+                          </div>
+                          <div>
+                            <span className="text-gray-500">PV:</span>
+                            <div className="font-medium text-green-600">R$ {pv.toFixed(2)}</div>
+                          </div>
+                          <div>
+                            <span className="text-gray-500">Lucro:</span>
+                            <div className="font-medium text-blue-600">R$ {lucro.toFixed(2)}</div>
+                          </div>
+                        </div>
                       </label>
                     </div>
                   );
                 })
               )}
             </div>
+
+            <p className="text-sm text-gray-600">
+              {selectedFichas.length} ficha(s) selecionada(s)
+            </p>
           </div>
 
           {/* Botões */}
-          <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
+          <div className="flex gap-2 justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={isCreating}
+            >
               Cancelar
             </Button>
             <Button
               type="submit"
               disabled={isCreating || selectedFichas.length === 0}
-              className="gap-2"
             >
-              {isCreating && <Loader2 className="w-4 h-4 animate-spin" />}
-              Criar Orçamento
+              {isCreating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Criando...
+                </>
+              ) : (
+                "Criar Orçamento"
+              )}
             </Button>
           </div>
         </form>
