@@ -128,7 +128,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Custo Médio Geral
+                Média por Família
               </CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
@@ -179,7 +179,7 @@ export default function Dashboard() {
         {/* Tabela de Custos Médios por Família */}
         <Card className="mb-8">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Custos Médios por Família</CardTitle>
+            <CardTitle>Custos por Família</CardTitle>
             <select
               value={familiaFiltro}
               onChange={(e) => setFamiliaFiltro(e.target.value)}
