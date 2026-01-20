@@ -117,74 +117,8 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* KPIs Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total de Referências
-              </CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              {kpisLoading ? (
-                <Loader2 className="h-6 w-6 animate-spin" />
-              ) : (
-                <div className="text-2xl font-bold">{kpis?.totalReferencias || 0}</div>
-              )}
-            </CardContent>
-          </Card>
+        {/* KPIs Cards - REMOVIDO */}
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Média por Família
-              </CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              {kpisLoading ? (
-                <Loader2 className="h-6 w-6 animate-spin" />
-              ) : (
-                <div className="text-2xl font-bold">
-                  R$ {(kpis?.custoMedioGeral || 0).toFixed(2)}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Família Mais Cara
-              </CardTitle>
-              <TrendingUp className="h-4 w-4 text-destructive" />
-            </CardHeader>
-            <CardContent>
-              {kpisLoading ? (
-                <Loader2 className="h-6 w-6 animate-spin" />
-              ) : (
-                <div className="text-2xl font-bold">{kpis?.familiasMaisCaras || "-"}</div>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Família Mais Barata
-              </CardTitle>
-              <TrendingDown className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              {kpisLoading ? (
-                <Loader2 className="h-6 w-6 animate-spin" />
-              ) : (
-                <div className="text-2xl font-bold">{kpis?.familiasMaisBaratas || "-"}</div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
 
         {/* Tabela de Custos Médios por Família */}
         <Card className="mb-8">

@@ -539,7 +539,19 @@
   - Status: RESOLVIDO
 
 
-## Condições de Pagamento - Descrições Editáveis (20/01/2026)
+## Dashboard - Versão Final (20/01/2026)
+
+- [x] Remover 4 cards de KPI
+  - [x] Removido: Total de Referências
+  - [x] Removido: Média por Família
+  - [x] Removido: Família Mais Cara
+  - [x] Removido: Família Mais Barata
+  - [x] Mantido: Tabela "Custos por Família" com filtro
+  - [x] Mantido: Linha TOTAL/MÉDIA em azul
+  - [x] Mantido: Gráficos (Barras e Pizza)
+  - Status: CONCLUÍDO - Dashboard limpo e funcional
+
+## Condções de Pagamento - Descrições Editáveis (20/01/2026))
 
 - [x] Campos de descrição de parcelas editáveis
   - [x] Adicionado 3 campos de texto para descrição de parcelas
