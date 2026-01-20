@@ -35,8 +35,11 @@ export default function VisualizarOrcamento() {
   const [prazoEdit, setPrazoEdit] = useState("");
   const [editingCondicoesPagamento, setEditingCondicoesPagamento] = useState(false);
   const [percentualSinalEdit, setPercentualSinalEdit] = useState("");
+  const [descricaoSinalEdit, setDescricaoSinalEdit] = useState("Sinal");
   const [percentualRetiradaEdit, setPercentualRetiradaEdit] = useState("");
+  const [descricaoRetiradaEdit, setDescricaoRetiradaEdit] = useState("Retirada");
   const [percentualPrazoEdit, setPercentualPrazoEdit] = useState("");
+  const [descricaoPrazoEdit, setDescricaoPrazoEdit] = useState("30 dias");
 
   const orcamentoId = id ? parseInt(id) : 0;
 
@@ -505,8 +508,11 @@ export default function VisualizarOrcamento() {
               variant="outline"
               onClick={() => {
                 setPercentualSinalEdit(orcamento.percentualSinal?.toString() || "0");
+                setDescricaoSinalEdit("Sinal");
                 setPercentualRetiradaEdit(orcamento.percentualRetirada?.toString() || "0");
+                setDescricaoRetiradaEdit("Retirada");
                 setPercentualPrazoEdit(orcamento.percentualPrazo?.toString() || "0");
+                setDescricaoPrazoEdit("30 dias");
                 setEditingCondicoesPagamento(true);
               }}
               className="gap-2 print:hidden"
@@ -519,38 +525,74 @@ export default function VisualizarOrcamento() {
         <CardContent>
           {editingCondicoesPagamento ? (
             <div className="space-y-4 p-4 bg-muted rounded-lg">
-              <div>
-                <Label htmlFor="percentualSinalEdit">Sinal (%)</Label>
-                <Input
-                  id="percentualSinalEdit"
-                  type="number"
-                  step="0.01"
-                  value={percentualSinalEdit}
-                  onChange={(e) => setPercentualSinalEdit(e.target.value)}
-                  placeholder="Ex: 50"
-                />
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Label htmlFor="descricaoSinalEdit">Descrição Parcela 1</Label>
+                  <Input
+                    id="descricaoSinalEdit"
+                    type="text"
+                    value={descricaoSinalEdit}
+                    onChange={(e) => setDescricaoSinalEdit(e.target.value)}
+                    placeholder="Ex: Sinal"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="percentualSinalEdit">Percentual (%)</Label>
+                  <Input
+                    id="percentualSinalEdit"
+                    type="number"
+                    step="0.01"
+                    value={percentualSinalEdit}
+                    onChange={(e) => setPercentualSinalEdit(e.target.value)}
+                    placeholder="Ex: 50"
+                  />
+                </div>
               </div>
-              <div>
-                <Label htmlFor="percentualRetiradaEdit">Retirada (%)</Label>
-                <Input
-                  id="percentualRetiradaEdit"
-                  type="number"
-                  step="0.01"
-                  value={percentualRetiradaEdit}
-                  onChange={(e) => setPercentualRetiradaEdit(e.target.value)}
-                  placeholder="Ex: 30"
-                />
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Label htmlFor="descricaoRetiradaEdit">Descrição Parcela 2</Label>
+                  <Input
+                    id="descricaoRetiradaEdit"
+                    type="text"
+                    value={descricaoRetiradaEdit}
+                    onChange={(e) => setDescricaoRetiradaEdit(e.target.value)}
+                    placeholder="Ex: Retirada"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="percentualRetiradaEdit">Percentual (%)</Label>
+                  <Input
+                    id="percentualRetiradaEdit"
+                    type="number"
+                    step="0.01"
+                    value={percentualRetiradaEdit}
+                    onChange={(e) => setPercentualRetiradaEdit(e.target.value)}
+                    placeholder="Ex: 30"
+                  />
+                </div>
               </div>
-              <div>
-                <Label htmlFor="percentualPrazoEdit">30 dias (%)</Label>
-                <Input
-                  id="percentualPrazoEdit"
-                  type="number"
-                  step="0.01"
-                  value={percentualPrazoEdit}
-                  onChange={(e) => setPercentualPrazoEdit(e.target.value)}
-                  placeholder="Ex: 20"
-                />
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Label htmlFor="descricaoPrazoEdit">Descrição Parcela 3</Label>
+                  <Input
+                    id="descricaoPrazoEdit"
+                    type="text"
+                    value={descricaoPrazoEdit}
+                    onChange={(e) => setDescricaoPrazoEdit(e.target.value)}
+                    placeholder="Ex: 30 dias"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="percentualPrazoEdit">Percentual (%)</Label>
+                  <Input
+                    id="percentualPrazoEdit"
+                    type="number"
+                    step="0.01"
+                    value={percentualPrazoEdit}
+                    onChange={(e) => setPercentualPrazoEdit(e.target.value)}
+                    placeholder="Ex: 20"
+                  />
+                </div>
               </div>
               <div className="flex gap-2">
                 <Button
@@ -574,19 +616,19 @@ export default function VisualizarOrcamento() {
               <div className="space-y-1">
                   {Number(orcamento.percentualSinal) > 0 && (
                   <div className="flex justify-between p-2 bg-muted rounded">
-                    <span className="text-sm">Sinal ({Number(orcamento.percentualSinal)}%):</span>
+                    <span className="text-sm">{descricaoSinalEdit} ({Number(orcamento.percentualSinal)}%):</span>
                     <span className="font-semibold text-sm">{formatCurrency(valorSinal)}</span>
                   </div>
                 )}
                 {Number(orcamento.percentualRetirada) > 0 && (
                   <div className="flex justify-between p-2 bg-muted rounded">
-                    <span className="text-sm">Retirada ({Number(orcamento.percentualRetirada)}%):</span>
+                    <span className="text-sm">{descricaoRetiradaEdit} ({Number(orcamento.percentualRetirada)}%):</span>
                     <span className="font-semibold text-sm">{formatCurrency(valorRetirada)}</span>
                   </div>
                 )}
                 {Number(orcamento.percentualPrazo) > 0 && (
                   <div className="flex justify-between p-2 bg-muted rounded">
-                    <span className="text-sm">30 dias ({Number(orcamento.percentualPrazo)}%):</span>
+                    <span className="text-sm">{descricaoPrazoEdit} ({Number(orcamento.percentualPrazo)}%):</span>
                     <span className="font-semibold text-sm">{formatCurrency(valorPrazo)}</span>
                   </div>
                 )}

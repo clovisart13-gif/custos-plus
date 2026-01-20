@@ -537,3 +537,14 @@
   - [x] Seção "Custos Médios por Família" → "Custos por Família"
   - [x] Testado e confirmado no navegador
   - Status: RESOLVIDO
+
+
+## Condições de Pagamento - Descrições Editáveis (20/01/2026)
+
+- [x] Campos de descrição de parcelas editáveis
+  - [x] Adicionado 3 campos de texto para descrição de parcelas
+  - [x] Cada parcela: [Campo Descrição] + [Campo Percentual]
+  - [x] Layout em grid 2 colunas para melhor visualização
+  - [x] Descri ções aparecem corretamente na exibição do orçamento
+  - [x] Usuário pode editar "Sinal" para "30 dias", "Retirada" para "60 dias", etc.
+  - Status: IMPLEMENTADO - Pronto para teste com orçamento real

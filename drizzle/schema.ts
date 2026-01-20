@@ -73,8 +73,13 @@ export const orcamentos = mysqlTable("orcamentos", {
   total: decimal("total", { precision: 12, scale: 2 }).default("0.00").notNull(),
   
   percentualSinal: decimal("percentual_sinal", { precision: 5, scale: 2 }).default("25.00").notNull(),
+  descricaoSinal: varchar("descricao_sinal", { length: 100 }).default("Sinal").notNull(),
+  
   percentualRetirada: decimal("percentual_retirada", { precision: 5, scale: 2 }).default("25.00").notNull(),
+  descricaoRetirada: varchar("descricao_retirada", { length: 100 }).default("Retirada").notNull(),
+  
   percentualPrazo: decimal("percentual_prazo", { precision: 5, scale: 2 }).default("50.00").notNull(),
+  descricaoPrazo: varchar("descricao_prazo", { length: 100 }).default("30 dias").notNull(),
   
   status: mysqlEnum("status", ["pendente", "aprovado", "reprovado"]).default("pendente").notNull(),
   
