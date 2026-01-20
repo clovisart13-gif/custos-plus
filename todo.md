@@ -318,9 +318,17 @@
 4. Deletar itens com confirmação
 5. Histórico de alterações de orçamentos
 
+## Dashboard - Linha TOTAL/MÉDIA (20/01/2026)
 
-## Bug Corrigido - Erro ao Criar Orçamento (19/01/2026 - Noite)
+- [x] Linha TOTAL/MÉDIA adicionada à tabela de custos por família
+  - [x] Cor azul (bg-blue-50)
+  - [x] Fonte aumentada (text-lg)
+  - [x] Texto em azul escuro (text-blue-900)
+  - [x] Mostra soma e média de cada coluna
+  - [x] Testado e funcional
+  - Status: IMPLEMENTADO E FUNCIONAL
 
+## Bugs Corrigidos - Erro ao Criar Orçamento (19/01/2026 - Noite)
 - [x] Erro ao criar orçamento: "Field 'prazo_entrega_texto' doesn't have a default value"
   - Causa: Campo prazoEntregaTexto foi adicionado como NOT NULL sem default value
   - Solução: Alterado campo de TEXT para VARCHAR(255) com DEFAULT '30 dias'

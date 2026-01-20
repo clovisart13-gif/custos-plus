@@ -460,13 +460,20 @@ export const appRouter = router({
   }),
 
   dashboard: router({
-    kpis: protectedProcedure.query(async ({ ctx }) => {
-      const fichas = await db.getFichasCustoByUser(ctx.user.id);
+    kpis: protectedProcedure
+      .input(z.object({ familia: z.string().optional() }))
+      .query(async ({ ctx, input }) => {
+        const fichas = await db.getFichasCustoByUser(ctx.user.id);
       const orcamentos = await db.getOrcamentosByUser(ctx.user.id);
       
-      const totalReferencias = fichas.length;
-      const custoMedioGeral = fichas.length > 0
-        ? fichas.reduce((sum, f: any) => {
+      // Filtrar fichas por família se fornecida
+      const fichasFiltradas = input.familia && input.familia !== 'todos'
+        ? fichas.filter((f: any) => f.familia === input.familia)
+        : fichas;
+      
+      const totalReferencias = fichasFiltradas.length;
+      const custoMedioGeral = fichasFiltradas.length > 0
+        ? fichasFiltradas.reduce((sum, f: any) => {
             const total = (Number(f.modelagem) || 0) + (Number(f.piloto) || 0) + (Number(f.corte) || 0) + 
                          (Number(f.beneficiamento) || 0) + (Number(f.costura) || 0) + (Number(f.lavanderia) || 0) + 
                          (Number(f.acabamento) || 0) + (Number(f.passadoria) || 0) + (Number(f.tecido) || 0) + (Number(f.aviamento) || 0);
