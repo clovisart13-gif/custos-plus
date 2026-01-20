@@ -178,7 +178,7 @@ export const appRouter = router({
     create: protectedProcedure
       .input(z.object({
         nomeCliente: z.string().min(1),
-        marca: z.string().min(1),
+        marca: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         try {
@@ -188,7 +188,7 @@ export const appRouter = router({
           const result = await db.createOrcamento({
             userId: ctx.user.id,
             nomeCliente: input.nomeCliente,
-            marca: input.marca,
+            marca: input.marca || "",
             numeroOrcamento,
           });
           
@@ -335,14 +335,14 @@ export const appRouter = router({
       .input(z.object({
         orcamentoId: z.number(),
         nomeCliente: z.string().min(1),
-        marca: z.string().min(1),
+        marca: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamento) {
           throw new Error("Orçamento não encontrado");
         }
-        await db.updateOrcamentoClienteMarca(input.orcamentoId, input.nomeCliente, input.marca);
+        await db.updateOrcamentoClienteMarca(input.orcamentoId, input.nomeCliente, input.marca || "");
         return { success: true };
       }),
 

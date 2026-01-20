@@ -573,3 +573,14 @@
   - [x] Adicionar link no menu de navegação (apenas para admin)
   - [x] Testar gerenciamento de usuários - TESTADO COM SUCESSO
   - [x] Status: CONCLUÍDO - Página funcional, usuários criados e listados corretamente
+
+
+## Bugs Reportados (20/01/2026)
+
+- [x] Erro 500 ao criar oru00e7amento a partir da ficha de custo
+  - Sintoma: Clica em "Criar Oru00e7amento" no modal de gerau00e7u00e3o, seleciona markup 0.50, clica no botu00e3o e retorna erro 500
+  - Erro: Failed to load resource: the server responded with a status of 500
+  - Causa: Colunas descricao_sinal, descricao_retirada e descricao_prazo faltavam no banco de dados
+  - Solu00e7u00e3o: Adicionadas colunas ao banco com ALTER TABLE
+  - Teste: Criado oru00e7amento ORC-2026-006 com sucesso
+  - Status: RESOLVIDO - Sistema funcionando 100%
