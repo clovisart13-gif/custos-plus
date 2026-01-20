@@ -602,3 +602,15 @@
   - Solução: Mudado para sameSite="lax" para permitir cookies em requisições cross-site
   - Teste: Página de Fichas de Custos carrega sem pedir login
   - Status: RESOLVIDO - Autenticação funcionando 100%
+
+
+## Correção de Cálculo de Médias - Dashboard (20/01/2026)
+
+- [x] Problema: Médias do Dashboard calculadas incorretamente
+  - Sintoma: TOTAL/MÉDIA dividindo pela quantidade de famílias (9) ao invés de quantidade total de fichas (26)
+  - Causa: Fórmula usando `.length` (quantidade de famílias) ao invés de somar as quantidades
+  - Exemplo: Modelagem mostrava R$ 7,43 (66,85/9) agora mostra R$ 2,57 (66,85/26) ✅
+  - Impacto: Todas as colunas de custo agora mostram valores corretos na linha TOTAL/MÉDIA
+  - Solução: Alterada fórmula para dividir pela soma das quantidades de fichas (totalFichas)
+  - Teste: Verificado no navegador - todos os valores corretos
+  - Status: RESOLVIDO - Médias funcionando 100%

@@ -182,47 +182,50 @@ export default function Dashboard() {
                         </TableCell>
                       </TableRow>
                     ))}
-                    {custosMediosFiltrados.length > 0 && (
-                      <TableRow className="bg-blue-50 hover:bg-blue-50">
-                        <TableCell className="font-bold text-blue-900 text-lg">TOTAL/MEDIA</TableCell>
-                        <TableCell className="text-right font-bold text-blue-900 text-lg">
-                          {custosMediosFiltrados.reduce((sum, item) => sum + item.count, 0)}
-                        </TableCell>
-                        <TableCell className="text-right font-bold text-blue-900 text-lg">
-                          R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.modelagem, 0) / custosMediosFiltrados.length).toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-right font-bold text-blue-900 text-lg">
-                          R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.piloto, 0) / custosMediosFiltrados.length).toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-right font-bold text-blue-900 text-lg">
-                          R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.corte, 0) / custosMediosFiltrados.length).toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-right font-bold text-blue-900 text-lg">
-                          R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.beneficiamento, 0) / custosMediosFiltrados.length).toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-right font-bold text-blue-900 text-lg">
-                          R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.costura, 0) / custosMediosFiltrados.length).toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-right font-bold text-blue-900 text-lg">
-                          R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.lavanderia, 0) / custosMediosFiltrados.length).toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-right font-bold text-blue-900 text-lg">
-                          R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.acabamento, 0) / custosMediosFiltrados.length).toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-right font-bold text-blue-900 text-lg">
-                          R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.passadoria, 0) / custosMediosFiltrados.length).toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-right font-bold text-blue-900 text-lg">
-                          R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.tecido, 0) / custosMediosFiltrados.length).toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-right font-bold text-blue-900 text-lg">
-                          R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.aviamento, 0) / custosMediosFiltrados.length).toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-right font-bold text-blue-900 text-lg">
-                          R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.totalMedio, 0) / custosMediosFiltrados.length).toFixed(2)}
-                        </TableCell>
-                      </TableRow>
-                    )}
+                    {custosMediosFiltrados.length > 0 && (() => {
+                      const totalFichas = custosMediosFiltrados.reduce((sum, item) => sum + item.count, 0);
+                      return (
+                        <TableRow className="bg-blue-50 hover:bg-blue-50">
+                          <TableCell className="font-bold text-blue-900 text-lg">TOTAL/MEDIA</TableCell>
+                          <TableCell className="text-right font-bold text-blue-900 text-lg">
+                            {totalFichas}
+                          </TableCell>
+                          <TableCell className="text-right font-bold text-blue-900 text-lg">
+                            R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.modelagem, 0) / totalFichas).toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-bold text-blue-900 text-lg">
+                            R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.piloto, 0) / totalFichas).toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-bold text-blue-900 text-lg">
+                            R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.corte, 0) / totalFichas).toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-bold text-blue-900 text-lg">
+                            R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.beneficiamento, 0) / totalFichas).toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-bold text-blue-900 text-lg">
+                            R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.costura, 0) / totalFichas).toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-bold text-blue-900 text-lg">
+                            R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.lavanderia, 0) / totalFichas).toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-bold text-blue-900 text-lg">
+                            R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.acabamento, 0) / totalFichas).toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-bold text-blue-900 text-lg">
+                            R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.passadoria, 0) / totalFichas).toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-bold text-blue-900 text-lg">
+                            R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.tecido, 0) / totalFichas).toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-bold text-blue-900 text-lg">
+                            R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.aviamento, 0) / totalFichas).toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-right font-bold text-blue-900 text-lg">
+                            R$ {(custosMediosFiltrados.reduce((sum, item) => sum + item.totalMedio, 0) / totalFichas).toFixed(2)}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })()}
                   </TableBody>
                 </Table>
               </div>
