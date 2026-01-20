@@ -514,3 +514,12 @@
   - Problema: useAuth não estava importado
   - Solução: Adicionado import de @/_core/hooks/useAuth
   - Resultado: Componente renderiza sem erros
+
+
+## Correção Finalizada - Coluna TOTAL (20/01/2026)
+
+- [x] Coluna "TOTAL MÉDIO" renomeada para "TOTAL GERAL"
+  - [x] Verificado: Cálculo já estava correto (soma de todos os valores)
+  - [x] Renomeada coluna de "TOTAL MÉDIO" para "TOTAL GERAL" em Dashboard.tsx
+  - [x] Testado: Camiseta = R$ 140,00, Bermudas = R$ 47,88
+  - Status: RESOLVIDO

@@ -215,7 +215,7 @@ export default function Dashboard() {
                       <TableHead className="text-right">Passad.</TableHead>
                       <TableHead className="text-right">Tecido</TableHead>
                       <TableHead className="text-right">Aviamento</TableHead>
-                      <TableHead className="text-right font-bold">TOTAL MÉDIO</TableHead>
+                      <TableHead className="text-right font-bold">TOTAL GERAL</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
