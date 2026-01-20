@@ -584,3 +584,21 @@
   - Solu00e7u00e3o: Adicionadas colunas ao banco com ALTER TABLE
   - Teste: Criado oru00e7amento ORC-2026-006 com sucesso
   - Status: RESOLVIDO - Sistema funcionando 100%
+
+## Nota Importante - Validação de Percentuais (20/01/2026)
+
+- [x] Sistema aceita 0% em qualquer parcela de pagamento
+  - Teste realizado: 50% Sinal + 50% Retirada + 0% Prazo = 100% (ACEITO)
+  - Comportamento: Sistema salva corretamente mesmo com 0% em um campo
+  - Status: FUNCIONANDO - Deixar como está por enquanto
+  - Observação: Antes de fazer alterações futuras, auditar dependências em relatórios, PDFs e visualizações
+
+
+## Correção de Autenticação - Preview (20/01/2026)
+
+- [x] Problema: "Acesso Restrito" ao acessar Fichas de Custos no preview
+  - Sintoma: Mesmo logado no Manus, a página pedia login toda hora
+  - Causa: Configuração de cookies com sameSite="none" bloqueava envio cross-site
+  - Solução: Mudado para sameSite="lax" para permitir cookies em requisições cross-site
+  - Teste: Página de Fichas de Custos carrega sem pedir login
+  - Status: RESOLVIDO - Autenticação funcionando 100%
