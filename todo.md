@@ -560,3 +560,16 @@
   - [x] Descri ções aparecem corretamente na exibição do orçamento
   - [x] Usuário pode editar "Sinal" para "30 dias", "Retirada" para "60 dias", etc.
   - Status: IMPLEMENTADO - Pronto para teste com orçamento real
+
+
+## Gerenciamento de Usuários (20/01/2026)
+
+- [x] Sistema de Gerenciamento de Usuários
+  - [x] Criar página de Gerenciamento de Usuários (admin-only)
+  - [x] Implementar formulário de criar novo usuário com role (admin/user)
+  - [x] Adicionar função de listar usuários
+  - [x] Adicionar função de deletar usuários
+  - [x] Proteger página para apenas admin acessar
+  - [x] Adicionar link no menu de navegação (apenas para admin)
+  - [x] Testar gerenciamento de usuários - TESTADO COM SUCESSO
+  - [x] Status: CONCLUÍDO - Página funcional, usuários criados e listados corretamente

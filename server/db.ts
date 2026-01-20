@@ -778,3 +778,61 @@ export async function updateOrcamentoTotals(orcamentoId: number) {
     totalPecas,
   };
 }
+
+
+// ============= Admin Functions =============
+
+export async function getAllUsers() {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  try {
+    const allUsers = await db.select().from(users);
+    return allUsers;
+  } catch (error) {
+    console.error("[Database] Error getting all users:", error);
+    throw error;
+  }
+}
+
+export async function createUser(nome: string, email: string, role: "user" | "admin") {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  try {
+    // Gerar um openId único (será usado como identificador temporário)
+    const openId = `temp-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+    
+    await db.insert(users).values({
+      openId,
+      name: nome,
+      email,
+      role,
+      loginMethod: "admin-created",
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("[Database] Error creating user:", error);
+    throw error;
+  }
+}
+
+export async function deleteUser(userId: number) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  try {
+    await db.delete(users).where(eq(users.id, userId));
+    return { success: true };
+  } catch (error) {
+    console.error("[Database] Error deleting user:", error);
+    throw error;
+  }
+}

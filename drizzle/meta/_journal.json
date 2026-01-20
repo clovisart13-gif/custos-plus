@@ -169,6 +169,13 @@
       "when": 1768921633648,
       "tag": "0023_lonely_wind_dancer",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "5",
+      "when": 1768923779532,
+      "tag": "0024_old_the_twelve",
+      "breakpoints": true
     }
   ]
 }

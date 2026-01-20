@@ -595,6 +595,40 @@ export const appRouter = router({
     }),
   }),
 
+  admin: router({
+    listUsers: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Apenas administradores podem listar usuários');
+        }
+        return await db.getAllUsers();
+      }),
+
+    createUser: protectedProcedure
+      .input(z.object({
+        nome: z.string().min(1, "Nome é obrigatório"),
+        email: z.string().email("Email inválido"),
+        role: z.enum(["user", "admin"]),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Apenas administradores podem criar usuários');
+        }
+        return await db.createUser(input.nome, input.email, input.role);
+      }),
+
+    deleteUser: protectedProcedure
+      .input(z.object({
+        userId: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Apenas administradores podem deletar usuários');
+        }
+        return await db.deleteUser(input.userId);
+      }),
+  }),
+
   storage: router({
     uploadImage: protectedProcedure
       .input(z.object({

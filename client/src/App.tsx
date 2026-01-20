@@ -10,6 +10,7 @@ import FichasCusto from "./pages/FichasCusto";
 import VisualizarFicha from "./pages/VisualizarFicha";
 import Orcamentos from "./pages/Orcamentos";
 import VisualizarOrcamento from "./pages/VisualizarOrcamento";
+import GerenciarUsuarios from "./pages/GerenciarUsuarios";
 
 function Router() {
   return (
@@ -21,6 +22,7 @@ function Router() {
         <Route path="/ficha/:id" component={VisualizarFicha} />
         <Route path="/orcamentos" component={Orcamentos} />
         <Route path="/orcamento/:id" component={VisualizarOrcamento} />
+        <Route path="/gerenciar-usuarios" component={GerenciarUsuarios} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>

@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LayoutDashboard, FileText, LogOut, User, FileCheck } from "lucide-react";
+import { LayoutDashboard, FileText, LogOut, User, FileCheck, Users } from "lucide-react";
 
 export function Navigation() {
   const [location] = useLocation();
@@ -25,6 +25,10 @@ export function Navigation() {
     { path: "/", label: "Dashboard", icon: LayoutDashboard },
     { path: "/fichas-custo", label: "Fichas de Custo", icon: FileText },
     { path: "/orcamentos", label: "Orçamentos", icon: FileCheck },
+  ];
+
+  const adminItems = [
+    { path: "/gerenciar-usuarios", label: "Gerenciar Usuários", icon: Users },
   ];
 
   return (
@@ -48,6 +52,22 @@ export function Navigation() {
             <div className="flex items-center gap-6">
               <div className="hidden md:flex items-center gap-1">
                 {navItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = location === item.path;
+                  return (
+                    <Link key={item.path} href={item.path}>
+                      <Button
+                        variant={isActive ? "default" : "ghost"}
+                        size="sm"
+                        className="gap-2"
+                      >
+                        <Icon className="h-4 w-4" />
+                        {item.label}
+                      </Button>
+                    </Link>
+                  );
+                })}
+                {user?.role === "admin" && adminItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = location === item.path;
                   return (
