@@ -614,3 +614,32 @@
   - Solução: Alterada fórmula para dividir pela soma das quantidades de fichas (totalFichas)
   - Teste: Verificado no navegador - todos os valores corretos
   - Status: RESOLVIDO - Médias funcionando 100%
+
+
+## Documentação e Treinamento (20/01/2026)
+
+- [x] Criar fluxograma de visão geral dos módulos do sistema
+  - Formato: Mermaid (.mmd) renderizado para PNG
+  - Objetivo: Visualizar arquitetura e fluxo entre módulos
+  - Arquivo: /home/ubuntu/custos-plus-fluxograma.png
+  - Conteúdo: Fluxo completo com Dashboard, Fichas de Custo, Orçamentos e Gerenciar Usuários
+  - Status: CONCLUÍDO
+
+- [x] Criar apresentação de treinamento de usuários
+  - Formato: Slides HTML interativos (Swiss International Style)
+  - Público: Novos usuários do sistema
+  - Quantidade: 8 slides
+  - Conteúdo: Capa, Boas-vindas, 4 Módulos, Fluxo de Trabalho, Próximos Passos
+  - Objetivo: Ensinar uso básico do sistema
+  - Status: CONCLUÍDO
+
+
+## Bug Reportado - Gerenciar Usuários (20/01/2026)
+
+- [x] Erro "removeChild" na página Gerenciar Usuários
+  - Sintoma: Erro "NotFoundError: Falha ao executar 'removeChild' em 'Node': O nó a ser removido não é filho deste nó"
+  - Página: Gerenciar Usuários
+  - Causa: Componente Select do shadcn/ui tentando remover portal do DOM que já foi removido
+  - Solução: Adicionados keys únicos aos SelectItems para prevenir conflitos de DOM
+  - Teste: Página carregou sem erros, console limpo
+  - Status: RESOLVIDO - Funcionando 100%

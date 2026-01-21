@@ -151,8 +151,8 @@ export default function GerenciarUsuarios() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="user">Usuário</SelectItem>
-                    <SelectItem value="admin">Administrador</SelectItem>
+                    <SelectItem key="user" value="user">Usuário</SelectItem>
+                    <SelectItem key="admin" value="admin">Administrador</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
