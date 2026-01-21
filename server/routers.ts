@@ -194,6 +194,9 @@ export const appRouter = router({
       .input(z.object({
         nomeCliente: z.string().min(1),
         marca: z.string().optional(),
+        observacoes: z.string().optional(),
+        descontoTipo: z.enum(["percentual", "valor"]).optional(),
+        descontoValor: z.number().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         try {
@@ -205,6 +208,9 @@ export const appRouter = router({
             nomeCliente: input.nomeCliente,
             marca: input.marca || "",
             numeroOrcamento,
+            observacoes: input.observacoes,
+            descontoTipo: input.descontoTipo,
+            descontoValor: input.descontoValor ? input.descontoValor.toString() : undefined,
           });
           
           // Obter o ID do orçamento criado

@@ -8,6 +8,13 @@
       "when": 1768927000000,
       "tag": "0000_initial",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1768989902031,
+      "tag": "0001_colossal_katie_power",
+      "breakpoints": true
     }
   ]
 }

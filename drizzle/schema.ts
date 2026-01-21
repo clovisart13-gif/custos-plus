@@ -83,6 +83,11 @@ export const orcamentos = mysqlTable("orcamentos", {
   
   status: mysqlEnum("status", ["pendente", "aprovado", "reprovado"]).default("pendente").notNull(),
   
+  // Novos campos
+  observacoes: text("observacoes"),
+  descontoTipo: mysqlEnum("desconto_tipo", ["percentual", "valor"]),
+  descontoValor: decimal("desconto_valor", { precision: 12, scale: 2 }).default("0.00"),
+  
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

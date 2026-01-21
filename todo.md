@@ -803,3 +803,31 @@
     * Padding cabeçalho: 12px → 14px
   - Endereço completo adicionado: R. Ten. Pena, 166 - Bom Retiro, São Paulo - SP, 01127-020
   - Status: CONCLUÍDO - Cabeçalho legível e profissional
+
+
+## Novos Campos no Orçamento (21/01/2026)
+
+- [x] Adicionar campo de observações no orçamento
+  - Objetivo: Permitir incluir notas personalizadas para cada cliente
+  - Exemplos: "Desconto especial de 10% aplicado", "Prazo de entrega reduzido", "Cliente VIP"
+  - Implementação:
+    * ✅ Adicionada coluna `observacoes` (TEXT, nullable) na tabela orcamentos
+    * ✅ Adicionado campo textarea no formulário de criação (CriarOrcamentoSimples.tsx)
+    * ✅ Observações exibidas no PDF (card azul claro) e na visualização normal
+    * ✅ Backend atualizado para aceitar e retornar observações
+  - Teste: Orçamento ORC-2026-010 e ORC-2026-011 criados com observações com sucesso
+  - Status: ✅ CONCLUÍDO - Funcionalidade 100% operacional
+
+- [x] Adicionar campo de desconto no orçamento
+  - Objetivo: Aplicar desconto percentual ou valor fixo sobre o total geral
+  - Implementação:
+    * ✅ Adicionadas colunas `desconto_tipo` (TEXT) e `desconto_valor` (TEXT) na tabela orcamentos
+    * ✅ Adicionados campos no formulário (select tipo + input valor)
+    * ✅ Total recalculado automaticamente ao aplicar desconto (VisualizarOrcamento.tsx linhas 189-199)
+    * ✅ Desconto exibido no PDF (linha verde) e na visualização normal (card de Totais)
+    * ✅ Condições de pagamento calculadas sobre total COM desconto
+  - Teste: Orçamento ORC-2026-010 (10% desconto) e ORC-2026-011 (15% desconto) funcionando perfeitamente
+  - Cálculos validados:
+    * ORC-2026-010: Subtotal R$ 124,50 - 10% (R$ 12,45) = R$ 112,05 ✅
+    * ORC-2026-011: Subtotal R$ 1.000,00 - 15% (R$ 150,00) = R$ 850,00 ✅
+  - Status: ✅ CONCLUÍDO - Funcionalidade 100% operacional com cálculos corretos

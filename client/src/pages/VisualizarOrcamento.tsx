@@ -185,7 +185,18 @@ export default function VisualizarOrcamento() {
 
   const totalPecas = itens.reduce((sum, item) => sum + item.quantidade, 0);
   const subtotal = itens.reduce((sum, item) => sum + Number(item.valorTotal), 0);
-  const total = subtotal;
+  
+  // Calcular desconto
+  let valorDesconto = 0;
+  if (orcamento.descontoValor && Number(orcamento.descontoValor) > 0) {
+    if (orcamento.descontoTipo === 'percentual') {
+      valorDesconto = (subtotal * Number(orcamento.descontoValor)) / 100;
+    } else {
+      valorDesconto = Number(orcamento.descontoValor);
+    }
+  }
+  
+  const total = subtotal - valorDesconto;
 
   const valorSinal = (total * Number(orcamento.percentualSinal)) / 100;
   const valorRetirada = (total * Number(orcamento.percentualRetirada)) / 100;
@@ -638,6 +649,51 @@ export default function VisualizarOrcamento() {
             </CardContent>
           </Card>
 
+          {/* Totais */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Totais</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span>Total de Peças:</span>
+                  <span className="font-semibold">{totalPecas} unidades</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Subtotal:</span>
+                  <span className="font-semibold">{formatCurrency(subtotal)}</span>
+                </div>
+                {orcamento.descontoValor && Number(orcamento.descontoValor) > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Desconto ({orcamento.descontoTipo === 'percentual' ? `${orcamento.descontoValor}%` : 'Valor fixo'}):</span>
+                    <span className="font-semibold">-{formatCurrency(
+                      orcamento.descontoTipo === 'percentual' 
+                        ? (subtotal * Number(orcamento.descontoValor)) / 100
+                        : Number(orcamento.descontoValor)
+                    )}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-lg font-bold border-t pt-2">
+                  <span>VALOR TOTAL:</span>
+                  <span>{formatCurrency(total)}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Observações */}
+          {orcamento.observacoes && (
+            <Card className="bg-blue-50 border-blue-200">
+              <CardHeader>
+                <CardTitle className="text-base text-blue-900">Observações</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm whitespace-pre-wrap text-gray-700">{orcamento.observacoes}</p>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Condições de Pagamento */}
           <Card>
             <CardHeader className="flex flex-row justify-between items-center">
@@ -784,11 +840,38 @@ export default function VisualizarOrcamento() {
             <span>Subtotal:</span>
             <span style={{ fontWeight: '600' }}>{formatCurrency(subtotal)}</span>
           </div>
+          {orcamento.descontoValor && Number(orcamento.descontoValor) > 0 && (
+            <div className="print-totals-row" style={{ color: '#059669' }}>
+              <span>Desconto ({orcamento.descontoTipo === 'percentual' ? `${orcamento.descontoValor}%` : 'Valor fixo'}):</span>
+              <span style={{ fontWeight: '600' }}>-{formatCurrency(
+                orcamento.descontoTipo === 'percentual' 
+                  ? (subtotal * Number(orcamento.descontoValor)) / 100
+                  : Number(orcamento.descontoValor)
+              )}</span>
+            </div>
+          )}
           <div className="print-totals-row total">
             <span>VALOR TOTAL:</span>
             <span>{formatCurrency(total)}</span>
           </div>
         </div>
+
+        {/* Observações */}
+        {orcamento.observacoes && (
+          <div style={{ 
+            marginTop: '8mm', 
+            padding: '8px 12px', 
+            background: '#f0f9ff', 
+            border: '1px solid #bfdbfe', 
+            borderRadius: '4px',
+            pageBreakInside: 'avoid'
+          }}>
+            <div style={{ fontWeight: '700', marginBottom: '4px', fontSize: '10px', color: '#1e40af' }}>OBSERVAÇÕES</div>
+            <div style={{ fontSize: '9px', lineHeight: '1.4', color: '#1e293b', whiteSpace: 'pre-wrap' }}>
+              {orcamento.observacoes}
+            </div>
+          </div>
+        )}
 
         {/* Condições de Pagamento */}
         <div className="print-payment">

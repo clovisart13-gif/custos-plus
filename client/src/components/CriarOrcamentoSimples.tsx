@@ -20,6 +20,9 @@ export default function CriarOrcamentoSimples({
   const [, navigate] = useLocation();
   const [nomeCliente, setNomeCliente] = useState("");
   const [marca, setMarca] = useState("");
+  const [observacoes, setObservacoes] = useState("");
+  const [descontoTipo, setDescontoTipo] = useState<"percentual" | "valor">("percentual");
+  const [descontoValor, setDescontoValor] = useState(0);
   const [isCreating, setIsCreating] = useState(false);
   const [orcamentoId, setOrcamentoId] = useState<number | null>(null);
   
@@ -57,11 +60,17 @@ export default function CriarOrcamentoSimples({
       const novoOrcamento = await createMutation.mutateAsync({
         nomeCliente,
         marca,
+        observacoes: observacoes || undefined,
+        descontoTipo: descontoValor > 0 ? descontoTipo : undefined,
+        descontoValor: descontoValor > 0 ? descontoValor : undefined,
       });
 
       setOrcamentoId(novoOrcamento.id);
       setNomeCliente('');
       setMarca('');
+      setObservacoes('');
+      setDescontoTipo('percentual');
+      setDescontoValor(0);
       toast.success("Orçamento criado com sucesso!");
     } catch (error: any) {
       console.error("Erro ao criar orçamento:", error);
@@ -164,6 +173,44 @@ export default function CriarOrcamentoSimples({
                 onChange={(e) => setMarca(e.target.value)}
                 placeholder="Ex: Verão 2026"
               />
+            </div>
+
+            <div>
+              <Label htmlFor="observacoes">Observações</Label>
+              <textarea
+                id="observacoes"
+                className="w-full min-h-[80px] px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring bg-background"
+                placeholder="Notas adicionais sobre o orçamento..."
+                value={observacoes}
+                onChange={(e) => setObservacoes(e.target.value)}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="descontoTipo">Tipo de Desconto</Label>
+                <select
+                  id="descontoTipo"
+                  className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring bg-background h-10"
+                  value={descontoTipo}
+                  onChange={(e) => setDescontoTipo(e.target.value as "percentual" | "valor")}
+                >
+                  <option value="percentual">Percentual (%)</option>
+                  <option value="valor">Valor (R$)</option>
+                </select>
+              </div>
+              <div>
+                <Label htmlFor="descontoValor">Valor do Desconto</Label>
+                <Input
+                  id="descontoValor"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="0.00"
+                  value={descontoValor}
+                  onChange={(e) => setDescontoValor(parseFloat(e.target.value) || 0)}
+                />
+              </div>
             </div>
 
             <div className="flex justify-end gap-4">
