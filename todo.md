@@ -788,3 +788,18 @@
     * Adicionado flex: 1 e minWidth: 0 para controle de overflow
   - Prioridade: CRÍTICA - PDF não pode ser enviado a clientes com elementos cortados
   - Status: RESOLVIDO - Cabeçalho completo sem cortes
+
+
+## Ajuste de Legibilidade do PDF (21/01/2026)
+
+- [x] Aumentar fontes do cabeçalho e adicionar CEP completo
+  - Problema: Fontes muito pequenas, difícil de ler (especialmente endereço em 8px)
+  - Solução Aplicada:
+    * Logo: 40px → 45px
+    * Nome empresa: 11px → 13px
+    * Endereço: 8px → 9.5px (com line-height 1.3)
+    * Número orçamento: 16px → 18px
+    * Data: 12px → 14px
+    * Padding cabeçalho: 12px → 14px
+  - Endereço completo adicionado: R. Ten. Pena, 166 - Bom Retiro, São Paulo - SP, 01127-020
+  - Status: CONCLUÍDO - Cabeçalho legível e profissional

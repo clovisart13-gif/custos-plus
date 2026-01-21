@@ -227,7 +227,7 @@ export default function VisualizarOrcamento() {
           .print-header {
             background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
             color: white;
-            padding: 12px;
+            padding: 14px;
             margin: 0 0 8mm 0;
             display: flex;
             justify-content: space-between;
@@ -237,10 +237,10 @@ export default function VisualizarOrcamento() {
           }
           
           .print-logo {
-            height: 40px;
+            height: 45px;
             width: auto;
             background: white;
-            padding: 4px 8px;
+            padding: 5px 10px;
             border-radius: 4px;
             flex-shrink: 0;
           }
@@ -724,13 +724,13 @@ export default function VisualizarOrcamento() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1', minWidth: 0 }}>
             <img src="/logo-r2pb.jpeg" alt="R2PB" className="print-logo" />
             <div style={{ color: 'white', flex: '1', minWidth: 0 }}>
-              <div style={{ fontSize: '11px', fontWeight: '600', marginBottom: '2px' }}>QUICK THREADS LTDA</div>
-              <div style={{ fontSize: '8px', opacity: '0.9' }}>R. Ten. Pena, 166 - Bom Retiro, SP</div>
+              <div style={{ fontSize: '13px', fontWeight: '600', marginBottom: '3px' }}>QUICK THREADS LTDA</div>
+              <div style={{ fontSize: '9.5px', opacity: '0.95', lineHeight: '1.3' }}>R. Ten. Pena, 166 - Bom Retiro, São Paulo - SP, 01127-020</div>
             </div>
           </div>
           <div className="print-title">
-            <p style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 2px 0', whiteSpace: 'nowrap' }}>{orcamento.numeroOrcamento}</p>
-            <p style={{ fontSize: '12px', margin: '0', whiteSpace: 'nowrap' }}>{formatDate(orcamento.dataEmissao)}</p>
+            <p style={{ fontSize: '18px', fontWeight: 'bold', margin: '0 0 3px 0', whiteSpace: 'nowrap' }}>{orcamento.numeroOrcamento}</p>
+            <p style={{ fontSize: '14px', margin: '0', whiteSpace: 'nowrap' }}>{formatDate(orcamento.dataEmissao)}</p>
           </div>
         </div>
 
