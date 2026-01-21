@@ -246,4 +246,105 @@
   textarea {
     display: none !important;
   }
+
+  /* Ficha de Custo - A4 optimization */
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+
+  /* Preserve primary color for borders and highlights */
+  .border-primary {
+    border-color: #3B82F6 !important;
+  }
+
+  .text-primary {
+    color: #3B82F6 !important;
+  }
+
+  .bg-primary\/10 {
+    background-color: #EBF5FF !important;
+  }
+
+  /* Ensure proper spacing for A4 */
+  .print\:py-4 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  .print\:px-0 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .print\:p-6 {
+    padding: 1rem !important;
+  }
+
+  .print\:p-4 {
+    padding: 0.75rem !important;
+  }
+
+  .print\:mb-4 {
+    margin-bottom: 0.75rem !important;
+  }
+
+  .print\:pb-3 {
+    padding-bottom: 0.5rem !important;
+  }
+
+  .print\:h-12 {
+    height: 3rem !important;
+  }
+
+  .print\:h-32 {
+    height: 8rem !important;
+  }
+
+  .print\:text-xl {
+    font-size: 1.25rem !important;
+    line-height: 1.75rem !important;
+  }
+
+  .print\:text-base {
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
+  }
+
+  .print\:text-xs {
+    font-size: 0.75rem !important;
+    line-height: 1rem !important;
+  }
+
+  .print\:text-2xl {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+
+  .print\:gap-4 {
+    gap: 0.75rem !important;
+  }
+
+  .print\:gap-2 {
+    gap: 0.5rem !important;
+  }
+
+  .print\:space-y-2 > * + * {
+    margin-top: 0.5rem !important;
+  }
+
+  .print\:mt-4 {
+    margin-top: 0.75rem !important;
+  }
+
+  .print\:pt-3 {
+    padding-top: 0.5rem !important;
+  }
+
+  /* Ensure images print correctly */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid !important;
+  }
 }

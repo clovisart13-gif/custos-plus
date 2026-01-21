@@ -831,3 +831,28 @@
     * ORC-2026-010: Subtotal R$ 124,50 - 10% (R$ 12,45) = R$ 112,05 ✅
     * ORC-2026-011: Subtotal R$ 1.000,00 - 15% (R$ 150,00) = R$ 850,00 ✅
   - Status: ✅ CONCLUÍDO - Funcionalidade 100% operacional com cálculos corretos
+
+
+## Exportação de PDF para Fichas de Custo (21/01/2026)
+
+- [x] Implementar funcionalidade de exportação para PDF
+  - Problema: Botão "Exportar PDF" mostrava mensagem "Esta ação estará sendo implementada em breve"
+  - Objetivo: Permitir exportar ficha de custo em formato PDF para impressão/compartilhamento
+  - Implementação:
+    * ✅ Verificado código atual do botão em VisualizarFicha.tsx (linha 58-61)
+    * ✅ Implementada função handleExportPDF() usando window.print()
+    * ✅ Botão agora abre diálogo nativo de impressão/PDF do navegador
+  - Teste: Botão "Exportar PDF" abre diálogo de impressão com sucesso
+  - Status: ✅ CONCLUÍDO - Funcionalidade 100% operacional
+
+- [x] Ajustar layout da ficha para caber em folha A4
+  - Objetivo: Garantir que toda a ficha caiba em uma única página A4 (210mm x 297mm)
+  - Implementação:
+    * ✅ Reduzidos espaçamentos e margens (mb-8 → mb-6, mb-6 → mb-4)
+    * ✅ Ajustados tamanhos de fonte (text-2xl → print:text-xl, text-lg → print:text-base)
+    * ✅ Adicionadas regras CSS @media print no index.css (linhas 250-350)
+    * ✅ Definido tamanho de página A4 com margem de 15mm (@page rule)
+    * ✅ Reduzida altura de imagens (h-16 → print:h-12, h-48 → print:h-32)
+    * ✅ Preservadas cores primárias (azul #3B82F6) para bordas e destaques
+  - Teste: Layout compacto e otimizado para caber em A4
+  - Status: ✅ CONCLUÍDO - Layout otimizado para impressão A4

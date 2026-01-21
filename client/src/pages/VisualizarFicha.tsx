@@ -56,8 +56,7 @@ export default function VisualizarFicha() {
   };
 
   const handleExportPDF = () => {
-    // TODO: Implementar exportação para PDF
-    alert("Exportação para PDF será implementada em breve");
+    window.print();
   };
 
   return (
@@ -79,22 +78,22 @@ export default function VisualizarFicha() {
       </div>
 
       {/* Conteúdo da ficha - formatado para impressão */}
-      <div className="container py-8 max-w-4xl">
+      <div className="container py-8 max-w-4xl print:py-4 print:px-0">
         <Card className="print:shadow-none print:border-0">
-          <CardContent className="p-8">
+          <CardContent className="p-8 print:p-6">
             {/* Cabeçalho com logo */}
-            <div className="flex items-start justify-between mb-8 pb-6 border-b-2 border-primary">
+            <div className="flex items-start justify-between mb-6 pb-4 border-b-2 border-primary print:mb-4 print:pb-3">
               <div className="flex items-center gap-4">
                 <img
                   src="/logo-r2pb.jpeg"
                   alt="R2PB Confecções"
-                  className="h-16 object-contain"
+                  className="h-16 object-contain print:h-12"
                 />
                 <div>
-                  <h1 className="text-2xl font-bold text-foreground">
+                  <h1 className="text-2xl font-bold text-foreground print:text-xl">
                     R2PB Confecções
                   </h1>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground print:text-xs">
                     Ficha de Custo
                   </p>
                 </div>
@@ -108,15 +107,15 @@ export default function VisualizarFicha() {
             </div>
 
             {/* Informações do Produto */}
-            <div className="grid grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-2 gap-6 mb-6 print:mb-4 print:gap-4">
               <div>
-                <h2 className="text-lg font-semibold mb-4 text-foreground">
+                <h2 className="text-lg font-semibold mb-4 text-foreground print:text-base print:mb-3">
                   Informações do Produto
                 </h2>
-                <div className="space-y-3">
+                <div className="space-y-3 print:space-y-2">
                   <div>
                     <p className="text-sm text-muted-foreground">Referência</p>
-                    <p className="font-semibold text-lg">{ficha.referencia}</p>
+                    <p className="font-semibold text-lg print:text-base">{ficha.referencia}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Tipo</p>
@@ -136,24 +135,24 @@ export default function VisualizarFicha() {
               {/* Foto do Produto */}
               {ficha.fotoUrl && (
                 <div>
-                  <h2 className="text-lg font-semibold mb-4 text-foreground">
+                  <h2 className="text-lg font-semibold mb-4 text-foreground print:text-base print:mb-3">
                     Foto do Produto
                   </h2>
                   <img
                     src={ficha.fotoUrl}
                     alt={ficha.referencia}
-                    className="w-full h-48 object-cover rounded-lg border"
+                    className="w-full h-48 object-cover rounded-lg border print:h-32"
                   />
                 </div>
               )}
             </div>
 
             {/* Custos de Mão-de-Obra */}
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold mb-4 text-foreground">
+            <div className="mb-6 print:mb-4">
+              <h2 className="text-lg font-semibold mb-4 text-foreground print:text-base print:mb-3">
                 Custos de Mão-de-Obra
               </h2>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4 print:gap-2">
                 <div className="flex justify-between py-2 border-b">
                   <span className="text-muted-foreground">Modelagem</span>
                   <span className="font-medium">
@@ -212,8 +211,8 @@ export default function VisualizarFicha() {
             </div>
 
             {/* Custos de Matéria-Prima */}
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold mb-4 text-foreground">
+            <div className="mb-6 print:mb-4">
+              <h2 className="text-lg font-semibold mb-4 text-foreground print:text-base print:mb-3">
                 Custos de Matéria-Prima
               </h2>
               <div className="space-y-2">
@@ -240,8 +239,8 @@ export default function VisualizarFicha() {
 
             {/* Observações */}
             {ficha.observacoes && (
-              <div className="mb-8">
-                <h2 className="text-lg font-semibold mb-4 text-foreground">
+              <div className="mb-6 print:mb-4">
+                <h2 className="text-lg font-semibold mb-4 text-foreground print:text-base print:mb-3">
                   Observações
                 </h2>
                 <p className="text-muted-foreground whitespace-pre-wrap">
@@ -251,19 +250,19 @@ export default function VisualizarFicha() {
             )}
 
             {/* Custo Total */}
-            <div className="bg-primary/10 rounded-lg p-6 mt-8">
+            <div className="bg-primary/10 rounded-lg p-6 mt-6 print:mt-4 print:p-4">
               <div className="flex justify-between items-center">
-                <span className="text-2xl font-bold text-foreground">
+                <span className="text-2xl font-bold text-foreground print:text-xl">
                   CUSTO TOTAL
                 </span>
-                <span className="text-3xl font-bold text-primary">
+                <span className="text-3xl font-bold text-primary print:text-2xl">
                   R$ {custoTotal.toFixed(2)}
                 </span>
               </div>
             </div>
 
             {/* Rodapé */}
-            <div className="mt-8 pt-6 border-t text-center text-sm text-muted-foreground">
+            <div className="mt-6 pt-4 border-t text-center text-sm text-muted-foreground print:mt-4 print:pt-3 print:text-xs">
               <p>R2PB Confecções Ltda.</p>
               <p>Documento gerado eletronicamente. Válido sem carimbo.</p>
             </div>
