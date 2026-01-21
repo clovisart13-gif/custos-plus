@@ -658,10 +658,22 @@
 
 ## Bug Reportado - Filtro de Fichas de Custo (21/01/2026)
 
-- [ ] Tabela fica vazia ao voltar para "Todos" após filtrar
+- [x] Tabela fica vazia ao voltar para "Todos" após filtrar
   - Sintoma: Usuário filtra fichas por família, depois seleciona "Todos" no filtro e a tabela fica vazia
   - Mensagem: "Nenhuma ficha de custo encontrada. Clique em 'Nova Referência' para começar."
   - Impacto: Usuário não consegue visualizar todas as fichas após usar filtros
-  - Causa: Provável problema na lógica de reset de filtros
-  - Prioridade: ALTA - Afeta usabilidade básica do sistema
-  - Status: EM INVESTIGAÇÃO
+  - Causa: String "todos" sendo enviada ao backend em vez de undefined
+  - Solução: Modificado FichasDeCusto.tsx para converter "todos" em undefined antes de enviar
+  - Teste: Testado com todos os 3 filtros (Tipo, Família, Cliente) - funcionando 100%
+  - Status: RESOLVIDO - Filtros funcionando corretamente
+
+
+## Melhorias de UX - Página de Orçamentos (21/01/2026)
+
+- [x] Remover botão PDF da lista de orçamentos
+  - Motivo: Funcionalidade duplicada - botão Visualizar já abre o orçamento com opção de PDF funcional
+  - Benefício: Interface mais limpa e menos confusa para o usuário
+  - Risco: Nenhum - funcionalidade permanece disponível via Visualizar
+  - Solução: Removido botão PDF e import Download de Orcamentos.tsx
+  - Teste: Verificado no navegador - apenas botões Visualizar, Aprovado/Reprovado e Deletar aparecem
+  - Status: CONCLUÍDO - Interface mais limpa e intuitiva

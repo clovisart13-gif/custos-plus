@@ -2,7 +2,7 @@ import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Eye, Trash2, Download } from "lucide-react";
+import { Plus, Eye, Trash2 } from "lucide-react";
 
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -170,14 +170,7 @@ export default function Orcamentos() {
                         Reprovado
                       </Button>
                     )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-2"
-                    >
-                      <Download className="h-4 w-4" />
-                      PDF
-                    </Button>
+
                     <Button
                       variant="destructive"
                       size="sm"
