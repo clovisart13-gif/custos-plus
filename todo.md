@@ -643,3 +643,14 @@
   - Solução: Adicionados keys únicos aos SelectItems para prevenir conflitos de DOM
   - Teste: Página carregou sem erros, console limpo
   - Status: RESOLVIDO - Funcionando 100%
+
+
+## Bug Crítico - Tradução Automática de Dados (20/01/2026)
+
+- [x] Sistema traduz automaticamente dados inseridos pelo usuário
+  - Sintoma: Marca "NICE" era traduzida para "legal" ao criar ficha de custo
+  - Impacto: CRÍTICO - Corrompia dados do usuário
+  - Causa: Tradução automática do navegador (Google Translate)
+  - Solução: Adicionado atributo `translate="no"` no HTML e alterado lang para `pt-BR`
+  - Teste: Criada ficha 26NIC-001 com família "NICE" - manteve "NICE" sem traduzir
+  - Status: RESOLVIDO - Dados não são mais traduzidos automaticamente
