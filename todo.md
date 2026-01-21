@@ -677,3 +677,18 @@
   - Solução: Removido botão PDF e import Download de Orcamentos.tsx
   - Teste: Verificado no navegador - apenas botões Visualizar, Aprovado/Reprovado e Deletar aparecem
   - Status: CONCLUÍDO - Interface mais limpa e intuitiva
+
+## Configuração de Favicon e Ícones PWA (21/01/2026)
+
+- [x] Configurar favicon e ícones PWA para exibir logo da R2PB
+  - Problema: Ao criar atalho na área de trabalho, aparece logo do Google em vez do logo da R2PB
+  - Solução: Gerado favicon.ico e ícones PWA (192x192, 512x512) a partir do logo da R2PB
+  - Arquivos criados:
+    * favicon.ico (16x16, 32x32, 48x48)
+    * apple-touch-icon.png (180x180) para iOS
+    * icon-192.png (192x192) para Android/PWA
+    * icon-512.png (512x512) para Android/PWA
+    * manifest.json para PWA
+  - HTML atualizado com links para todos os ícones
+  - Teste: Verificado no navegador - favicon carregando corretamente
+  - Status: CONCLUÍDO - Logo da R2PB aparecerá em atalhos da área de trabalho
