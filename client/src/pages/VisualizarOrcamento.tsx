@@ -737,9 +737,8 @@ export default function VisualizarOrcamento() {
             </div>
           </div>
           <div className="print-title">
-            <h1>ORÇAMENTO</h1>
-            <p>{orcamento.numeroOrcamento}</p>
-            <p>{formatDate(orcamento.dataEmissao)}</p>
+            <p style={{ fontSize: '18px', fontWeight: 'bold', margin: '0 0 4px 0' }}>{orcamento.numeroOrcamento}</p>
+            <p style={{ fontSize: '14px', margin: '0' }}>{formatDate(orcamento.dataEmissao)}</p>
           </div>
         </div>
 

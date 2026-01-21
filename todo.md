@@ -761,3 +761,14 @@
     * Reduzido letter-spacing de 1.5px para 1px
     * Adicionado overflow: visible
   - Status: CONCLUÍDO - Palavra completa visível
+
+## Ajuste Final no Cabeçalho do PDF (21/01/2026)
+
+- [x] Remover palavra "ORÇAMENTO" do cabeçalho do PDF
+  - Problema: Palavra continuava sendo cortada mesmo após ajustes de fonte e espaçamento
+  - Solução Aplicada: Removido <h1>ORÇAMENTO</h1> completamente do cabeçalho
+  - Novo Layout:
+    * Número do orçamento (ORC-2026-001) em fonte 18px negrito
+    * Data de emissão em fonte 14px
+  - Justificativa: O número já identifica claramente que é um orçamento (prefixo "ORC")
+  - Status: CONCLUÍDO - Cabeçalho limpo e sem cortes
