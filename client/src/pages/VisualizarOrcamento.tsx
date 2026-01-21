@@ -200,6 +200,25 @@ export default function VisualizarOrcamento() {
             margin: 10mm;
           }
           
+          /* Ocultar URLs automáticas do navegador */
+          a[href]:after {
+            content: none !important;
+            display: none !important;
+          }
+          
+          abbr[title]:after {
+            content: none !important;
+            display: none !important;
+          }
+          
+          /* Ocultar qualquer link gerado automaticamente */
+          body::after,
+          html::after,
+          div::after {
+            content: none !important;
+            display: none !important;
+          }
+          
           body {
             print-color-adjust: exact;
             -webkit-print-color-adjust: exact;
@@ -226,16 +245,18 @@ export default function VisualizarOrcamento() {
           
           .print-title {
             text-align: right;
-            min-width: 180px;
+            min-width: 200px;
             flex-shrink: 0;
+            padding-right: 5px;
           }
           
           .print-title h1 {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: bold;
             margin: 0;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             white-space: nowrap;
+            overflow: visible;
           }
           
           .print-title p {
@@ -348,11 +369,12 @@ export default function VisualizarOrcamento() {
             left: 0;
             right: 0;
             background: #f3f4f6;
-            padding: 8px 20px;
+            padding: 10px 20px;
             font-size: 8px;
             text-align: center;
             color: #6b7280;
             border-top: 2px solid #3b82f6;
+            z-index: 1000;
           }
           
           .print-company-info {
@@ -796,8 +818,13 @@ export default function VisualizarOrcamento() {
 
         {/* Rodapé */}
         <div className="print-footer">
-          <div>Tel: (11) 3333-4444 | Email: contato@r2pb.com.br | www.r2pbconfeccoes.com.br</div>
-          <div style={{ marginTop: '4px' }}>Este orçamento é válido por {orcamento.validade} dias a partir da data de emissão.</div>
+          <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#1e40af', marginBottom: '6px', letterSpacing: '0.5px' }}>
+            💳 PIX (CNPJ): 50295280000180
+          </div>
+          <div style={{ fontSize: '9px', marginBottom: '3px' }}>
+            <strong>Email:</strong> comercial@quickthreads.com.br | <strong>Site:</strong> www.r2pbconfeccoes.com.br
+          </div>
+          <div style={{ marginTop: '4px', fontSize: '8px' }}>Este orçamento é válido por {orcamento.validade} dias a partir da data de emissão.</div>
         </div>
       </div>
 

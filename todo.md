@@ -727,3 +727,37 @@
   - Prioridade: ALTA - Documento vai para clientes externos
   - Tempo real: 25 minutos
   - Status: CONCLUÍDO - PDF profissional e colorido pronto para uso
+
+## Ajustes Finais no PDF de Orçamento (21/01/2026)
+
+- [x] Remover link do Manus do rodapé do PDF
+  - Problema: Aparecia link "https://manus.im/app/hne20/..." no canto inferior esquerdo do PDF
+  - Causa: Navegador injeta automaticamente URLs na impressão
+  - Solução Aplicada:
+    * Adicionado CSS `a[href]:after { content: none !important; display: none !important; }`
+    * Adicionado CSS para ocultar ::after em body, html e div
+    * Removido @media print duplicado
+  - Status: CONCLUÍDO - Link do Manus oculto
+
+- [x] Adicionar PIX da Quick Threads em posição visível
+  - Problema: PIX não estava visível no PDF
+  - Solução Implementada:
+    * Adicionado no rodapé como primeira linha
+    * 💳 PIX (CNPJ): 50295280000180
+    * Fonte: 11px, negrito, cor azul (#1e40af)
+    * Letter-spacing: 0.5px para melhor legibilidade
+    * Margin-bottom: 6px para separar das outras informações
+  - Dados Adicionados:
+    * Email: comercial@quickthreads.com.br
+    * Site: www.r2pbconfeccoes.com.br
+  - Status: CONCLUÍDO - PIX em destaque no rodapé
+
+- [x] Corrigir palavra "ORÇAMENTO" cortada no topo direito
+  - Problema: Palavra aparecia como "ORÇAMENT" sem o "O" final
+  - Solução Aplicada:
+    * Reduzido fonte de 26px para 24px
+    * Aumentado min-width de 180px para 200px
+    * Adicionado padding-right: 5px
+    * Reduzido letter-spacing de 1.5px para 1px
+    * Adicionado overflow: visible
+  - Status: CONCLUÍDO - Palavra completa visível
