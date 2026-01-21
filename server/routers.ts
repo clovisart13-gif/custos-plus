@@ -85,22 +85,37 @@ export const appRouter = router({
     update: protectedProcedure
       .input(z.object({
         id: z.number(),
-        ...fichaCustoSchema.shape,
+        referencia: z.string().min(1),
+        tipo: z.string().min(1),
+        familia: z.string().min(1),
+        cliente: z.string().min(1),
+        fotoUrl: z.string().optional(),
+        modelagem: z.union([z.number(), z.string()]).transform(val => typeof val === 'string' ? parseFloat(val) : val),
+        piloto: z.union([z.number(), z.string()]).transform(val => typeof val === 'string' ? parseFloat(val) : val),
+        corte: z.union([z.number(), z.string()]).transform(val => typeof val === 'string' ? parseFloat(val) : val),
+        beneficiamento: z.union([z.number(), z.string()]).transform(val => typeof val === 'string' ? parseFloat(val) : val),
+        costura: z.union([z.number(), z.string()]).transform(val => typeof val === 'string' ? parseFloat(val) : val),
+        lavanderia: z.union([z.number(), z.string()]).transform(val => typeof val === 'string' ? parseFloat(val) : val),
+        acabamento: z.union([z.number(), z.string()]).transform(val => typeof val === 'string' ? parseFloat(val) : val),
+        passadoria: z.union([z.number(), z.string()]).transform(val => typeof val === 'string' ? parseFloat(val) : val),
+        tecido: z.union([z.number(), z.string()]).transform(val => typeof val === 'string' ? parseFloat(val) : val),
+        aviamento: z.union([z.number(), z.string()]).transform(val => typeof val === 'string' ? parseFloat(val) : val),
+        observacoes: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const { id, ...data } = input;
         const convertedData = {
           ...data,
-          modelagem: (data.modelagem as number).toString(),
-          piloto: (data.piloto as number).toString(),
-          corte: (data.corte as number).toString(),
-          beneficiamento: (data.beneficiamento as number).toString(),
-          costura: (data.costura as number).toString(),
-          lavanderia: (data.lavanderia as number).toString(),
-          acabamento: (data.acabamento as number).toString(),
-          passadoria: (data.passadoria as number).toString(),
-          tecido: (data.tecido as number).toString(),
-          aviamento: (data.aviamento as number).toString(),
+          modelagem: data.modelagem.toString(),
+          piloto: data.piloto.toString(),
+          corte: data.corte.toString(),
+          beneficiamento: data.beneficiamento.toString(),
+          costura: data.costura.toString(),
+          lavanderia: data.lavanderia.toString(),
+          acabamento: data.acabamento.toString(),
+          passadoria: data.passadoria.toString(),
+          tecido: data.tecido.toString(),
+          aviamento: data.aviamento.toString(),
         };
         await db.updateFichaCusto(id, ctx.user.id, convertedData);
         return await db.getFichaCustoById(id, ctx.user.id);

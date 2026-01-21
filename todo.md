@@ -692,3 +692,16 @@
   - HTML atualizado com links para todos os ícones
   - Teste: Verificado no navegador - favicon carregando corretamente
   - Status: CONCLUÍDO - Logo da R2PB aparecerá em atalhos da área de trabalho
+
+## Bug Crítico - Edição de Ficha de Custo (21/01/2026)
+
+- [x] Erro ao editar ficha de custo: "Invalid input: expected number, received string"
+  - Sintoma: Ao tentar editar qualquer ficha de custo, aparece erro de validação em campos numéricos
+  - Campos afetados: modelagem, piloto, corte, beneficiamento, costura, lavanderia, passadoria, tecido, aviamento
+  - Causa Raiz: Duplo problema - Frontend convertia number para string e Backend não aceitava conversão flexível
+  - Solução Aplicada:
+    * Frontend (FichasCusto.tsx): Removido .toString() desnecessário - agora envia valores como number
+    * Backend (routers.ts): Adicionado z.union([z.number(), z.string()]).transform() para aceitar ambos os tipos
+  - Teste: Editado campo Modelagem de R$ 10.00 para R$ 25.00 - funcionou perfeitamente com mensagem "Campo atualizado!"
+  - Impacto: CRÍTICO - Impossibilitava edição de fichas de custo
+  - Status: RESOLVIDO - Edição funcionando 100%

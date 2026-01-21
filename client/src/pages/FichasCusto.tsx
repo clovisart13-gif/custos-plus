@@ -130,11 +130,8 @@ export default function FichasCusto() {
         ...fichaCusto,
         fotoUrl: fichaCusto.fotoUrl || undefined,
       };
-      if (numericFields.includes(field)) {
-        updateData[field] = finalValue.toString();
-      } else {
-        updateData[field] = finalValue;
-      }
+      // Enviar campos numéricos como number, não como string
+      updateData[field] = finalValue;
       updateMutation.mutate(updateData);
     }
   };
