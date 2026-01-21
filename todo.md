@@ -870,3 +870,20 @@
     * ✅ Testado no navegador: logo agora proporcional ao Orçamento
   - Teste: Logo com 45px de altura, igual ao Orçamento
   - Status: ✅ CONCLUÍDO - Logo ajustado e proporcional
+
+
+## Correção de Tamanho do Logo no Preview (21/01/2026)
+
+- [x] Corrigir tamanho do logo no PDF exportado
+  - Problema: Logo ficava GIGANTE quando exportava para PDF (tanto Ficha quanto Orçamento)
+  - Causa: Regra CSS genérica `img { height: auto !important; }` sobrescrevia o tamanho fixo do logo
+  - Observação: Na visualização normal (tela) estava OK
+  - Objetivo: Forçar logo a ter 45px de altura no PDF exportado
+  - Implementação:
+    * ✅ Identificado problema no index.css linha 345-349
+    * ✅ Adicionada regra CSS específica para logo (linhas 351-358)
+    * ✅ Usado seletor mais específico: img[src="/logo-r2pb.jpeg"], img[alt="R2PB"], .print-logo
+    * ✅ Forçado height: 45px !important e width: auto !important na impressão
+    * ✅ Testado no navegador: visualização OK
+  - Teste: Logo com 45px fixo na impressão, sobrescrevendo regra genérica
+  - Status: ✅ CONCLUÍDO - Logo corrigido no PDF

@@ -347,4 +347,13 @@
     height: auto !important;
     page-break-inside: avoid !important;
   }
+
+  /* Force logo to fixed height in print */
+  img[src="/logo-r2pb.jpeg"],
+  img[alt="R2PB"],
+  img[alt="R2PB Confecções"],
+  .print-logo {
+    height: 45px !important;
+    width: auto !important;
+  }
 }
