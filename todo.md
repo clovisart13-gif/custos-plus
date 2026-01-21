@@ -705,3 +705,25 @@
   - Teste: Editado campo Modelagem de R$ 10.00 para R$ 25.00 - funcionou perfeitamente com mensagem "Campo atualizado!"
   - Impacto: CRÍTICO - Impossibilitava edição de fichas de custo
   - Status: RESOLVIDO - Edição funcionando 100%
+
+
+## Redesign de PDF de Orçamento (21/01/2026)
+
+- [x] Redesenhar PDF do orçamento com layout profissional e colorido
+  - Objetivo: Criar documento mais apresentável para clientes, inspirado no design do Kanban R2PB
+  - Requisitos Implementados:
+    * ✅ Cabe em uma folha A4 (210mm x 297mm) sem quebra de página
+    * ✅ Cabeçalho colorido com gradiente azul (#1e40af → #3b82f6) + logo R2PB
+    * ✅ Seções organizadas com títulos cinza e borda azul
+    * ✅ Tabela moderna com cabeçalho azul escuro e linhas zebradas
+    * ✅ Card verde gradiente para totais (#10b981 → #059669)
+    * ✅ Card amarelo (#fef3c7) com borda laranja para condições de pagamento
+    * ✅ Rodapé profissional com contatos e borda azul
+    * ✅ Tipografia compacta (9-11px) para otimizar espaço
+  - Correções Aplicadas:
+    * Ajustado tamanho da fonte do título "ORÇAMENTO" de 28px para 26px
+    * Adicionado min-width e flex-shrink para evitar corte de texto
+    * Adicionado white-space: nowrap para manter palavra completa
+  - Prioridade: ALTA - Documento vai para clientes externos
+  - Tempo real: 25 minutos
+  - Status: CONCLUÍDO - PDF profissional e colorido pronto para uso

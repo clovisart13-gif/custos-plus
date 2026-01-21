@@ -175,10 +175,6 @@ export default function VisualizarOrcamento() {
     );
   }
 
-  // Debug
-  console.log('Orçamento status:', orcamento.status);
-  console.log('Deve mostrar botão?', orcamento.status === 'aprovado' && !enviado);
-
   const handlePrint = () => {
     window.print();
   };
@@ -196,479 +192,633 @@ export default function VisualizarOrcamento() {
   const valorPrazo = (total * Number(orcamento.percentualPrazo)) / 100;
 
   return (
-    <div className="container py-8 print:p-0 print:m-0">
-      <div className="flex justify-between items-center mb-8 print:hidden">
-        <Button variant="ghost" onClick={() => navigate("/orcamentos")} className="gap-2">
-          <ArrowLeft className="h-4 w-4" />
-          Voltar
-        </Button>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={handlePrint} className="gap-2">
-            <Printer className="h-4 w-4" />
-            Imprimir
+    <>
+      <style>{`
+        @media print {
+          @page {
+            size: A4;
+            margin: 10mm;
+          }
+          
+          body {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+          }
+          
+          .print-header {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 15px 20px;
+            margin: -10mm -10mm 8mm -10mm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            page-break-inside: avoid;
+          }
+          
+          .print-logo {
+            height: 45px;
+            width: auto;
+            background: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+          }
+          
+          .print-title {
+            text-align: right;
+            min-width: 180px;
+            flex-shrink: 0;
+          }
+          
+          .print-title h1 {
+            font-size: 26px;
+            font-weight: bold;
+            margin: 0;
+            letter-spacing: 1.5px;
+            white-space: nowrap;
+          }
+          
+          .print-title p {
+            font-size: 14px;
+            margin: 2px 0 0 0;
+            opacity: 0.95;
+          }
+          
+          .print-section {
+            margin-bottom: 8px;
+            page-break-inside: avoid;
+          }
+          
+          .print-section-title {
+            background: #f3f4f6;
+            padding: 6px 10px;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #374151;
+            border-left: 4px solid #3b82f6;
+          }
+          
+          .print-section-content {
+            padding: 8px 10px;
+            font-size: 10px;
+            line-height: 1.4;
+          }
+          
+          .print-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0;
+            font-size: 9px;
+          }
+          
+          .print-table thead {
+            background: #1e40af;
+            color: white;
+          }
+          
+          .print-table th {
+            padding: 6px 8px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+          }
+          
+          .print-table td {
+            padding: 5px 8px;
+            border-bottom: 1px solid #e5e7eb;
+          }
+          
+          .print-table tbody tr:nth-child(even) {
+            background: #f9fafb;
+          }
+          
+          .print-table tbody tr:hover {
+            background: #f3f4f6;
+          }
+          
+          .print-totals {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 12px 15px;
+            margin-top: 10px;
+            border-radius: 6px;
+          }
+          
+          .print-totals-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 4px 0;
+            font-size: 11px;
+          }
+          
+          .print-totals-row.total {
+            font-size: 16px;
+            font-weight: bold;
+            border-top: 2px solid rgba(255,255,255,0.3);
+            padding-top: 8px;
+            margin-top: 8px;
+          }
+          
+          .print-payment {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 10px 12px;
+            margin-top: 10px;
+            font-size: 10px;
+          }
+          
+          .print-payment-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 3px 0;
+            padding: 3px 0;
+          }
+          
+          .print-payment-item strong {
+            color: #92400e;
+          }
+          
+          .print-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #f3f4f6;
+            padding: 8px 20px;
+            font-size: 8px;
+            text-align: center;
+            color: #6b7280;
+            border-top: 2px solid #3b82f6;
+          }
+          
+          .print-company-info {
+            font-size: 9px;
+            color: #4b5563;
+            margin-bottom: 8px;
+            line-height: 1.3;
+          }
+        }
+        
+        @media screen {
+          .print-preview-container {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+          }
+        }
+      `}</style>
+
+      <div className="container py-8 print:hidden">
+        <div className="flex justify-between items-center mb-8">
+          <Button variant="ghost" onClick={() => navigate("/orcamentos")} className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Voltar
           </Button>
-          <Button variant="outline" onClick={handleDownloadPDF} className="gap-2">
-            <Download className="h-4 w-4" />
-            PDF
-          </Button>
-          {orcamento.status === "aprovado" && !enviado && (
-            <Button 
-              onClick={handleEnviarKanban} 
-              disabled={enviandoKanban}
-              className="gap-2 bg-green-600 hover:bg-green-700"
-            >
-              <Send className="h-4 w-4" />
-              {enviandoKanban ? "Enviando..." : "Enviar para Kanban"}
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handlePrint} className="gap-2">
+              <Printer className="h-4 w-4" />
+              Imprimir
             </Button>
-          )}
-          {orcamento.status !== "aprovado" && (
-            <div className="text-sm text-muted-foreground">Status: {orcamento.status}</div>
-          )}
-          {enviado && (
-            <Button disabled variant="outline" className="gap-2">
-              <Send className="h-4 w-4" />
-              Enviado para Kanban ✓
+            <Button variant="outline" onClick={handleDownloadPDF} className="gap-2">
+              <Download className="h-4 w-4" />
+              PDF
             </Button>
-          )}
+            {orcamento.status === "aprovado" && !enviado && (
+              <Button 
+                onClick={handleEnviarKanban} 
+                disabled={enviandoKanban}
+                className="gap-2 bg-green-600 hover:bg-green-700"
+              >
+                <Send className="h-4 w-4" />
+                {enviandoKanban ? "Enviando..." : "Enviar para Kanban"}
+              </Button>
+            )}
+            {enviado && (
+              <Button disabled variant="outline" className="gap-2">
+                <Send className="h-4 w-4" />
+                Enviado para Kanban ✓
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Versão de Edição (tela) */}
+        <div className="space-y-6">
+          {/* Dados do Cliente */}
+          <Card>
+            <CardHeader className="flex flex-row justify-between items-center">
+              <CardTitle className="text-base">Dados do Cliente</CardTitle>
+              {!editingClienteMarca && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setNomeClienteEdit(orcamento.nomeCliente);
+                    setMarcaEdit(orcamento.marca);
+                    setEditingClienteMarca(true);
+                  }}
+                  className="gap-2"
+                >
+                  <Edit2 className="h-4 w-4" />
+                  Editar
+                </Button>
+              )}
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {editingClienteMarca ? (
+                <div className="space-y-4 p-4 bg-muted rounded-lg">
+                  <div>
+                    <Label htmlFor="nomeClienteEdit">Cliente</Label>
+                    <Input
+                      id="nomeClienteEdit"
+                      value={nomeClienteEdit}
+                      onChange={(e) => setNomeClienteEdit(e.target.value)}
+                      placeholder="Nome do cliente"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="marcaEdit">Marca/Coleção</Label>
+                    <Input
+                      id="marcaEdit"
+                      value={marcaEdit}
+                      onChange={(e) => setMarcaEdit(e.target.value)}
+                      placeholder="Marca ou coleção"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      onClick={handleSalvarClienteMarca}
+                      disabled={updateClienteMarcaMutation.isPending}
+                    >
+                      {updateClienteMarcaMutation.isPending ? "Salvando..." : "Salvar"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setEditingClienteMarca(false)}
+                    >
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <p><strong>Cliente:</strong> {orcamento.nomeCliente}</p>
+                  <p><strong>Marca/Coleção:</strong> {orcamento.marca}</p>
+                </>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Validade e Prazo */}
+          <Card>
+            <CardHeader className="flex flex-row justify-between items-center">
+              <CardTitle className="text-base">Validade e Prazo</CardTitle>
+              {!editingValidadeEPrazo && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setValidadeEdit(orcamento.validade?.toString() || "");
+                    setPrazoEdit(orcamento.prazoEntregaTexto || "");
+                    setEditingValidadeEPrazo(true);
+                  }}
+                  className="gap-2"
+                >
+                  <Edit2 className="h-4 w-4" />
+                  Editar
+                </Button>
+              )}
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {editingValidadeEPrazo ? (
+                <div className="space-y-4 p-4 bg-muted rounded-lg">
+                  <div>
+                    <Label htmlFor="validadeEdit">Validade (dias)</Label>
+                    <Input
+                      id="validadeEdit"
+                      type="number"
+                      value={validadeEdit}
+                      onChange={(e) => setValidadeEdit(e.target.value)}
+                      placeholder="Ex: 30"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="prazoEdit">Prazo de Entrega</Label>
+                    <Input
+                      id="prazoEdit"
+                      value={prazoEdit}
+                      onChange={(e) => setPrazoEdit(e.target.value)}
+                      placeholder="Ex: 15 dias uteis"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      onClick={handleSalvarValidadeEPrazo}
+                      disabled={updateValidadeEPrazoMutation.isPending}
+                    >
+                      {updateValidadeEPrazoMutation.isPending ? "Salvando..." : "Salvar"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setEditingValidadeEPrazo(false)}
+                    >
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <p><strong>Validade do Orcamento:</strong> {orcamento.validade} dias</p>
+                  <p><strong>Prazo de Entrega:</strong> {orcamento.prazoEntregaTexto || orcamento.prazoDias + ' dias'}</p>
+                </>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Itens do Orcamento */}
+          <Card>
+            <CardHeader className="flex flex-row justify-between items-center">
+              <CardTitle className="text-base">Itens do Orçamento</CardTitle>
+              {!showAddItem && (
+                <Button size="sm" onClick={() => setShowAddItem(true)}>
+                  + Adicionar Item
+                </Button>
+              )}
+            </CardHeader>
+            <CardContent>
+              {showAddItem && (
+                <div className="mb-6 p-4 bg-muted rounded-lg">
+                  <AdicionarItemManual 
+                    orcamentoId={orcamentoId}
+                    onSuccess={() => {
+                      setShowAddItem(false);
+                      refetchItens();
+                    }}
+                    onCancel={() => setShowAddItem(false)}
+                  />
+                </div>
+              )}
+
+              {itens.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">Nenhum item adicionado ainda</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left py-2 px-2">Referência</th>
+                        <th className="text-left py-2 px-2">Descrição</th>
+                        <th className="text-right py-2 px-2">Quantidade</th>
+                        <th className="text-right py-2 px-2">Valor Unitário</th>
+                        <th className="text-right py-2 px-2">Total</th>
+                        <th className="text-center py-2 px-2">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {itens.map((item) => (
+                        <tr key={item.id} className="border-b hover:bg-muted">
+                          <td className="py-2 px-2">{item.referencia}</td>
+                          <td className="py-2 px-2">{item.descricao}</td>
+                          <td className="text-right py-2 px-2">{item.quantidade}</td>
+                          <td className="text-right py-2 px-2">{formatCurrency(Number(item.valorUnitario))}</td>
+                          <td className="text-right py-2 px-2 font-semibold">{formatCurrency(Number(item.valorTotal))}</td>
+                          <td className="text-center py-2 px-2">
+                            <div className="flex gap-1 justify-center">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setEditingItem(item)}
+                              >
+                                <Edit2 className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  if (confirm("Tem certeza que deseja deletar este item?")) {
+                                    setDeletingItemId(item.id);
+                                    deleteItemMutation.mutate({ itemId: item.id });
+                                  }
+                                }}
+                                disabled={deletingItemId === item.id}
+                              >
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Condições de Pagamento */}
+          <Card>
+            <CardHeader className="flex flex-row justify-between items-center">
+              <CardTitle className="text-base">Condições de Pagamento</CardTitle>
+              {!editingCondicoesPagamento && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setPercentualSinalEdit(orcamento.percentualSinal?.toString() || "0");
+                    setPercentualRetiradaEdit(orcamento.percentualRetirada?.toString() || "0");
+                    setPercentualPrazoEdit(orcamento.percentualPrazo?.toString() || "0");
+                    setEditingCondicoesPagamento(true);
+                  }}
+                  className="gap-2"
+                >
+                  <Edit2 className="h-4 w-4" />
+                  Editar
+                </Button>
+              )}
+            </CardHeader>
+            <CardContent>
+              {editingCondicoesPagamento ? (
+                <div className="space-y-4 p-4 bg-muted rounded-lg">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Sinal (%)</Label>
+                      <Input
+                        type="number"
+                        value={percentualSinalEdit}
+                        onChange={(e) => setPercentualSinalEdit(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <Label>Retirada (%)</Label>
+                      <Input
+                        type="number"
+                        value={percentualRetiradaEdit}
+                        onChange={(e) => setPercentualRetiradaEdit(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <Label>Prazo (%)</Label>
+                      <Input
+                        type="number"
+                        value={percentualPrazoEdit}
+                        onChange={(e) => setPercentualPrazoEdit(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      onClick={handleSalvarCondicoesPagamento}
+                      disabled={updateCondicoesPagamentoMutation.isPending}
+                    >
+                      {updateCondicoesPagamentoMutation.isPending ? "Salvando..." : "Salvar"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setEditingCondicoesPagamento(false)}
+                    >
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <p><strong>Sinal:</strong> {orcamento.percentualSinal}% = {formatCurrency(valorSinal)}</p>
+                  <p><strong>Retirada:</strong> {orcamento.percentualRetirada}% = {formatCurrency(valorRetirada)}</p>
+                  <p><strong>Prazo:</strong> {orcamento.percentualPrazo}% = {formatCurrency(valorPrazo)}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
 
-      {/* Header da Empresa */}
-      <Card className="mb-8 print:border-0 print:shadow-none print:mb-4">
-        <CardHeader>
-          <div className="flex justify-between items-start">
-            <div className="flex items-center gap-4">
-              <img 
-                src="/logo-r2pb.jpeg" 
-                alt="R2PB Confecções" 
-                className="h-12 w-auto object-contain"
-              />
-              <div>
-                <h1 className="text-2xl font-bold">QUICK THREADS LTDA</h1>
-                <p className="text-sm text-muted-foreground">R. Ten. Pena, 166 - Bom Retiro, São Paulo - SP, 01127-020</p>
-                <p className="text-sm text-muted-foreground">CNPJ: 50.295.280/0001-80</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-3xl font-bold text-primary">ORÇAMENTO</p>
-              <p className="text-lg font-semibold">{orcamento.numeroOrcamento}</p>
-              <p className="text-sm text-muted-foreground">{formatDate(orcamento.dataEmissao)}</p>
+      {/* Versão para Impressão (PDF) */}
+      <div className="hidden print:block print-preview-container">
+        {/* Cabeçalho Colorido */}
+        <div className="print-header">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <img src="/logo-r2pb.jpeg" alt="R2PB" className="print-logo" />
+            <div style={{ color: 'white' }}>
+              <div style={{ fontSize: '12px', fontWeight: '600', marginBottom: '2px' }}>QUICK THREADS LTDA</div>
+              <div style={{ fontSize: '8px', opacity: '0.9' }}>R. Ten. Pena, 166 - Bom Retiro, SP | CNPJ: 50.295.280/0001-80</div>
             </div>
           </div>
-        </CardHeader>
-      </Card>
+          <div className="print-title">
+            <h1>ORÇAMENTO</h1>
+            <p>{orcamento.numeroOrcamento}</p>
+            <p>{formatDate(orcamento.dataEmissao)}</p>
+          </div>
+        </div>
 
-      {/* Dados do Cliente */}
-      <Card className="mb-8 print:border-0 print:shadow-none print:mb-4">
-        <CardHeader className="flex flex-row justify-between items-center">
-          <CardTitle className="text-base">Dados do Cliente</CardTitle>
-          {!editingClienteMarca && (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => {
-                setNomeClienteEdit(orcamento.nomeCliente);
-                setMarcaEdit(orcamento.marca);
-                setEditingClienteMarca(true);
-              }}
-              className="gap-2 print:hidden"
-            >
-              <Edit2 className="h-4 w-4" />
-              Editar
-            </Button>
-          )}
-        </CardHeader>
-        <CardContent className="space-y-2">
-          {editingClienteMarca ? (
-            <div className="space-y-4 p-4 bg-muted rounded-lg">
-              <div>
-                <Label htmlFor="nomeClienteEdit">Cliente</Label>
-                <Input
-                  id="nomeClienteEdit"
-                  value={nomeClienteEdit}
-                  onChange={(e) => setNomeClienteEdit(e.target.value)}
-                  placeholder="Nome do cliente"
-                />
-              </div>
-              <div>
-                <Label htmlFor="marcaEdit">Marca/Coleção</Label>
-                <Input
-                  id="marcaEdit"
-                  value={marcaEdit}
-                  onChange={(e) => setMarcaEdit(e.target.value)}
-                  placeholder="Marca ou coleção"
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  onClick={handleSalvarClienteMarca}
-                  disabled={updateClienteMarcaMutation.isPending}
-                >
-                  {updateClienteMarcaMutation.isPending ? "Salvando..." : "Salvar"}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setEditingClienteMarca(false)}
-                >
-                  Cancelar
-                </Button>
-              </div>
+        {/* Dados do Cliente */}
+        <div className="print-section">
+          <div className="print-section-title">Dados do Cliente</div>
+          <div className="print-section-content">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+              <div><strong>Cliente:</strong> {orcamento.nomeCliente}</div>
+              <div><strong>Marca/Coleção:</strong> {orcamento.marca}</div>
+              <div><strong>Validade:</strong> {orcamento.validade} dias</div>
+              <div><strong>Prazo de Entrega:</strong> {orcamento.prazoEntregaTexto || orcamento.prazoDias + ' dias'}</div>
             </div>
-          ) : (
-            <>
-              <p><strong>Cliente:</strong> {orcamento.nomeCliente}</p>
-              <p><strong>Marca/Coleção:</strong> {orcamento.marca}</p>
-            </>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        </div>
 
-      {/* Validade e Prazo */}
-      <Card className="mb-8 print:border-0 print:shadow-none print:mb-4">
-        <CardHeader className="flex flex-row justify-between items-center">
-          <CardTitle className="text-base">Validade e Prazo</CardTitle>
-          {!editingValidadeEPrazo && (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => {
-                setValidadeEdit(orcamento.validade?.toString() || "");
-                setPrazoEdit(orcamento.prazoEntregaTexto || "");
-                setEditingValidadeEPrazo(true);
-              }}
-              className="gap-2 print:hidden"
-            >
-              <Edit2 className="h-4 w-4" />
-              Editar
-            </Button>
-          )}
-        </CardHeader>
-        <CardContent className="space-y-2">
-          {editingValidadeEPrazo ? (
-            <div className="space-y-4 p-4 bg-muted rounded-lg">
-              <div>
-                <Label htmlFor="validadeEdit">Validade (dias)</Label>
-                <Input
-                  id="validadeEdit"
-                  type="number"
-                  value={validadeEdit}
-                  onChange={(e) => setValidadeEdit(e.target.value)}
-                  placeholder="Ex: 30"
-                />
-              </div>
-              <div>
-                <Label htmlFor="prazoEdit">Prazo de Entrega</Label>
-                <Input
-                  id="prazoEdit"
-                  value={prazoEdit}
-                  onChange={(e) => setPrazoEdit(e.target.value)}
-                  placeholder="Ex: 15 dias uteis"
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  onClick={handleSalvarValidadeEPrazo}
-                  disabled={updateValidadeEPrazoMutation.isPending}
-                >
-                  {updateValidadeEPrazoMutation.isPending ? "Salvando..." : "Salvar"}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setEditingValidadeEPrazo(false)}
-                >
-                  Cancelar
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <>
-              <p><strong>Validade do Orcamento:</strong> {orcamento.validade} dias</p>
-              <p><strong>Prazo de Entrega:</strong> {orcamento.prazoEntregaTexto || orcamento.prazoDias + ' dias'}</p>
-            </>
-          )}
-        </CardContent>
-      </Card>
+        {/* Itens do Orçamento */}
+        <div className="print-section">
+          <div className="print-section-title">Itens do Orçamento</div>
+          <table className="print-table">
+            <thead>
+              <tr>
+                <th style={{ width: '15%' }}>Referência</th>
+                <th style={{ width: '35%' }}>Descrição</th>
+                <th style={{ width: '12%', textAlign: 'right' }}>Qtd.</th>
+                <th style={{ width: '18%', textAlign: 'right' }}>Vlr. Unit.</th>
+                <th style={{ width: '20%', textAlign: 'right' }}>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {itens.map((item) => (
+                <tr key={item.id}>
+                  <td>{item.referencia}</td>
+                  <td>{item.descricao}</td>
+                  <td style={{ textAlign: 'right' }}>{item.quantidade}</td>
+                  <td style={{ textAlign: 'right' }}>{formatCurrency(Number(item.valorUnitario))}</td>
+                  <td style={{ textAlign: 'right', fontWeight: '600' }}>{formatCurrency(Number(item.valorTotal))}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      {/* Itens do Orcamento */}
-      <Card className="mb-8 print:border-0 print:shadow-none print:mb-4">
-        <CardHeader className="flex flex-row justify-between items-center">
-          <CardTitle className="text-base">Itens do Orçamento</CardTitle>
-          {!showAddItem && (
-            <Button size="sm" onClick={() => setShowAddItem(true)}>
-              + Adicionar Item
-            </Button>
-          )}
-        </CardHeader>
-        <CardContent>
-          {showAddItem && (
-            <div className="mb-6 p-4 bg-muted rounded-lg">
-              <AdicionarItemManual 
-                orcamentoId={orcamentoId}
-                onSuccess={() => {
-                  setShowAddItem(false);
-                  refetchItens();
-                }}
-                onCancel={() => setShowAddItem(false)}
-              />
-            </div>
-          )}
-
-          {itens.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">Nenhum item adicionado ainda</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-2 px-2">Referência</th>
-                    <th className="text-left py-2 px-2">Descrição</th>
-                    <th className="text-right py-2 px-2">Quantidade</th>
-                    <th className="text-right py-2 px-2">Valor Unitário</th>
-                    <th className="text-right py-2 px-2">Total</th>
-                    <th className="text-center py-2 px-2 print:hidden" style={{ display: 'none' }}>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {itens.map((item) => (
-                    <tr key={item.id} className="border-b hover:bg-muted">
-                      <td className="py-2 px-2">{item.referencia}</td>
-                      <td className="py-2 px-2">{item.descricao}</td>
-                      <td className="text-right py-2 px-2">{item.quantidade}</td>
-                      <td className="text-right py-2 px-2">{formatCurrency(Number(item.valorUnitario))}</td>
-                      <td className="text-right py-2 px-2 font-semibold">{formatCurrency(Number(item.valorTotal))}</td>
-                      <td className="text-center py-2 px-2 print:hidden">
-                        <div className="flex gap-1 justify-center">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setEditingItem(item);
-                            }}
-                            className="text-xs"
-                          >
-                            Editar
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              if (confirm('Tem certeza que deseja deletar este item?')) {
-                                setDeletingItemId(item.id);
-                                deleteItemMutation.mutateAsync({ itemId: item.id });
-                              }
-                            }}
-                            disabled={deletingItemId === item.id}
-                            className="text-xs text-red-600 hover:text-red-700"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Resumo Financeiro */}
-      <Card className="mb-8 print:border-0 print:shadow-none print:mb-4">
-        <CardHeader>
-          <CardTitle className="text-base">Resumo Financeiro</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex justify-between text-lg">
+        {/* Totais */}
+        <div className="print-totals">
+          <div className="print-totals-row">
             <span>Total de Peças:</span>
-            <span className="font-semibold">{totalPecas}</span>
+            <span style={{ fontWeight: '600' }}>{totalPecas} unidades</span>
           </div>
-          <div className="flex justify-between text-lg border-t pt-4">
+          <div className="print-totals-row">
             <span>Subtotal:</span>
-            <span className="font-semibold">{formatCurrency(subtotal)}</span>
+            <span style={{ fontWeight: '600' }}>{formatCurrency(subtotal)}</span>
           </div>
-          <div className="flex justify-between text-2xl font-bold border-t pt-4">
-            <span>TOTAL:</span>
-            <span className="text-primary">{formatCurrency(total)}</span>
+          <div className="print-totals-row total">
+            <span>VALOR TOTAL:</span>
+            <span>{formatCurrency(total)}</span>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Condicoes de Pagamento */}
-      <Card className="print:border-0 print:shadow-none print:mb-0">
-        <CardHeader className="flex flex-row justify-between items-center">
-          <CardTitle className="text-base">Condicoes de Pagamento</CardTitle>
-          {!editingCondicoesPagamento && (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => {
-                setPercentualSinalEdit(orcamento.percentualSinal?.toString() || "0");
-                setDescricaoSinalEdit("Sinal");
-                setPercentualRetiradaEdit(orcamento.percentualRetirada?.toString() || "0");
-                setDescricaoRetiradaEdit("Retirada");
-                setPercentualPrazoEdit(orcamento.percentualPrazo?.toString() || "0");
-                setDescricaoPrazoEdit("30 dias");
-                setEditingCondicoesPagamento(true);
-              }}
-              className="gap-2 print:hidden"
-            >
-              <Edit2 className="h-4 w-4" />
-              Editar
-            </Button>
-          )}
-        </CardHeader>
-        <CardContent>
-          {editingCondicoesPagamento ? (
-            <div className="space-y-4 p-4 bg-muted rounded-lg">
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <Label htmlFor="descricaoSinalEdit">Descrição Parcela 1</Label>
-                  <Input
-                    id="descricaoSinalEdit"
-                    type="text"
-                    value={descricaoSinalEdit}
-                    onChange={(e) => setDescricaoSinalEdit(e.target.value)}
-                    placeholder="Ex: Sinal"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="percentualSinalEdit">Percentual (%)</Label>
-                  <Input
-                    id="percentualSinalEdit"
-                    type="number"
-                    step="0.01"
-                    value={percentualSinalEdit}
-                    onChange={(e) => setPercentualSinalEdit(e.target.value)}
-                    placeholder="Ex: 50"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <Label htmlFor="descricaoRetiradaEdit">Descrição Parcela 2</Label>
-                  <Input
-                    id="descricaoRetiradaEdit"
-                    type="text"
-                    value={descricaoRetiradaEdit}
-                    onChange={(e) => setDescricaoRetiradaEdit(e.target.value)}
-                    placeholder="Ex: Retirada"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="percentualRetiradaEdit">Percentual (%)</Label>
-                  <Input
-                    id="percentualRetiradaEdit"
-                    type="number"
-                    step="0.01"
-                    value={percentualRetiradaEdit}
-                    onChange={(e) => setPercentualRetiradaEdit(e.target.value)}
-                    placeholder="Ex: 30"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <Label htmlFor="descricaoPrazoEdit">Descrição Parcela 3</Label>
-                  <Input
-                    id="descricaoPrazoEdit"
-                    type="text"
-                    value={descricaoPrazoEdit}
-                    onChange={(e) => setDescricaoPrazoEdit(e.target.value)}
-                    placeholder="Ex: 30 dias"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="percentualPrazoEdit">Percentual (%)</Label>
-                  <Input
-                    id="percentualPrazoEdit"
-                    type="number"
-                    step="0.01"
-                    value={percentualPrazoEdit}
-                    onChange={(e) => setPercentualPrazoEdit(e.target.value)}
-                    placeholder="Ex: 20"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  onClick={handleSalvarCondicoesPagamento}
-                  disabled={updateCondicoesPagamentoMutation.isPending}
-                >
-                  {updateCondicoesPagamentoMutation.isPending ? "Salvando..." : "Salvar"}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setEditingCondicoesPagamento(false)}
-                >
-                  Cancelar
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="space-y-1">
-                  {Number(orcamento.percentualSinal) > 0 && (
-                  <div className="flex justify-between p-2 bg-muted rounded">
-                    <span className="text-sm">{descricaoSinalEdit} ({Number(orcamento.percentualSinal)}%):</span>
-                    <span className="font-semibold text-sm">{formatCurrency(valorSinal)}</span>
-                  </div>
-                )}
-                {Number(orcamento.percentualRetirada) > 0 && (
-                  <div className="flex justify-between p-2 bg-muted rounded">
-                    <span className="text-sm">{descricaoRetiradaEdit} ({Number(orcamento.percentualRetirada)}%):</span>
-                    <span className="font-semibold text-sm">{formatCurrency(valorRetirada)}</span>
-                  </div>
-                )}
-                {Number(orcamento.percentualPrazo) > 0 && (
-                  <div className="flex justify-between p-2 bg-muted rounded">
-                    <span className="text-sm">{descricaoPrazoEdit} ({Number(orcamento.percentualPrazo)}%):</span>
-                    <span className="font-semibold text-sm">{formatCurrency(valorPrazo)}</span>
-                  </div>
-                )}
-              </div>
+        {/* Condições de Pagamento */}
+        <div className="print-payment">
+          <div style={{ fontWeight: '700', marginBottom: '6px', fontSize: '11px', color: '#92400e' }}>CONDIÇÕES DE PAGAMENTO</div>
+          <div className="print-payment-item">
+            <span><strong>Sinal ({orcamento.percentualSinal}%):</strong></span>
+            <span>{formatCurrency(valorSinal)}</span>
+          </div>
+          <div className="print-payment-item">
+            <span><strong>Retirada ({orcamento.percentualRetirada}%):</strong></span>
+            <span>{formatCurrency(valorRetirada)}</span>
+          </div>
+          <div className="print-payment-item">
+            <span><strong>Prazo ({orcamento.percentualPrazo}%):</strong></span>
+            <span>{formatCurrency(valorPrazo)}</span>
+          </div>
+        </div>
 
-              <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200 space-y-1">
-                <div className="text-sm text-blue-900">
-                  <strong>PIX:</strong> CNPJ 50.295.280/0001-80
-                </div>
-                <div className="text-sm text-blue-900">
-                  <strong>Email:</strong> comercial@quickthreads.com.br
-                </div>
-                <div className="text-sm text-blue-900">
-                  <strong>Site:</strong> www.r2pbconfeccoes.com.br
-                </div>
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
+        {/* Rodapé */}
+        <div className="print-footer">
+          <div>Tel: (11) 3333-4444 | Email: contato@r2pb.com.br | www.r2pbconfeccoes.com.br</div>
+          <div style={{ marginTop: '4px' }}>Este orçamento é válido por {orcamento.validade} dias a partir da data de emissão.</div>
+        </div>
+      </div>
 
-      {/* Modal de Edicao */}
-      <Dialog open={!!editingItem} onOpenChange={(open) => !open && setEditingItem(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Editar Item</DialogTitle>
-          </DialogHeader>
-          {editingItem && (
+      {/* Dialogs de Edição */}
+      {editingItem && (
+        <Dialog open={!!editingItem} onOpenChange={() => setEditingItem(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Editar Item</DialogTitle>
+            </DialogHeader>
             <EditarItemOrcamento
               item={editingItem}
-              orcamento={orcamento}
               onSuccess={() => {
                 setEditingItem(null);
                 refetchItens();
               }}
               onCancel={() => setEditingItem(null)}
             />
-          )}
-        </DialogContent>
-      </Dialog>
-    </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   );
 }
