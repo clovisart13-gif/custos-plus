@@ -55,9 +55,9 @@ export default function FichasCusto() {
   const { data: fichas, isLoading } = trpc.fichasCusto.listFiltered.useQuery(
     {
       search: search || undefined,
-      tipo: filterTipo || undefined,
-      familia: filterFamilia || undefined,
-      cliente: filterCliente || undefined,
+      tipo: filterTipo === "todos" ? undefined : filterTipo || undefined,
+      familia: filterFamilia === "todos" ? undefined : filterFamilia || undefined,
+      cliente: filterCliente === "todos" ? undefined : filterCliente || undefined,
     },
     { enabled: isAuthenticated }
   );

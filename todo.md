@@ -654,3 +654,14 @@
   - Solução: Adicionado atributo `translate="no"` no HTML e alterado lang para `pt-BR`
   - Teste: Criada ficha 26NIC-001 com família "NICE" - manteve "NICE" sem traduzir
   - Status: RESOLVIDO - Dados não são mais traduzidos automaticamente
+
+
+## Bug Reportado - Filtro de Fichas de Custo (21/01/2026)
+
+- [ ] Tabela fica vazia ao voltar para "Todos" após filtrar
+  - Sintoma: Usuário filtra fichas por família, depois seleciona "Todos" no filtro e a tabela fica vazia
+  - Mensagem: "Nenhuma ficha de custo encontrada. Clique em 'Nova Referência' para começar."
+  - Impacto: Usuário não consegue visualizar todas as fichas após usar filtros
+  - Causa: Provável problema na lógica de reset de filtros
+  - Prioridade: ALTA - Afeta usabilidade básica do sistema
+  - Status: EM INVESTIGAÇÃO
