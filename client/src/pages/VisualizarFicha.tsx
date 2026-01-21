@@ -87,7 +87,8 @@ export default function VisualizarFicha() {
                 <img
                   src="/logo-r2pb.jpeg"
                   alt="R2PB Confecções"
-                  className="h-16 object-contain print:h-12"
+                  style={{ height: '45px', width: 'auto' }}
+                  className="object-contain"
                 />
                 <div>
                   <h1 className="text-2xl font-bold text-foreground print:text-xl">

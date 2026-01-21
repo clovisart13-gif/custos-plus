@@ -856,3 +856,17 @@
     * ✅ Preservadas cores primárias (azul #3B82F6) para bordas e destaques
   - Teste: Layout compacto e otimizado para caber em A4
   - Status: ✅ CONCLUÍDO - Layout otimizado para impressão A4
+
+
+## Ajuste de Tamanho do Logo na Ficha de Custo (21/01/2026)
+
+- [x] Ajustar tamanho do logo R2PB na Ficha de Custo
+  - Problema: Logo ficou muito grande após otimização para impressão A4
+  - Objetivo: Deixar logo proporcional como aparece no Orçamento
+  - Implementação:
+    * ✅ Verificado tamanho do logo no Orçamento: classe .print-logo com height: 45px
+    * ✅ Ajustado logo em VisualizarFicha.tsx: style={{ height: '45px', width: 'auto' }}
+    * ✅ Removidas classes Tailwind (h-16, print:h-12) e usado estilo inline
+    * ✅ Testado no navegador: logo agora proporcional ao Orçamento
+  - Teste: Logo com 45px de altura, igual ao Orçamento
+  - Status: ✅ CONCLUÍDO - Logo ajustado e proporcional
