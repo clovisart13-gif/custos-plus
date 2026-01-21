@@ -227,42 +227,34 @@ export default function VisualizarOrcamento() {
           .print-header {
             background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
             color: white;
-            padding: 15px 20px;
-            margin: -10mm -10mm 8mm -10mm;
+            padding: 12px;
+            margin: 0 0 8mm 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
             page-break-inside: avoid;
+            box-sizing: border-box;
           }
           
           .print-logo {
-            height: 45px;
+            height: 40px;
             width: auto;
             background: white;
-            padding: 5px 10px;
+            padding: 4px 8px;
             border-radius: 4px;
+            flex-shrink: 0;
           }
           
           .print-title {
             text-align: right;
-            min-width: 200px;
             flex-shrink: 0;
-            padding-right: 5px;
-          }
-          
-          .print-title h1 {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 0;
-            letter-spacing: 1px;
-            white-space: nowrap;
-            overflow: visible;
           }
           
           .print-title p {
             font-size: 14px;
-            margin: 2px 0 0 0;
+            margin: 2px 0;
             opacity: 0.95;
+            white-space: nowrap;
           }
           
           .print-section {
@@ -729,16 +721,16 @@ export default function VisualizarOrcamento() {
       <div className="hidden print:block print-preview-container">
         {/* Cabeçalho Colorido */}
         <div className="print-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1', minWidth: 0 }}>
             <img src="/logo-r2pb.jpeg" alt="R2PB" className="print-logo" />
-            <div style={{ color: 'white' }}>
-              <div style={{ fontSize: '12px', fontWeight: '600', marginBottom: '2px' }}>QUICK THREADS LTDA</div>
-              <div style={{ fontSize: '8px', opacity: '0.9' }}>R. Ten. Pena, 166 - Bom Retiro, SP | CNPJ: 50.295.280/0001-80</div>
+            <div style={{ color: 'white', flex: '1', minWidth: 0 }}>
+              <div style={{ fontSize: '11px', fontWeight: '600', marginBottom: '2px' }}>QUICK THREADS LTDA</div>
+              <div style={{ fontSize: '8px', opacity: '0.9' }}>R. Ten. Pena, 166 - Bom Retiro, SP</div>
             </div>
           </div>
           <div className="print-title">
-            <p style={{ fontSize: '18px', fontWeight: 'bold', margin: '0 0 4px 0' }}>{orcamento.numeroOrcamento}</p>
-            <p style={{ fontSize: '14px', margin: '0' }}>{formatDate(orcamento.dataEmissao)}</p>
+            <p style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 2px 0', whiteSpace: 'nowrap' }}>{orcamento.numeroOrcamento}</p>
+            <p style={{ fontSize: '12px', margin: '0', whiteSpace: 'nowrap' }}>{formatDate(orcamento.dataEmissao)}</p>
           </div>
         </div>
 

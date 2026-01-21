@@ -772,3 +772,19 @@
     * Data de emissão em fonte 14px
   - Justificativa: O número já identifica claramente que é um orçamento (prefixo "ORC")
   - Status: CONCLUÍDO - Cabeçalho limpo e sem cortes
+
+## Bug Crítico - Cabeçalho do PDF Cortado (21/01/2026)
+
+- [x] Corrigir logo e data cortados no cabeçalho do PDF
+  - Problema: Logo cortado no topo esquerdo, data cortada no topo direito (aparece "20/01/20" sem último dígito)
+  - Causa Raiz: Margens negativas (-10mm) no cabeçalho causavam overflow e cortes
+  - Solução Aplicada:
+    * Removido margens negativas (margin: -10mm) → margin: 0 0 8mm 0
+    * Reduzido padding de 15px para 12px
+    * Logo reduzido de 45px para 40px com flex-shrink: 0
+    * Fontes reduzidas: número 16px, data 12px
+    * Adicionado whiteSpace: nowrap em número e data
+    * Endereço encurtado (removido CNPJ da segunda linha)
+    * Adicionado flex: 1 e minWidth: 0 para controle de overflow
+  - Prioridade: CRÍTICA - PDF não pode ser enviado a clientes com elementos cortados
+  - Status: RESOLVIDO - Cabeçalho completo sem cortes
