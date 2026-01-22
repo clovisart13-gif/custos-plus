@@ -91,3 +91,23 @@
     * ✅ Modal abre ao clicar no botão
   - Teste: Botão aparece em todas as fichas e abre modal corretamente
   - Status: ✅ CONCLUÍDO - Botão funcional
+
+
+## Adicionar Observações e Desconto no Modal "Criar de Fichas" (22/01/2026)
+
+- [x] Identificar componente do modal "Criar de Fichas"
+  - Objetivo: Encontrar o componente responsável pelo modal de orçamento de múltiplas fichas
+  - Arquivo: client/src/components/SelecionarFichasModal.tsx
+  - Status: ✅ CONCLUÍDO - Componente identificado
+
+- [x] Adicionar campos de observações e desconto
+  - Problema: Modal "Criar de Fichas" não tinha campos de observações e desconto
+  - Objetivo: Adicionar campos igual ao modal de orçamento de uma ficha
+  - Implementação:
+    * ✅ Adicionada textarea de observações (opcional) - linhas 198-205
+    * ✅ Adicionado select de tipo de desconto (percentual/valor) - linhas 208-221
+    * ✅ Adicionado input de valor do desconto - linhas 223-232
+    * ✅ Backend já aceitava os campos (procedure createFromFichas)
+  - Teste: Orçamento 450004 criado com 2 fichas (26CAM-005 e 26CAM-004), observações e desconto de 10%
+  - Cálculo validado: Subtotal R$ 76,50 - 10% (R$ 7,65) = R$ 68,85 ✅
+  - Status: ✅ CONCLUÍDO - Funcionalidade 100% operacional

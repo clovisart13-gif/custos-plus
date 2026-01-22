@@ -27,6 +27,9 @@ export default function SelecionarFichasModal({
   const [markup, setMarkup] = useState("0.5");
   const [isCreating, setIsCreating] = useState(false);
   const [filtroCliente, setFiltroCliente] = useState<string>("");
+  const [observacoes, setObservacoes] = useState("");
+  const [descontoTipo, setDescontoTipo] = useState<"percentual" | "valor">("percentual");
+  const [descontoValor, setDescontoValor] = useState("");
 
   const { data: fichas = [] } = trpc.fichasCusto.list.useQuery();
   const createMutation = trpc.orcamentos.create.useMutation();
@@ -91,6 +94,9 @@ export default function SelecionarFichasModal({
       const orcamento = await createMutation.mutateAsync({
         nomeCliente,
         marca,
+        observacoes: observacoes || undefined,
+        descontoTipo: descontoValor ? descontoTipo : undefined,
+        descontoValor: descontoValor ? parseFloat(descontoValor) : undefined,
       });
 
       // Adicionar itens selecionados
@@ -193,6 +199,51 @@ export default function SelecionarFichasModal({
               <p className="text-xs text-gray-500 mt-1">
                 Preço de Venda = Custo × (1 + Markup)
               </p>
+            </div>
+          </div>
+
+          {/* Observações */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-sm">Observações (Opcional)</h3>
+            <div>
+              <Label htmlFor="observacoes">Observações</Label>
+              <textarea
+                id="observacoes"
+                placeholder="Notas adicionais sobre o orçamento..."
+                value={observacoes}
+                onChange={(e) => setObservacoes(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm min-h-[80px]"
+              />
+            </div>
+          </div>
+
+          {/* Desconto */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-sm">Desconto (Opcional)</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="descontoTipo">Tipo de Desconto</Label>
+                <select
+                  id="descontoTipo"
+                  value={descontoTipo}
+                  onChange={(e) => setDescontoTipo(e.target.value as "percentual" | "valor")}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-sm"
+                >
+                  <option value="percentual">Percentual (%)</option>
+                  <option value="valor">Valor Fixo (R$)</option>
+                </select>
+              </div>
+              <div>
+                <Label htmlFor="descontoValor">Valor do Desconto</Label>
+                <Input
+                  id="descontoValor"
+                  type="number"
+                  placeholder="0.00"
+                  step="0.01"
+                  value={descontoValor}
+                  onChange={(e) => setDescontoValor(e.target.value)}
+                />
+              </div>
             </div>
           </div>
 
