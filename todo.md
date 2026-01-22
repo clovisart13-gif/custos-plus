@@ -151,3 +151,30 @@
     * ✅ Persistência confirmada após reload (F5)
     * ✅ Condições de pagamento recalculadas sobre o novo total
   - Status: ✅ CONCLUÍDO - FUNCIONALIDADE 100% OPERACIONAL
+
+
+## Melhorias de UX na Tabela de Fichas de Custo (22/01/2026)
+
+- [x] Fixar coluna de Ações (sticky right)
+  - Objetivo: Manter botões de ação sempre visíveis mesmo com scroll horizontal
+  - Implementação:
+    * ✅ Adicionado position: sticky e right: 0 na coluna de Ações
+    * ✅ Adicionado background e shadow para destacar coluna fixa
+    * ✅ Testado com scroll horizontal - funcionando perfeitamente
+  - Status: ✅ CONCLUÍDO
+
+- [x] Fixar coluna de Referência (sticky left)
+  - Objetivo: Manter referência sempre visível para identificação
+  - Implementação:
+    * ✅ Adicionado position: sticky e left: 0 na coluna de Referência
+    * ✅ Adicionado background e shadow para destacar coluna fixa
+    * ✅ Testado com scroll horizontal - funcionando perfeitamente
+  - Status: ✅ CONCLUÍDO
+
+- [x] Reduzir largura da coluna Cliente
+  - Objetivo: Otimizar espaço horizontal da tabela
+  - Implementação:
+    * ✅ Reduzido max-width da coluna Cliente para 150px
+    * ✅ Adicionado truncamento de texto com ellipsis (truncate)
+    * ✅ Adicionado tooltip com nome completo ao hover (title attribute)
+  - Status: ✅ CONCLUÍDO

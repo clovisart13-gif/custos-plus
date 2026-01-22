@@ -258,10 +258,10 @@ export default function FichasCusto() {
               <TableHeader>
                 <TableRow>
 
-                  <TableHead className="w-[120px]">Referência</TableHead>
+                  <TableHead className="w-[120px] sticky left-0 bg-background z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">Referência</TableHead>
                   <TableHead>Tipo</TableHead>
                   <TableHead>Família</TableHead>
-                  <TableHead>Cliente</TableHead>
+                  <TableHead className="max-w-[150px]">Cliente</TableHead>
                   <TableHead className="text-right">Modelagem</TableHead>
                   <TableHead className="text-right">Piloto</TableHead>
                   <TableHead className="text-right">Corte</TableHead>
@@ -273,7 +273,7 @@ export default function FichasCusto() {
                   <TableHead className="text-right">Tecido</TableHead>
                   <TableHead className="text-right">Aviamento</TableHead>
                   <TableHead className="text-right font-bold">TOTAL</TableHead>
-                  <TableHead className="w-[100px]">Ações</TableHead>
+                  <TableHead className="w-[280px] sticky right-0 bg-background z-10 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -287,10 +287,10 @@ export default function FichasCusto() {
                   fichas.map((ficha) => (
                     <TableRow key={ficha.id}>
 
-                      <TableCell className="font-medium">{ficha.referencia}</TableCell>
+                                         <TableCell className="sticky left-0 bg-background z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] font-medium">{ficha.referencia}</TableCell>
                       <TableCell>{ficha.tipo}</TableCell>
                       <TableCell>{ficha.familia}</TableCell>
-                      <TableCell>{ficha.cliente}</TableCell>
+                      <TableCell className="max-w-[150px] truncate" title={ficha.cliente}>{ficha.cliente}</TableCell>
                       <EditableCell
                         value={Number(ficha.modelagem)}
                         onSave={(val) => handleCellEdit(ficha.id, "modelagem", val)}
@@ -334,7 +334,7 @@ export default function FichasCusto() {
                       <TableCell className="text-right font-bold">
                         R$ {calculateTotal(ficha).toFixed(2)}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="sticky right-0 bg-background z-10 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                         <div className="flex gap-2">
                           <Button
                             variant="ghost"
