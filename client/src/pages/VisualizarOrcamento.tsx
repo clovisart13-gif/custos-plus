@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Edit2 } from "lucide-react";
 import { toast } from "sonner";
+import { EditarDescontoModal } from "@/components/EditarDescontoModal";
+import { EditarObservacoesModal } from "@/components/EditarObservacoesModal";
 
 
 export default function VisualizarOrcamento() {
@@ -40,6 +42,8 @@ export default function VisualizarOrcamento() {
   const [descricaoRetiradaEdit, setDescricaoRetiradaEdit] = useState("Retirada");
   const [percentualPrazoEdit, setPercentualPrazoEdit] = useState("");
   const [descricaoPrazoEdit, setDescricaoPrazoEdit] = useState("30 dias");
+  const [showEditarDescontoModal, setShowEditarDescontoModal] = useState(false);
+  const [showEditarObservacoesModal, setShowEditarObservacoesModal] = useState(false);
 
   const orcamentoId = id ? parseInt(id) : 0;
 
@@ -651,8 +655,17 @@ export default function VisualizarOrcamento() {
 
           {/* Totais */}
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row justify-between items-center">
               <CardTitle className="text-base">Totais</CardTitle>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setShowEditarDescontoModal(true)}
+                className="gap-2"
+              >
+                <Edit2 className="h-4 w-4" />
+                Editar Desconto
+              </Button>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
@@ -685,8 +698,17 @@ export default function VisualizarOrcamento() {
           {/* Observações */}
           {orcamento.observacoes && (
             <Card className="bg-blue-50 border-blue-200">
-              <CardHeader>
+              <CardHeader className="flex flex-row justify-between items-center">
                 <CardTitle className="text-base text-blue-900">Observações</CardTitle>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setShowEditarObservacoesModal(true)}
+                  className="gap-2"
+                >
+                  <Edit2 className="h-4 w-4" />
+                  Editar
+                </Button>
               </CardHeader>
               <CardContent>
                 <p className="text-sm whitespace-pre-wrap text-gray-700">{orcamento.observacoes}</p>
@@ -920,6 +942,23 @@ export default function VisualizarOrcamento() {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* Modal de Editar Desconto */}
+      <EditarDescontoModal
+        open={showEditarDescontoModal}
+        onClose={() => setShowEditarDescontoModal(false)}
+        orcamentoId={orcamentoId}
+        descontoTipoAtual={orcamento?.descontoTipo || undefined}
+        descontoValorAtual={orcamento?.descontoValor || undefined}
+      />
+
+      {/* Modal de Editar Observações */}
+      <EditarObservacoesModal
+        open={showEditarObservacoesModal}
+        onClose={() => setShowEditarObservacoesModal(false)}
+        orcamentoId={orcamentoId}
+        observacoesAtuais={orcamento?.observacoes || undefined}
+      />
     </>
   );
 }

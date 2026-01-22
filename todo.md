@@ -111,3 +111,43 @@
   - Teste: Orçamento 450004 criado com 2 fichas (26CAM-005 e 26CAM-004), observações e desconto de 10%
   - Cálculo validado: Subtotal R$ 76,50 - 10% (R$ 7,65) = R$ 68,85 ✅
   - Status: ✅ CONCLUÍDO - Funcionalidade 100% operacional
+
+
+## Editar Desconto e Observações Após Criação (22/01/2026)
+
+- [x] Criar procedure backend para atualizar desconto e observações
+  - Objetivo: Permitir editar desconto e observações de orçamentos já criados
+  - Implementação:
+    * ✅ Criado procedure `updateDescontoObservacoes` em routers.ts
+    * ✅ Aceita parâmetros: orcamentoId, observacoes, descontoTipo, descontoValor
+    * ✅ Atualiza registro no banco de dados
+    * ✅ Retorna orçamento atualizado
+  - Status: ✅ CONCLUÍDO
+
+- [x] Criar modais de edição no frontend
+  - Objetivo: Criar interfaces para editar desconto e observações
+  - Implementação:
+    * ✅ Criado modal EditarObservacoesModal.tsx com textarea
+    * ✅ Criado modal EditarDescontoModal.tsx com select (tipo) + input (valor)
+    * ✅ Chama procedure updateDescontoObservacoes ao salvar
+    * ✅ Invalida cache do tRPC para atualizar visualização
+  - Status: ✅ CONCLUÍDO
+
+- [x] Adicionar botões Editar nos cards
+  - Objetivo: Adicionar botões para abrir modais de edição
+  - Implementação:
+    * ✅ Adicionado botão "Editar" no card de Observações
+    * ✅ Adicionado botão "Editar Desconto" no card de Totais
+    * ✅ Modais abrem corretamente ao clicar
+  - Status: ✅ CONCLUÍDO
+
+- [x] Testar fluxo completo
+  - Objetivo: Validar edição de desconto e observações
+  - Testes realizados:
+    * ✅ Orçamento ORC-2026-011 testado
+    * ✅ Desconto alterado de 15% para 20% via botão "Editar Desconto"
+    * ✅ Observações atualizadas via botão "Editar"
+    * ✅ Recálculo de totais funcionando: R$ 1.000,00 - 20% = R$ 800,00
+    * ✅ Persistência confirmada após reload (F5)
+    * ✅ Condições de pagamento recalculadas sobre o novo total
+  - Status: ✅ CONCLUÍDO - FUNCIONALIDADE 100% OPERACIONAL

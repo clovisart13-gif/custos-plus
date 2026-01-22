@@ -429,6 +429,27 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    updateDescontoObservacoes: protectedProcedure
+      .input(z.object({
+        orcamentoId: z.number(),
+        observacoes: z.string().optional(),
+        descontoTipo: z.enum(["percentual", "valor"]).optional(),
+        descontoValor: z.number().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
+        if (!orcamento) {
+          throw new Error("Orçamento não encontrado");
+        }
+        await db.updateOrcamentoDescontoObservacoes(
+          input.orcamentoId,
+          input.observacoes,
+          input.descontoTipo,
+          input.descontoValor ? input.descontoValor.toString() : undefined
+        );
+        return { success: true };
+      }),
+
     enviarParaKanban: protectedProcedure
       .input(z.object({
         orcamentoId: z.number(),
