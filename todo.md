@@ -36,3 +36,58 @@
     * ✅ Logo mantido em 45px
     * ✅ Margens A4 preservadas (15mm)
   - Status: ✅ CONCLUÍDO - Fontes aumentadas sem extrapolar margens
+
+
+## Adicionar Observações e Desconto no Orçamento de Fichas (22/01/2026)
+
+- [x] Verificar componentes de orçamento de fichas
+  - Objetivo: Identificar onde adicionar campos de observações e desconto
+  - Arquivos: CriarOrcamentoDaFichaForm.tsx
+  - Status: ✅ CONCLUÍDO - Componente identificado
+
+- [x] Adicionar campos de observações e desconto no formulário
+  - Objetivo: Permitir incluir observações e desconto ao criar orçamento de fichas
+  - Implementação:
+    * ✅ Adicionada textarea de observações (linha 102-109)
+    * ✅ Adicionado select de tipo de desconto (linha 112-119)
+    * ✅ Adicionado input de valor do desconto (linha 121-126)
+    * ✅ Campos enviados ao backend no procedimento createFromFichas
+  - Teste: Orçamento 450002 criado com observações e desconto de 20%
+  - Status: ✅ CONCLUÍDO - Funcionalidade 100% operacional
+
+## Funcionalidade de Duplicar Ficha (22/01/2026)
+
+- [x] Criar backend para duplicar ficha
+  - Objetivo: Criar procedimento tRPC para duplicar ficha
+  - Implementação:
+    * ✅ Criado procedure `duplicate` em routers.ts (após delete)
+    * ✅ Busca ficha original por ID
+    * ✅ Cria nova ficha com dados copiados (exceto ID)
+    * ✅ Retorna ID da nova ficha
+  - Status: ✅ CONCLUÍDO - Backend implementado
+
+- [x] Criar componente de duplicação de ficha
+  - Objetivo: Modal completo pré-preenchido com dados da ficha original
+  - Implementação:
+    * ✅ Criado componente DuplicarFichaModal.tsx
+    * ✅ Pré-preenchidos TODOS os campos:
+      - Referência (com sufixo -COPIA)
+      - Tipo, Família, Cliente
+      - Foto (URL da imagem)
+      - Observações
+      - Todos os custos de mão-de-obra (8 fases)
+      - Custos de matéria-prima (tecido + aviamento)
+    * ✅ Permitida edição de qualquer campo
+    * ✅ Chama procedure duplicate ao salvar
+  - Teste: Ficha 26CAM-004 duplicada para 26CAM-005 com sucesso
+  - Status: ✅ CONCLUÍDO - Modal completo e funcional
+
+- [x] Adicionar botão duplicar na tabela de fichas
+  - Objetivo: Adicionar ação "Duplicar" na coluna de ações
+  - Implementação:
+    * ✅ Adicionado botão "Duplicar" na tabela (FichasCusto.tsx linhas 356-364)
+    * ✅ Adicionado estado showDuplicarModal e selectedFichaForDuplicar
+    * ✅ Adicionada função handleDuplicar (linhas 115-118)
+    * ✅ Modal abre ao clicar no botão
+  - Teste: Botão aparece em todas as fichas e abre modal corretamente
+  - Status: ✅ CONCLUÍDO - Botão funcional

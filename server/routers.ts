@@ -128,6 +128,31 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    duplicate: protectedProcedure
+      .input(fichaCustoSchema)
+      .mutation(async ({ ctx, input }) => {
+        const ficha = await db.createFichaCusto({
+          userId: ctx.user.id,
+          referencia: input.referencia,
+          tipo: input.tipo,
+          familia: input.familia,
+          cliente: input.cliente,
+          fotoUrl: input.fotoUrl,
+          modelagem: input.modelagem.toString(),
+          piloto: input.piloto.toString(),
+          corte: input.corte.toString(),
+          beneficiamento: input.beneficiamento.toString(),
+          costura: input.costura.toString(),
+          lavanderia: input.lavanderia.toString(),
+          acabamento: input.acabamento.toString(),
+          passadoria: input.passadoria.toString(),
+          tecido: input.tecido.toString(),
+          aviamento: input.aviamento.toString(),
+          observacoes: input.observacoes,
+        });
+        return ficha;
+      }),
+
     getDistinctValues: protectedProcedure
       .input(z.object({
         field: z.enum(['tipo', 'familia', 'cliente']),

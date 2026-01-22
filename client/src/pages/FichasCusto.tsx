@@ -27,6 +27,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import ImageUpload from "@/components/ImageUpload";
 import CriarOrcamentoDaFichaForm from "@/components/CriarOrcamentoDaFichaForm";
+import DuplicarFichaModal from "@/components/DuplicarFichaModal";
 
 import {
   Dialog,
@@ -48,6 +49,8 @@ export default function FichasCusto() {
   const [editingCell, setEditingCell] = useState<{ id: number; field: string } | null>(null);
   const [showOrcamentoModal, setShowOrcamentoModal] = useState(false);
   const [selectedFichaForOrcamento, setSelectedFichaForOrcamento] = useState<any>(null);
+  const [showDuplicarModal, setShowDuplicarModal] = useState(false);
+  const [selectedFichaForDuplicar, setSelectedFichaForDuplicar] = useState<any>(null);
 
 
   const utils = trpc.useUtils();
@@ -107,6 +110,11 @@ export default function FichasCusto() {
   const handleGerarOrcamento = (ficha: any) => {
     setSelectedFichaForOrcamento(ficha);
     setShowOrcamentoModal(true);
+  };
+
+  const handleDuplicar = (ficha: any) => {
+    setSelectedFichaForDuplicar(ficha);
+    setShowDuplicarModal(true);
   };
 
   const handleCellEdit = (id: number, field: string, value: string) => {
@@ -347,6 +355,15 @@ export default function FichasCusto() {
                           </Button>
                           <Button
                             variant="ghost"
+                            size="sm"
+                            onClick={() => handleDuplicar(ficha)}
+                            className="text-xs"
+                            title="Duplicar Ficha"
+                          >
+                            Duplicar
+                          </Button>
+                          <Button
+                            variant="ghost"
                             size="icon"
                             onClick={() => handleDelete(ficha.id)}
                           >
@@ -370,6 +387,34 @@ export default function FichasCusto() {
       </div>
 
       <NovaFichaModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      {/* Modal de Gerar Orçamento */}
+      <Dialog open={showOrcamentoModal} onOpenChange={setShowOrcamentoModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Gerar Orçamento da Ficha</DialogTitle>
+          </DialogHeader>
+          {selectedFichaForOrcamento && (
+            <CriarOrcamentoDaFichaForm
+              ficha={selectedFichaForOrcamento}
+              onSuccess={() => setShowOrcamentoModal(false)}
+              onCancel={() => setShowOrcamentoModal(false)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de Duplicar Ficha */}
+      {selectedFichaForDuplicar && (
+        <DuplicarFichaModal
+          isOpen={showDuplicarModal}
+          onClose={() => {
+            setShowDuplicarModal(false);
+            setSelectedFichaForDuplicar(null);
+          }}
+          fichaOriginal={selectedFichaForDuplicar}
+        />
+      )}
 
 
 

@@ -18,6 +18,9 @@ export default function CriarOrcamentoDaFichaForm({
 }: CriarOrcamentoDaFichaFormProps) {
   const [, setLocation] = useLocation();
   const [markup, setMarkup] = useState("0.50");
+  const [observacoes, setObservacoes] = useState("");
+  const [descontoTipo, setDescontoTipo] = useState<"percentual" | "valor">("percentual");
+  const [descontoValor, setDescontoValor] = useState(0);
   const [isCreating, setIsCreating] = useState(false);
 
   const { data: nextNumber } = trpc.orcamentos.generateNextNumber.useQuery();
@@ -55,6 +58,9 @@ export default function CriarOrcamentoDaFichaForm({
       const orcamentoResult = await createOrcamento.mutateAsync({
         nomeCliente: ficha.cliente || "Cliente",
         marca: ficha.familia || "Marca",
+        observacoes: observacoes || undefined,
+        descontoTipo: descontoValor > 0 ? descontoTipo : undefined,
+        descontoValor: descontoValor > 0 ? descontoValor : undefined,
       });
 
       const orcamentoId = (orcamentoResult as any)?.id;
@@ -131,6 +137,47 @@ export default function CriarOrcamentoDaFichaForm({
               </label>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Observações */}
+      <div>
+        <Label htmlFor="observacoes">Observações (Opcional)</Label>
+        <textarea
+          id="observacoes"
+          className="w-full min-h-[80px] px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring bg-background mt-1"
+          placeholder="Notas adicionais sobre o orçamento..."
+          value={observacoes}
+          onChange={(e) => setObservacoes(e.target.value)}
+        />
+      </div>
+
+      {/* Desconto */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="descontoTipo">Tipo de Desconto (Opcional)</Label>
+          <select
+            id="descontoTipo"
+            className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring bg-background h-10 mt-1"
+            value={descontoTipo}
+            onChange={(e) => setDescontoTipo(e.target.value as "percentual" | "valor")}
+          >
+            <option value="percentual">Percentual (%)</option>
+            <option value="valor">Valor Fixo (R$)</option>
+          </select>
+        </div>
+        <div>
+          <Label htmlFor="descontoValor">Valor do Desconto</Label>
+          <input
+            id="descontoValor"
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="0.00"
+            className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring bg-background h-10 mt-1"
+            value={descontoValor}
+            onChange={(e) => setDescontoValor(parseFloat(e.target.value) || 0)}
+          />
         </div>
       </div>
 
