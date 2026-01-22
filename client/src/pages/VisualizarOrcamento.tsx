@@ -696,25 +696,27 @@ export default function VisualizarOrcamento() {
           </Card>
 
           {/* Observações */}
-          {orcamento.observacoes && (
-            <Card className="bg-blue-50 border-blue-200">
-              <CardHeader className="flex flex-row justify-between items-center">
-                <CardTitle className="text-base text-blue-900">Observações</CardTitle>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setShowEditarObservacoesModal(true)}
-                  className="gap-2"
-                >
-                  <Edit2 className="h-4 w-4" />
-                  Editar
-                </Button>
-              </CardHeader>
-              <CardContent>
+          <Card className="bg-blue-50 border-blue-200">
+            <CardHeader className="flex flex-row justify-between items-center">
+              <CardTitle className="text-base text-blue-900">Observações</CardTitle>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setShowEditarObservacoesModal(true)}
+                className="gap-2"
+              >
+                <Edit2 className="h-4 w-4" />
+                Editar
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {orcamento.observacoes ? (
                 <p className="text-sm whitespace-pre-wrap text-gray-700">{orcamento.observacoes}</p>
-              </CardContent>
-            </Card>
-          )}
+              ) : (
+                <p className="text-sm text-gray-400 italic">Nenhuma observação adicionada. Clique em "Editar" para adicionar.</p>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Condições de Pagamento */}
           <Card>

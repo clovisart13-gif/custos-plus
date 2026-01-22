@@ -178,3 +178,17 @@
     * ✅ Adicionado truncamento de texto com ellipsis (truncate)
     * ✅ Adicionado tooltip com nome completo ao hover (title attribute)
   - Status: ✅ CONCLUÍDO
+
+
+## Correção: Card de Observações Sempre Visível (22/01/2026)
+
+- [x] Remover condicional que esconde card de Observações quando vazio
+  - Problema: Card de Observações só aparece quando há texto, impossibilitando adicionar observações após criação do orçamento
+  - Solução: Manter card sempre visível, mesmo quando observações estiverem vazias
+  - Implementação:
+    * ✅ Removido condicional {orcamento.observacoes && (...)}
+    * ✅ Card agora renderiza sempre
+    * ✅ Adicionado placeholder: "Nenhuma observação adicionada. Clique em 'Editar' para adicionar."
+    * ✅ Botão "Editar" sempre acessível
+  - Arquivo: client/src/pages/VisualizarOrcamento.tsx
+  - Status: ✅ CONCLUÍDO
