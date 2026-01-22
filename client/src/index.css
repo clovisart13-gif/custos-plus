@@ -302,23 +302,45 @@
   }
 
   .print\:text-xl {
-    font-size: 1.25rem !important;
-    line-height: 1.75rem !important;
+    font-size: 1.4rem !important;
+    line-height: 1.9rem !important;
   }
 
   .print\:text-base {
-    font-size: 1rem !important;
-    line-height: 1.5rem !important;
+    font-size: 1.1rem !important;
+    line-height: 1.6rem !important;
   }
 
   .print\:text-xs {
-    font-size: 0.75rem !important;
-    line-height: 1rem !important;
+    font-size: 0.85rem !important;
+    line-height: 1.1rem !important;
   }
 
   .print\:text-2xl {
-    font-size: 1.5rem !important;
-    line-height: 2rem !important;
+    font-size: 1.7rem !important;
+    line-height: 2.2rem !important;
+  }
+
+  /* Aumentar fontes gerais no PDF */
+  body {
+    font-size: 11px !important;
+  }
+
+  table {
+    font-size: 10px !important;
+  }
+
+  h1, h2, h3 {
+    font-size: 14px !important;
+  }
+
+  /* Manter logo no tamanho atual */
+  img[src="/logo-r2pb.jpeg"],
+  img[alt="R2PB"],
+  img[alt="R2PB Confecções"],
+  .print-logo {
+    height: 45px !important;
+    width: auto !important;
   }
 
   .print\:gap-4 {
