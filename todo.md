@@ -192,3 +192,13 @@
     * ✅ Botão "Editar" sempre acessível
   - Arquivo: client/src/pages/VisualizarOrcamento.tsx
   - Status: ✅ CONCLUÍDO
+
+
+## Bug: Truncamento de Valores no PDF (23/01/2026)
+
+- [x] Corrigir truncamento da coluna TOTAL na tabela de itens do PDF
+  - Problema: Valores na coluna TOTAL estavam sendo cortados
+  - Causa: Coluna muito estreita no template de PDF (width: 20%)
+  - Solução: Aumentar largura da coluna TOTAL para 32%
+  - Arquivo: client/src/pages/VisualizarOrcamento.tsx (linha 836-840)
+  - Status: CORRIGIDO
