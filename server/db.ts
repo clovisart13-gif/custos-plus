@@ -794,19 +794,39 @@ export async function updateOrcamentoTotals(orcamentoId: number) {
     totalPecas += quantidade;
   });
 
+  // Buscar orçamento para obter desconto
+  const orcamento = await db
+    .select()
+    .from(orcamentos)
+    .where(eq(orcamentos.id, orcamentoId))
+    .limit(1);
+
+  let total = subtotal;
+  if (orcamento.length > 0) {
+    const orc = orcamento[0];
+    if (orc.descontoValor && Number(orc.descontoValor) > 0) {
+      if (orc.descontoTipo === 'percentual') {
+        const valorDesconto = (subtotal * Number(orc.descontoValor)) / 100;
+        total = subtotal - valorDesconto;
+      } else {
+        total = subtotal - Number(orc.descontoValor);
+      }
+    }
+  }
+
   // Atualizar orçamento com os totais
   await db
     .update(orcamentos)
     .set({
-      subtotal: subtotal.toString(),
-      total: subtotal.toString(),
+      subtotal: subtotal.toFixed(2),
+      total: total.toFixed(2),
       totalPecas: totalPecas,
     })
     .where(eq(orcamentos.id, orcamentoId));
 
   return {
     subtotal,
-    total: subtotal,
+    total,
     totalPecas,
   };
 }

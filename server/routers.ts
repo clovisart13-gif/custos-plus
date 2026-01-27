@@ -362,10 +362,10 @@ export const appRouter = router({
             valorDesconto = Number(orcamento.descontoValor);
           }
         }
-       const total = subtotal - valorDesconto;
-      
-      // Atualizar totais do orçamento
-      await db.updateOrcamentoTotais(orcamentoId, subtotal, total, totalPecas);
+        const total = subtotal - valorDesconto;
+        
+        // Atualizar totais do orçamento
+        await db.updateOrcamentoTotals(orcamentoId);
 
         // Atualizar dados do orçamento se fornecidos
         if (input.prazoDias !== undefined || input.prazoEntregaTexto !== undefined || input.percentualSinal !== undefined || input.percentualRetirada !== undefined || input.percentualPrazo !== undefined) {
