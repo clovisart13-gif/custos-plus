@@ -202,3 +202,18 @@
   - Solução: Aumentar largura da coluna TOTAL para 32%
   - Arquivo: client/src/pages/VisualizarOrcamento.tsx (linha 836-840)
   - Status: CORRIGIDO
+
+
+## Bug: Resumo de Orcamentos nao Atualiza com Alteracoes (27/01/2026)
+
+- [x] Corrigir calculo de totais quando itens sao alterados
+  - Problema: Ao editar quantidade/valor de um item, o resumo na lista nao atualizava
+  - Causa: Totais no banco nao eram recalculados apos alteracao de item
+  - Solucao: Adicionar recalculo de totais apos updateItem
+  - Status: CORRIGIDO
+
+- [x] Corrigir calculo de totais quando desconto e alterado
+  - Problema: Ao editar desconto, o resumo nao atualizava
+  - Causa: Totais no banco nao eram recalculados apos alteracao de desconto
+  - Solucao: Adicionar recalculo de totais apos updateDescontoObservacoes
+  - Status: CORRIGIDO

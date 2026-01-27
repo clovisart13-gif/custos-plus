@@ -868,3 +868,22 @@ export async function deleteUser(userId: number) {
     throw error;
   }
 }
+
+export async function updateOrcamentoTotais(orcamentoId: number, total: number, totalPecas: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // Atualizar orçamento com os novos totais (já com desconto calculado)
+  await db
+    .update(orcamentos)
+    .set({
+      total: total.toString(),
+      totalPecas: totalPecas,
+    })
+    .where(eq(orcamentos.id, orcamentoId));
+
+  return {
+    total,
+    totalPecas,
+  };
+}

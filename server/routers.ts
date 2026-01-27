@@ -341,11 +341,34 @@ export const appRouter = router({
           input.descricao
         );
 
+        // Buscar o orcamentoId do item para recalcular totais
+        const orcamentoId = await db.getOrcamentoIdFromItem(input.itemId);
+        
+        // Recalcular totais do orçamento
+        const itens = await db.getItensOrcamento(orcamentoId);
+        const totalPecas = itens.reduce((sum: number, item: any) => sum + item.quantidade, 0);
+        const subtotal = itens.reduce((sum: number, item: any) => sum + Number(item.valorTotal), 0);
+        
+        // Buscar desconto do orcamento
+        const orcamento = await db.getOrcamentoById(orcamentoId, ctx.user.id);
+        if (!orcamento) {
+          throw new Error("Orcamento nao encontrado");
+        }
+        let valorDesconto = 0;
+        if (orcamento.descontoValor && Number(orcamento.descontoValor) > 0) {
+          if (orcamento.descontoTipo === 'percentual') {
+            valorDesconto = (subtotal * Number(orcamento.descontoValor)) / 100;
+          } else {
+            valorDesconto = Number(orcamento.descontoValor);
+          }
+        }
+        const total = subtotal - valorDesconto;
+        
+        // Atualizar totais no banco
+        await db.updateOrcamentoTotais(orcamentoId, total, totalPecas);
+
         // Atualizar dados do orçamento se fornecidos
         if (input.prazoDias !== undefined || input.prazoEntregaTexto !== undefined || input.percentualSinal !== undefined || input.percentualRetirada !== undefined || input.percentualPrazo !== undefined) {
-          // Buscar o orcamentoId do item
-          const orcamentoId = await db.getOrcamentoIdFromItem(input.itemId);
-          
           // Atualizar percentuais e prazo do orçamento
           await db.updateOrcamentoPercentuais(
             orcamentoId,
@@ -447,6 +470,30 @@ export const appRouter = router({
           input.descontoTipo,
           input.descontoValor ? input.descontoValor.toString() : undefined
         );
+        
+        // Recalcular totais do orcamento apos alterar desconto
+        const itens = await db.getItensOrcamento(input.orcamentoId);
+        const totalPecas = itens.reduce((sum: number, item: any) => sum + item.quantidade, 0);
+        const subtotal = itens.reduce((sum: number, item: any) => sum + Number(item.valorTotal), 0);
+        
+        // Buscar desconto atualizado
+        const orcamentoAtualizado = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
+        if (!orcamentoAtualizado) {
+          throw new Error("Orcamento nao encontrado apos atualizacao");
+        }
+        let valorDesconto = 0;
+        if (orcamentoAtualizado.descontoValor && Number(orcamentoAtualizado.descontoValor) > 0) {
+          if (orcamentoAtualizado.descontoTipo === 'percentual') {
+            valorDesconto = (subtotal * Number(orcamentoAtualizado.descontoValor)) / 100;
+          } else {
+            valorDesconto = Number(orcamentoAtualizado.descontoValor);
+          }
+        }
+        const total = subtotal - valorDesconto;
+        
+        // Atualizar totais no banco
+        await db.updateOrcamentoTotais(input.orcamentoId, total, totalPecas);
+        
         return { success: true };
       }),
 
