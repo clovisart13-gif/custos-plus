@@ -1,0 +1,115 @@
+{
+  "query": "SELECT id, nome_cliente, total, total_pecas, subtotal FROM orcamentos ORDER BY id DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute SELECT id, nome_cliente, total, total_pecas, subtotal FROM orcamentos ORDER BY id DESC;",
+  "rows": [
+    {
+      "id": "660001",
+      "nome_cliente": "be green",
+      "total": "10152.00",
+      "total_pecas": "144",
+      "subtotal": "141.00"
+    },
+    {
+      "id": "630001",
+      "nome_cliente": "fence",
+      "total": "117.70",
+      "total_pecas": "3",
+      "subtotal": "117.70"
+    },
+    {
+      "id": "570005",
+      "nome_cliente": "ballet",
+      "total": "37.80",
+      "total_pecas": "2",
+      "subtotal": "37.80"
+    },
+    {
+      "id": "570004",
+      "nome_cliente": "sara regina",
+      "total": "411.60",
+      "total_pecas": "5",
+      "subtotal": "411.60"
+    },
+    {
+      "id": "570003",
+      "nome_cliente": "buggio",
+      "total": "443.25",
+      "total_pecas": "3",
+      "subtotal": "443.25"
+    },
+    {
+      "id": "570002",
+      "nome_cliente": "robson thurium",
+      "total": "114.75",
+      "total_pecas": "2",
+      "subtotal": "114.75"
+    },
+    {
+      "id": "570001",
+      "nome_cliente": "fence",
+      "total": "160.50",
+      "total_pecas": "3",
+      "subtotal": "160.50"
+    },
+    {
+      "id": "540001",
+      "nome_cliente": "Delfina",
+      "total": "653200.02",
+      "total_pecas": "816",
+      "subtotal": "653200.02"
+    },
+    {
+      "id": "480001",
+      "nome_cliente": "bromance",
+      "total": "267.75",
+      "total_pecas": "7",
+      "subtotal": "267.75"
+    },
+    {
+      "id": "420001",
+      "nome_cliente": "claudia done",
+      "total": "26.00",
+      "total_pecas": "1",
+      "subtotal": "26.00"
+    },
+    {
+      "id": "390001",
+      "nome_cliente": "raquel sartoria",
+      "total": "155.00",
+      "total_pecas": "1",
+      "subtotal": "155.00"
+    },
+    {
+      "id": "330001",
+      "nome_cliente": "gallm",
+      "total": "124.50",
+      "total_pecas": "2",
+      "subtotal": "124.50"
+    },
+    {
+      "id": "300002",
+      "nome_cliente": "naice",
+      "total": "57.80",
+      "total_pecas": "1",
+      "subtotal": "57.80"
+    },
+    {
+      "id": "300001",
+      "nome_cliente": "filipe",
+      "total": "43.35",
+      "total_pecas": "1",
+      "subtotal": "43.35"
+    },
+    {
+      "id": "120001",
+      "nome_cliente": "gallm",
+      "total": "21700.80",
+      "total_pecas": "288",
+      "subtotal": "21700.80"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome_cliente\ttotal\ttotal_pecas\tsubtotal\n660001\tbe green\t10152.00\t144\t141.00\n630001\tfence\t117.70\t3\t117.70\n570005\tballet\t37.80\t2\t37.80\n570004\tsara regina\t411.60\t5\t411.60\n570003\tbuggio\t443.25\t3\t443.25\n570002\trobson thurium\t114.75\t2\t114.75\n570001\tfence\t160.50\t3\t160.50\n540001\tDelfina\t653200.02\t816\t653200.02\n480001\tbromance\t267.75\t7\t267.75\n420001\tclaudia done\t26.00\t1\t26.00\n390001\traquel sartoria\t155.00\t1\t155.00\n330001\tgallm\t124.50\t2\t124.50\n300002\tnaice\t57.80\t1\t57.80\n300001\tfilipe\t43.35\t1\t43.35\n120001\tgallm\t21700.80\t288\t21700.80\n",
+  "stderr": "",
+  "execution_time_ms": 72
+}

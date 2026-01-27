@@ -725,6 +725,13 @@ export const appRouter = router({
         }
         return await db.deleteUser(input.userId);
       }),
+
+    recalculateAllOrcamentos: adminProcedure
+      .mutation(async ({ ctx }) => {
+        console.log("[Admin] Iniciando recálculo de TODOS os orçamentos");
+        await db.recalculatAllOrcamentos();
+        return { success: true, message: "Todos os orçamentos foram recalculados" };
+      }),
   }),
 
   empresas: router({

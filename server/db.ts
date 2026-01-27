@@ -1017,3 +1017,25 @@ export async function deleteEmpresa(empresaId: number, userId: number) {
 
   return { success: true };
 }
+
+
+// ============= Recalcular Todos os Orçamentos =============
+
+export async function recalculatAllOrcamentos() {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  console.log("[recalculatAllOrcamentos] Iniciando recálculo de TODOS os orçamentos");
+
+  // Buscar todos os orçamentos
+  const allOrcamentos = await db.select().from(orcamentos);
+  
+  console.log("[recalculatAllOrcamentos] Total de orçamentos:", allOrcamentos.length);
+
+  for (const orc of allOrcamentos) {
+    console.log(`[recalculatAllOrcamentos] Recalculando orçamento ID ${orc.id} (${orc.nomeCliente})`);
+    await updateOrcamentoTotals(orc.id);
+  }
+
+  console.log("[recalculatAllOrcamentos] Recálculo concluído para todos os orçamentos");
+}
