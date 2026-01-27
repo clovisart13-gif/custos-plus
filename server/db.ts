@@ -776,11 +776,15 @@ export async function updateOrcamentoTotals(orcamentoId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
+  console.log("[updateOrcamentoTotals] Iniciando para orcamentoId:", orcamentoId);
+
   // Buscar todos os itens do orçamento
   const itens = await db
     .select()
     .from(itensOrcamento)
     .where(eq(itensOrcamento.orcamentoId, orcamentoId));
+
+  console.log("[updateOrcamentoTotals] Itens encontrados:", itens.length);
 
   // Calcular totais
   let subtotal = 0;
@@ -793,6 +797,8 @@ export async function updateOrcamentoTotals(orcamentoId: number) {
     subtotal += valorTotal;
     totalPecas += quantidade;
   });
+
+  console.log("[updateOrcamentoTotals] Calculos: subtotal=", subtotal, "totalPecas=", totalPecas);
 
   // Buscar orçamento para obter desconto
   const orcamento = await db

@@ -304,7 +304,9 @@ export const appRouter = router({
           markupDivisor: input.markup.toString(),
         });
 
+        console.log("[createItem] Chamando updateOrcamentoTotals para orcamentoId:", input.orcamentoId);
         await db.updateOrcamentoTotals(input.orcamentoId);
+        console.log("[createItem] updateOrcamentoTotals concluido");
 
         return item;
       }),
