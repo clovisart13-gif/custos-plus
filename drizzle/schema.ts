@@ -118,3 +118,25 @@ export const itensOrcamento = mysqlTable("itens_orcamento", {
 
 export type ItemOrcamento = typeof itensOrcamento.$inferSelect;
 export type InsertItemOrcamento = typeof itensOrcamento.$inferInsert;
+
+/**
+ * Empresas - Clients/Companies
+ */
+export const empresas = mysqlTable("empresas", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("user_id").notNull(),
+  nome: varchar("nome", { length: 100 }).notNull(),
+  cnpj: varchar("cnpj", { length: 20 }),
+  email: varchar("email", { length: 100 }),
+  telefone: varchar("telefone", { length: 20 }),
+  endereco: varchar("endereco", { length: 255 }),
+  cidade: varchar("cidade", { length: 100 }),
+  estado: varchar("estado", { length: 2 }),
+  observacoes: text("observacoes"),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Empresa = typeof empresas.$inferSelect;
+export type InsertEmpresa = typeof empresas.$inferInsert;

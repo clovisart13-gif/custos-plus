@@ -1,7 +1,7 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
+import { protectedProcedure, publicProcedure, router, adminProcedure } from "./_core/trpc";
 import { z } from "zod";
 import * as db from "./db";
 import { storagePut } from "./storage";
@@ -740,6 +740,71 @@ export const appRouter = router({
           throw new Error('Apenas administradores podem deletar usuários');
         }
         return await db.deleteUser(input.userId);
+      }),
+  }),
+
+  empresas: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return await db.getEmpresasByUser(ctx.user.id);
+    }),
+
+    create: protectedProcedure
+      .input(z.object({
+        nome: z.string().min(1, "Nome é obrigatório"),
+        cnpj: z.string().optional(),
+        email: z.string().email().optional(),
+        telefone: z.string().optional(),
+        endereco: z.string().optional(),
+        cidade: z.string().optional(),
+        estado: z.string().optional(),
+        observacoes: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        await db.createEmpresa(
+          ctx.user.id,
+          input.nome,
+          input.cnpj,
+          input.email,
+          input.telefone,
+          input.endereco,
+          input.cidade,
+          input.estado,
+          input.observacoes
+        );
+        return { success: true };
+      }),
+
+    update: protectedProcedure
+      .input(z.object({
+        empresaId: z.number(),
+        nome: z.string().optional(),
+        cnpj: z.string().optional(),
+        email: z.string().email().optional(),
+        telefone: z.string().optional(),
+        endereco: z.string().optional(),
+        cidade: z.string().optional(),
+        estado: z.string().optional(),
+        observacoes: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        return await db.updateEmpresa(
+          input.empresaId,
+          ctx.user.id,
+          input.nome,
+          input.cnpj,
+          input.email,
+          input.telefone,
+          input.endereco,
+          input.cidade,
+          input.estado,
+          input.observacoes
+        );
+      }),
+
+    delete: protectedProcedure
+      .input(z.object({ empresaId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        return await db.deleteEmpresa(input.empresaId, ctx.user.id);
       }),
   }),
 

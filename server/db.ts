@@ -1,6 +1,6 @@
 import { and, desc, eq, gte, like, lte, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { fichasCusto, InsertFichaCusto, InsertUser, users, orcamentos, InsertOrcamento, Orcamento, itensOrcamento, InsertItemOrcamento, ItemOrcamento } from "../drizzle/schema";
+import { fichasCusto, InsertFichaCusto, InsertUser, users, orcamentos, InsertOrcamento, Orcamento, itensOrcamento, InsertItemOrcamento, ItemOrcamento, empresas, InsertEmpresa, Empresa } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -886,4 +886,104 @@ export async function updateOrcamentoTotais(orcamentoId: number, total: number, 
     total,
     totalPecas,
   };
+}
+
+
+// ============= Empresas Functions =============
+
+export async function createEmpresa(
+  userId: number,
+  nome: string,
+  cnpj?: string,
+  email?: string,
+  telefone?: string,
+  endereco?: string,
+  cidade?: string,
+  estado?: string,
+  observacoes?: string
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db.insert(empresas).values({
+    userId,
+    nome,
+    cnpj,
+    email,
+    telefone,
+    endereco,
+    cidade,
+    estado,
+    observacoes,
+  });
+
+  return result;
+}
+
+export async function getEmpresasByUser(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  return await db
+    .select()
+    .from(empresas)
+    .where(eq(empresas.userId, userId))
+    .orderBy(desc(empresas.createdAt));
+}
+
+export async function getEmpresaById(empresaId: number, userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db
+    .select()
+    .from(empresas)
+    .where(and(eq(empresas.id, empresaId), eq(empresas.userId, userId)))
+    .limit(1);
+
+  return result[0] || null;
+}
+
+export async function updateEmpresa(
+  empresaId: number,
+  userId: number,
+  nome?: string,
+  cnpj?: string,
+  email?: string,
+  telefone?: string,
+  endereco?: string,
+  cidade?: string,
+  estado?: string,
+  observacoes?: string
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const updateData: any = {};
+  if (nome !== undefined) updateData.nome = nome;
+  if (cnpj !== undefined) updateData.cnpj = cnpj;
+  if (email !== undefined) updateData.email = email;
+  if (telefone !== undefined) updateData.telefone = telefone;
+  if (endereco !== undefined) updateData.endereco = endereco;
+  if (cidade !== undefined) updateData.cidade = cidade;
+  if (estado !== undefined) updateData.estado = estado;
+  if (observacoes !== undefined) updateData.observacoes = observacoes;
+
+  await db
+    .update(empresas)
+    .set(updateData)
+    .where(and(eq(empresas.id, empresaId), eq(empresas.userId, userId)));
+
+  return { success: true };
+}
+
+export async function deleteEmpresa(empresaId: number, userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .delete(empresas)
+    .where(and(eq(empresas.id, empresaId), eq(empresas.userId, userId)));
+
+  return { success: true };
 }

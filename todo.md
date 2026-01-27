@@ -217,3 +217,74 @@
   - Causa: Totais no banco nao eram recalculados apos alteracao de desconto
   - Solucao: Adicionar recalculo de totais apos updateDescontoObservacoes
   - Status: CORRIGIDO
+
+
+## Controle de Acesso por Role (27/01/2026)
+
+- [ ] Implementar verificacao de role no backend
+  - Objetivo: Bloquear acesso a Fichas de Custo para usuarios comuns
+  - Implementacao:
+    * Criar middleware adminProcedure para procedures que requerem admin
+    * Adicionar verificacao ctx.user.role === 'admin' em procedures sensveis
+    * Retornar erro FORBIDDEN se usuario nao for admin
+  - Status: PENDENTE
+
+- [ ] Bloquear acesso a pagina de Fichas de Custo para usuarios comuns
+  - Objetivo: Esconder rota /fichas-custo para usuarios normais
+  - Implementacao:
+    * Adicionar verificacao de role no App.tsx
+    * Redirecionar para /orcamentos se usuario nao for admin
+    * Remover link de Fichas do menu para usuarios comuns
+  - Status: PENDENTE
+
+## Modulo de Empresas/Clientes (27/01/2026)
+
+- [ ] Criar schema de empresas no banco de dados
+  - Objetivo: Armazenar informacoes de clientes/empresas
+  - Campos: id, nome, cnpj, email, telefone, endereco, cidade, estado, observacoes
+  - Status: PENDENTE
+
+- [ ] Criar procedures de CRUD para empresas
+  - Objetivo: Criar, listar, atualizar, deletar empresas
+  - Procedures: createEmpresa, listEmpresas, getEmpresa, updateEmpresa, deleteEmpresa
+  - Status: PENDENTE
+
+- [ ] Criar pagina de gerenciamento de empresas (admin only)
+  - Objetivo: Interface para gerenciar clientes
+  - Componentes: tabela com lista, modal de criar/editar, botao deletar
+  - Status: PENDENTE
+
+- [ ] Vincular empresas aos orcamentos
+  - Objetivo: Permitir selecionar empresa ao criar orcamento
+  - Implementacao:
+    * Adicionar campo empresaId na tabela orcamentos
+    * Criar select de empresas no formulario de orcamento
+    * Exibir nome da empresa no resumo de orcamentos
+  - Status: PENDENTE
+
+- [ ] Testar fluxo completo
+  - Objetivo: Validar controle de acesso e modulo de empresas
+  - Testes:
+    * Login como admin → acesso a Fichas de Custo e Empresas
+    * Login como usuario → sem acesso a Fichas de Custo
+    * Criar empresa → vincular a orcamento
+    * Listar orcamentos → mostrar empresa vinculada
+  - Status: PENDENTE
+
+
+## STATUS FINAL: Controle de Acesso e Modulo de Empresas (27/01/2026)
+
+✅ CONCLUIDO:
+- Controle de acesso por role implementado
+- Fichas de Custo bloqueadas para usuarios comuns
+- Schema de empresas criado no banco de dados
+- Procedures de CRUD para empresas implementadas
+- Router tRPC de empresas criado
+- Pagina de gerenciamento de empresas criada
+- Rota e link de Empresas adicionados no menu
+- Protecao de rotas por role (admin only) implementada
+
+PROXIMA FASE:
+- Vincular empresas aos orcamentos (adicionar campo empresaId)
+- Criar select de empresas no formulario de orcamento
+- Exibir nome da empresa no resumo de orcamentos
