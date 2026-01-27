@@ -869,7 +869,7 @@ export async function deleteUser(userId: number) {
   }
 }
 
-export async function updateOrcamentoTotais(orcamentoId: number, total: number, totalPecas: number) {
+export async function updateOrcamentoTotais(orcamentoId: number, subtotal: number, total: number, totalPecas: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
@@ -877,12 +877,14 @@ export async function updateOrcamentoTotais(orcamentoId: number, total: number, 
   await db
     .update(orcamentos)
     .set({
-      total: total.toString(),
+      subtotal: subtotal.toFixed(2),
+      total: total.toFixed(2),
       totalPecas: totalPecas,
     })
     .where(eq(orcamentos.id, orcamentoId));
 
   return {
+    subtotal,
     total,
     totalPecas,
   };

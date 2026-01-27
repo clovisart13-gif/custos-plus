@@ -362,10 +362,10 @@ export const appRouter = router({
             valorDesconto = Number(orcamento.descontoValor);
           }
         }
-        const total = subtotal - valorDesconto;
-        
-        // Atualizar totais no banco
-        await db.updateOrcamentoTotais(orcamentoId, total, totalPecas);
+       const total = subtotal - valorDesconto;
+      
+      // Atualizar totais do orçamento
+      await db.updateOrcamentoTotais(orcamentoId, subtotal, total, totalPecas);
 
         // Atualizar dados do orçamento se fornecidos
         if (input.prazoDias !== undefined || input.prazoEntregaTexto !== undefined || input.percentualSinal !== undefined || input.percentualRetirada !== undefined || input.percentualPrazo !== undefined) {
@@ -492,7 +492,7 @@ export const appRouter = router({
         const total = subtotal - valorDesconto;
         
         // Atualizar totais no banco
-        await db.updateOrcamentoTotais(input.orcamentoId, total, totalPecas);
+        await db.updateOrcamentoTotais(input.orcamentoId, subtotal, total, totalPecas);
         
         return { success: true };
       }),
