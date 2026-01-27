@@ -821,7 +821,8 @@ export async function updateOrcamentoTotals(orcamentoId: number) {
   }
 
   // Atualizar orçamento com os totais
-  await db
+  console.log("[updateOrcamentoTotals] Atualizando banco com: subtotal=", subtotal.toFixed(2), "total=", total.toFixed(2), "totalPecas=", totalPecas);
+  const result = await db
     .update(orcamentos)
     .set({
       subtotal: subtotal.toFixed(2),
@@ -829,6 +830,7 @@ export async function updateOrcamentoTotals(orcamentoId: number) {
       totalPecas: totalPecas,
     })
     .where(eq(orcamentos.id, orcamentoId));
+  console.log("[updateOrcamentoTotals] Atualização concluida, result:", result);
 
   return {
     subtotal,
