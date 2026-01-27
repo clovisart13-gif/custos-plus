@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit, BarChart3 } from "lucide-react";
 
@@ -68,6 +68,9 @@ export function WelcomeTutorial() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>Bem-vindo ao Custos Plus!</DialogTitle>
+        </DialogHeader>
         <div className="py-6">
           {/* Header */}
           <div className="text-center mb-8">
