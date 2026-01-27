@@ -346,28 +346,10 @@ export const appRouter = router({
         // Buscar o orcamentoId do item para recalcular totais
         const orcamentoId = await db.getOrcamentoIdFromItem(input.itemId);
         
-        // Recalcular totais do orçamento
-        const itens = await db.getItensOrcamento(orcamentoId);
-        const totalPecas = itens.reduce((sum: number, item: any) => sum + item.quantidade, 0);
-        const subtotal = itens.reduce((sum: number, item: any) => sum + Number(item.valorTotal), 0);
-        
-        // Buscar desconto do orcamento
-        const orcamento = await db.getOrcamentoById(orcamentoId, ctx.user.id);
-        if (!orcamento) {
-          throw new Error("Orcamento nao encontrado");
-        }
-        let valorDesconto = 0;
-        if (orcamento.descontoValor && Number(orcamento.descontoValor) > 0) {
-          if (orcamento.descontoTipo === 'percentual') {
-            valorDesconto = (subtotal * Number(orcamento.descontoValor)) / 100;
-          } else {
-            valorDesconto = Number(orcamento.descontoValor);
-          }
-        }
-        const total = subtotal - valorDesconto;
-        
-        // Atualizar totais do orçamento
+        // Atualizar totais do orcamento (funcao ja faz todo o recalculo)
+        console.log("[updateItem] Chamando updateOrcamentoTotals para orcamentoId:", orcamentoId);
         await db.updateOrcamentoTotals(orcamentoId);
+        console.log("[updateItem] updateOrcamentoTotals concluido");
 
         // Atualizar dados do orçamento se fornecidos
         if (input.prazoDias !== undefined || input.prazoEntregaTexto !== undefined || input.percentualSinal !== undefined || input.percentualRetirada !== undefined || input.percentualPrazo !== undefined) {
