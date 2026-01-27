@@ -57,9 +57,12 @@ export default function VisualizarOrcamento() {
     { enabled: orcamentoId > 0 }
   );
 
+  const utils = trpc.useUtils();
+
   const updateClienteMarcaMutation = trpc.orcamentos.updateClienteMarca.useMutation({
     onSuccess: () => {
       refetch();
+      utils.orcamentos.list.invalidate();
       setEditingClienteMarca(false);
       toast.success("Cliente e marca atualizados!");
     },
@@ -71,6 +74,7 @@ export default function VisualizarOrcamento() {
   const updateValidadeEPrazoMutation = trpc.orcamentos.updateValidadeEPrazo.useMutation({
     onSuccess: () => {
       refetch();
+      utils.orcamentos.list.invalidate();
       setEditingValidadeEPrazo(false);
       toast.success("Validade e prazo atualizados!");
     },
@@ -82,6 +86,7 @@ export default function VisualizarOrcamento() {
   const updateCondicoesPagamentoMutation = trpc.orcamentos.updateCondicoesPagamento.useMutation({
     onSuccess: () => {
       refetch();
+      utils.orcamentos.list.invalidate();
       setEditingCondicoesPagamento(false);
       toast.success("Condicoes de pagamento atualizadas!");
     },
@@ -93,6 +98,7 @@ export default function VisualizarOrcamento() {
   const deleteItemMutation = trpc.orcamentos.deleteItem.useMutation({
     onSuccess: () => {
       refetchItens();
+      utils.orcamentos.list.invalidate();
       setDeletingItemId(null);
     },
     onError: (error) => {

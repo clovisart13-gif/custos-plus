@@ -28,6 +28,7 @@ export function EditarDescontoModal({
   const updateMutation = trpc.orcamentos.updateDescontoObservacoes.useMutation({
     onSuccess: () => {
       utils.orcamentos.getById.invalidate({ id: orcamentoId });
+      utils.orcamentos.list.invalidate();
       onClose();
     },
   });

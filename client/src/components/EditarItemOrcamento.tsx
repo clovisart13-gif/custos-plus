@@ -131,6 +131,7 @@ export default function EditarItemOrcamento({
       await updateItemMutation.mutateAsync(payload);
       toast.success("Item atualizado com sucesso!");
       utils.orcamentos.getItens.invalidate();
+      utils.orcamentos.list.invalidate();  // Invalidar lista de orçamentos também
       onSuccess();
     } catch (error) {
       toast.error("Erro ao atualizar item");
