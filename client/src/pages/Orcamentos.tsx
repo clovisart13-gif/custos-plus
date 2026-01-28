@@ -103,14 +103,6 @@ export default function Orcamentos() {
                       Orçamento: {orcamento.numeroOrcamento} • {formatDate(orcamento.dataEmissao)}
                     </CardDescription>
                   </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-primary">
-                      {formatCurrency(Number(orcamento.total))}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {orcamento.totalPecas} peças
-                    </p>
-                  </div>
                 </div>
               </CardHeader>
               <CardContent>

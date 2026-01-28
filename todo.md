@@ -311,6 +311,9 @@ Em vez de armazenar totais no banco e tentar atualizar (que está falhando), cal
 - [x] Adicionar rota /resumo-orcamentos no App.tsx
 - [x] Adicionar link no menu de navegação
 - [x] Remover status e botões de aprovação da aba Orçamentos
-- [x] Melhorar UX do Resumo com cores vibrantes e layout impactante
+- [x] Remover coluna de valores (total/pecas) da aba Orçamentos
+- [x] Redesenhar Resumo com layout kanban moderno (3 colunas por status)
+- [x] Adicionar barra de busca no Resumo
+- [x] KPI stats simplificados no topo
 - [ ] Testar cálculos com todos os orçamentos existentes (be green, fence, ballet, sara regina)
 - [ ] Validar que totais calculados correspondem aos valores detalhados no orçamento
