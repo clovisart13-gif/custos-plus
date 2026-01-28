@@ -310,5 +310,7 @@ Em vez de armazenar totais no banco e tentar atualizar (que está falhando), cal
 - [x] Adicionar procedures tRPC: listComTotaisCalculados, getKPIs
 - [x] Adicionar rota /resumo-orcamentos no App.tsx
 - [x] Adicionar link no menu de navegação
+- [x] Remover status e botões de aprovação da aba Orçamentos
+- [x] Melhorar UX do Resumo com cores vibrantes e layout impactante
 - [ ] Testar cálculos com todos os orçamentos existentes (be green, fence, ballet, sara regina)
 - [ ] Validar que totais calculados correspondem aos valores detalhados no orçamento

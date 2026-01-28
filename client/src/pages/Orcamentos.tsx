@@ -16,15 +16,6 @@ export default function Orcamentos() {
   const [showSelecionarFichas, setShowSelecionarFichas] = useState(false);
 
   const { data: orcamentos = [], isLoading, refetch } = trpc.orcamentos.list.useQuery();
-  const updateStatusMutation = trpc.orcamentos.updateStatus.useMutation({
-    onSuccess: () => {
-      toast.success("Status atualizado com sucesso");
-      refetch();
-    },
-    onError: (error) => {
-      toast.error("Erro ao atualizar status: " + error.message);
-    },
-  });
   const deleteOrcamento = trpc.orcamentos.delete.useMutation({
     onSuccess: () => {
       toast.success("Orçamento deletado com sucesso");
@@ -129,17 +120,6 @@ export default function Orcamentos() {
                     <p>Validade: {orcamento.validade} dias</p>
                   </div>
                   <div className="flex gap-2 items-center">
-                    <div className="text-sm">
-                      {orcamento.status === "aprovado" && (
-                        <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full font-semibold">Aprovado</span>
-                      )}
-                      {orcamento.status === "reprovado" && (
-                        <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full font-semibold">Reprovado</span>
-                      )}
-                      {orcamento.status === "pendente" && (
-                        <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full font-semibold">Pendente</span>
-                      )}
-                    </div>
                     <Button
                       variant="outline"
                       size="sm"
@@ -149,28 +129,6 @@ export default function Orcamentos() {
                       <Eye className="h-4 w-4" />
                       Visualizar
                     </Button>
-                    {orcamento.status !== "aprovado" && (
-                      <Button
-                        size="sm"
-                        className="gap-2 bg-green-600 hover:bg-green-700"
-                        onClick={() => updateStatusMutation.mutate({ orcamentoId: orcamento.id, status: "aprovado" })}
-                        disabled={updateStatusMutation.isPending}
-                      >
-                        Aprovado
-                      </Button>
-                    )}
-                    {orcamento.status !== "reprovado" && (
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        className="gap-2"
-                        onClick={() => updateStatusMutation.mutate({ orcamentoId: orcamento.id, status: "reprovado" })}
-                        disabled={updateStatusMutation.isPending}
-                      >
-                        Reprovado
-                      </Button>
-                    )}
-
                     <Button
                       variant="destructive"
                       size="sm"
