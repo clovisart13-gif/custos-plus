@@ -606,7 +606,7 @@ export default function VisualizarOrcamento() {
               {itens.length === 0 ? (
                 <p className="text-muted-foreground text-center py-8">Nenhum item adicionado ainda</p>
               ) : (
-                <div className="overflow-x-auto">
+                <div className="w-full">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b">
