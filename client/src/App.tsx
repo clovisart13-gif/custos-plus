@@ -11,6 +11,7 @@ import FichasCusto from "./pages/FichasCusto";
 import VisualizarFicha from "./pages/VisualizarFicha";
 import Orcamentos from "./pages/Orcamentos";
 import VisualizarOrcamento from "./pages/VisualizarOrcamento";
+import ResumoOrcamentos from "./pages/ResumoOrcamentos";
 import GerenciarUsuarios from "./pages/GerenciarUsuarios";
 import Empresas from "./pages/Empresas";
 
@@ -42,6 +43,7 @@ function Router() {
           {() => <ProtectedRoute path="/ficha/:id" component={VisualizarFicha} />}
         </Route>
         <Route path="/orcamentos" component={Orcamentos} />
+        <Route path="/resumo-orcamentos" component={ResumoOrcamentos} />
         <Route path="/orcamento/:id" component={VisualizarOrcamento} />
         <Route path="/gerenciar-usuarios">
           {() => <ProtectedRoute path="/gerenciar-usuarios" component={GerenciarUsuarios} />}

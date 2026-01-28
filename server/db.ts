@@ -1039,3 +1039,195 @@ export async function recalculatAllOrcamentos() {
 
   console.log("[recalculatAllOrcamentos] Recálculo concluído para todos os orçamentos");
 }
+
+
+// ============= Resumo de Orçamentos com Cálculo em Tempo Real =============
+
+/**
+ * Calcula os totais de um orçamento em tempo real a partir dos itens
+ * Retorna: { totalPecas, subtotal, total (com desconto), status }
+ */
+export async function getOrcamentoComTotaisCalculados(orcamentoId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // Buscar orçamento
+  const orcamento = await db
+    .select()
+    .from(orcamentos)
+    .where(eq(orcamentos.id, orcamentoId))
+    .limit(1);
+
+  if (!orcamento || orcamento.length === 0) {
+    throw new Error("Orçamento não encontrado");
+  }
+
+  const orc = orcamento[0];
+
+  // Buscar itens
+  const itens = await db
+    .select()
+    .from(itensOrcamento)
+    .where(eq(itensOrcamento.orcamentoId, orcamentoId));
+
+  // Calcular totais a partir dos itens
+  let totalPecas = 0;
+  let subtotal = 0;
+
+  itens.forEach((item) => {
+    totalPecas += item.quantidade || 0;
+    subtotal += parseFloat(item.valorTotal?.toString() || "0");
+  });
+
+  // Aplicar desconto
+  let total = subtotal;
+  if (orc.descontoValor && Number(orc.descontoValor) > 0) {
+    if (orc.descontoTipo === 'percentual') {
+      const valorDesconto = (subtotal * Number(orc.descontoValor)) / 100;
+      total = subtotal - valorDesconto;
+    } else {
+      total = subtotal - Number(orc.descontoValor);
+    }
+  }
+
+  return {
+    id: orc.id,
+    numeroOrcamento: orc.numeroOrcamento,
+    nomeCliente: orc.nomeCliente,
+    marca: orc.marca,
+    status: orc.status,
+    totalPecas,
+    subtotal,
+    total,
+    desconto: orc.descontoValor,
+    descontoTipo: orc.descontoTipo,
+    dataEmissao: orc.dataEmissao,
+    createdAt: orc.createdAt,
+  };
+}
+
+/**
+ * Lista todos os orçamentos com totais calculados em tempo real
+ */
+export async function listOrcamentosComTotaisCalculados(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  // Buscar todos os orçamentos do usuário
+  const allOrcamentos = await db
+    .select()
+    .from(orcamentos)
+    .where(eq(orcamentos.userId, userId))
+    .orderBy(desc(orcamentos.createdAt));
+
+  // Para cada orçamento, calcular totais a partir dos itens
+  const orcamentosComTotais = await Promise.all(
+    allOrcamentos.map(async (orc) => {
+      const itens = await db
+        .select()
+        .from(itensOrcamento)
+        .where(eq(itensOrcamento.orcamentoId, orc.id));
+
+      let totalPecas = 0;
+      let subtotal = 0;
+
+      itens.forEach((item) => {
+        totalPecas += item.quantidade || 0;
+        subtotal += parseFloat(item.valorTotal?.toString() || "0");
+      });
+
+      let total = subtotal;
+      if (orc.descontoValor && Number(orc.descontoValor) > 0) {
+        if (orc.descontoTipo === 'percentual') {
+          const valorDesconto = (subtotal * Number(orc.descontoValor)) / 100;
+          total = subtotal - valorDesconto;
+        } else {
+          total = subtotal - Number(orc.descontoValor);
+        }
+      }
+
+      return {
+        id: orc.id,
+        numeroOrcamento: orc.numeroOrcamento,
+        nomeCliente: orc.nomeCliente,
+        marca: orc.marca,
+        status: orc.status,
+        totalPecas,
+        subtotal,
+        total,
+        desconto: orc.descontoValor,
+        descontoTipo: orc.descontoTipo,
+        dataEmissao: orc.dataEmissao,
+        createdAt: orc.createdAt,
+      };
+    })
+  );
+
+  return orcamentosComTotais;
+}
+
+/**
+ * Calcula KPIs de orçamentos por status
+ */
+export async function getKPIOrcamentos(userId: number) {
+  const db = await getDb();
+  if (!db) return null;
+
+  // Buscar todos os orçamentos
+  const allOrcamentos = await db
+    .select()
+    .from(orcamentos)
+    .where(eq(orcamentos.userId, userId));
+
+  // Para cada orçamento, calcular totais
+  const orcamentosComTotais = await Promise.all(
+    allOrcamentos.map(async (orc) => {
+      const itens = await db
+        .select()
+        .from(itensOrcamento)
+        .where(eq(itensOrcamento.orcamentoId, orc.id));
+
+      let totalPecas = 0;
+      let subtotal = 0;
+
+      itens.forEach((item) => {
+        totalPecas += item.quantidade || 0;
+        subtotal += parseFloat(item.valorTotal?.toString() || "0");
+      });
+
+      let total = subtotal;
+      if (orc.descontoValor && Number(orc.descontoValor) > 0) {
+        if (orc.descontoTipo === 'percentual') {
+          const valorDesconto = (subtotal * Number(orc.descontoValor)) / 100;
+          total = subtotal - valorDesconto;
+        } else {
+          total = subtotal - Number(orc.descontoValor);
+        }
+      }
+
+      return {
+        status: orc.status,
+        totalPecas,
+        total,
+      };
+    })
+  );
+
+  // Agrupar por status e calcular totalizações
+  const kpis = {
+    pendente: { quantidade: 0, totalPecas: 0, totalValor: 0 },
+    aprovado: { quantidade: 0, totalPecas: 0, totalValor: 0 },
+    reprovado: { quantidade: 0, totalPecas: 0, totalValor: 0 },
+  };
+
+  orcamentosComTotais.forEach((orc) => {
+    const status = orc.status as 'pendente' | 'aprovado' | 'reprovado';
+    kpis[status].quantidade += 1;
+    kpis[status].totalPecas += orc.totalPecas;
+    kpis[status].totalValor += orc.total;
+  });
+
+  return kpis;
+}
+
+

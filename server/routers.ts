@@ -555,6 +555,14 @@ export const appRouter = router({
         await db.deleteOrcamento(input.id, ctx.user.id);
         return { success: true };
       }),
+
+    listComTotaisCalculados: protectedProcedure.query(async ({ ctx }) => {
+      return await db.listOrcamentosComTotaisCalculados(ctx.user.id);
+    }),
+
+    getKPIs: protectedProcedure.query(async ({ ctx }) => {
+      return await db.getKPIOrcamentos(ctx.user.id);
+    }),
   }),
 
   dashboard: router({

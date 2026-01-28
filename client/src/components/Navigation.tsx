@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LayoutDashboard, FileText, LogOut, User, FileCheck, Users, Building2 } from "lucide-react";
+import { LayoutDashboard, FileText, LogOut, User, FileCheck, Users, Building2, BarChart3 } from "lucide-react";
 
 export function Navigation() {
   const [location] = useLocation();
@@ -25,6 +25,7 @@ export function Navigation() {
     { path: "/", label: "Dashboard", icon: LayoutDashboard },
     { path: "/fichas-custo", label: "Fichas de Custo", icon: FileText },
     { path: "/orcamentos", label: "Orçamentos", icon: FileCheck },
+    { path: "/resumo-orcamentos", label: "Resumo", icon: BarChart3 },
   ];
 
   const adminItems = [

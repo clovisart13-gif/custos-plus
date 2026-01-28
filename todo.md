@@ -288,3 +288,27 @@ PROXIMA FASE:
 - Vincular empresas aos orcamentos (adicionar campo empresaId)
 - Criar select de empresas no formulario de orcamento
 - Exibir nome da empresa no resumo de orcamentos
+
+## NOVO: Resumo de Orçamentos com Status e KPIs (27/01/2026)
+
+**PROBLEMA IDENTIFICADO:**
+O resumo de orçamentos está mostrando valores errados (ex: fence 3pcs - 117,70 em vez de 144pcs - R$ 10.152). 
+O detalhe do orçamento mostra valores corretos, mas o resumo (usado para aprovar/reprovar) está errado.
+Isso é crítico porque o usuário fecha um orçamento com R$ 20.000 e o resumo mostra R$ 37,80.
+
+**SOLUÇÃO PROPOSTA:**
+Em vez de armazenar totais no banco e tentar atualizar (que está falhando), calcular os totais em tempo real:
+- Quando buscar lista de orçamentos, calcular totais a partir dos itens
+- Isso garante que o resumo SEMPRE estará correto
+- Adicionar status (pendente/aprovado/reprovado) aos orçamentos
+- Implementar KPIs de totalizações por status
+
+- [x] Coluna `status` já existia na tabela orcamentos
+- [x] Criar procedure `listOrcamentosComTotaisCalculados` que busca itens e calcula totais em tempo real
+- [x] Criar procedure `getKPIOrcamentos` que retorna KPIs (total pendente, aprovado, reprovado)
+- [x] Implementar página de resumo de orçamentos com filtros e KPI cards
+- [x] Adicionar procedures tRPC: listComTotaisCalculados, getKPIs
+- [x] Adicionar rota /resumo-orcamentos no App.tsx
+- [x] Adicionar link no menu de navegação
+- [ ] Testar cálculos com todos os orçamentos existentes (be green, fence, ballet, sara regina)
+- [ ] Validar que totais calculados correspondem aos valores detalhados no orçamento
