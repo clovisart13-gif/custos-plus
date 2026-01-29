@@ -3,19 +3,23 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, CheckCircle, Clock, Search, ChevronDown } from "lucide-react";
+import { AlertCircle, CheckCircle, Clock, Search, Send } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { toast } from "sonner";
 
 type StatusType = "pendente" | "aprovado" | "reprovado" | "todos";
+type FilterType = "todos" | "pendente_envio";
 type SortType = "recente" | "cliente";
 
 export default function ResumoOrcamentos() {
   const [statusFilter, setStatusFilter] = useState<StatusType>("todos");
+  const [filterType, setFilterType] = useState<FilterType>("todos");
   const [sortBy, setSortBy] = useState<SortType>("recente");
   const [searchTerm, setSearchTerm] = useState("");
+  const [sendingKanbanId, setSendingKanbanId] = useState<number | null>(null);
 
   // Buscar orçamentos com totais calculados em tempo real
-  const { data: orcamentos = [], isLoading: loadingOrcamentos } =
+  const { data: orcamentos = [], isLoading: loadingOrcamentos, refetch } =
     trpc.orcamentos.listComTotaisCalculados.useQuery();
 
   // Buscar KPIs
@@ -24,8 +28,25 @@ export default function ResumoOrcamentos() {
   // Mutation para atualizar status
   const updateStatusMutation = trpc.orcamentos.updateStatus.useMutation({
     onSuccess: () => {
-      trpc.useUtils().orcamentos.listComTotaisCalculados.invalidate();
+      refetch();
       trpc.useUtils().orcamentos.getKPIs.invalidate();
+      toast.success("Status atualizado!");
+    },
+    onError: (error) => {
+      toast.error("Erro ao atualizar: " + error.message);
+    },
+  });
+
+  // Mutation para enviar para Kanban
+  const enviarKanbanMutation = trpc.orcamentos.enviarParaKanban.useMutation({
+    onSuccess: () => {
+      setSendingKanbanId(null);
+      refetch();
+      toast.success("Enviado para Kanban!");
+    },
+    onError: (error) => {
+      setSendingKanbanId(null);
+      toast.error("Erro ao enviar: " + error.message);
     },
   });
 
@@ -36,6 +57,11 @@ export default function ResumoOrcamentos() {
     // Filtrar por status
     if (statusFilter !== "todos") {
       filtered = filtered.filter((orc) => orc.status === statusFilter);
+    }
+
+    // Filtrar por tipo (pendente de envio)
+    if (filterType === "pendente_envio") {
+      filtered = filtered.filter((orc) => orc.status === "aprovado" && !orc.enviado);
     }
 
     // Filtrar por busca
@@ -60,7 +86,7 @@ export default function ResumoOrcamentos() {
     }
 
     return filtered;
-  }, [orcamentos, statusFilter, searchTerm, sortBy]);
+  }, [orcamentos, statusFilter, filterType, searchTerm, sortBy]);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -231,6 +257,29 @@ export default function ResumoOrcamentos() {
               </Button>
             </div>
 
+            {/* Filter Type */}
+            <div className="flex gap-2">
+              <Button
+                variant={filterType === "todos" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFilterType("todos")}
+              >
+                Todos
+              </Button>
+              <Button
+                variant={filterType === "pendente_envio" ? "default" : "outline"}
+                size="sm"
+                onClick={() => {
+                  setFilterType("pendente_envio");
+                  setStatusFilter("todos");
+                }}
+                className={filterType === "pendente_envio" ? "bg-blue-500 hover:bg-blue-600" : ""}
+              >
+                <Send className="w-4 h-4 mr-1" />
+                Pendente de Envio
+              </Button>
+            </div>
+
             {/* Sort */}
             <div className="flex gap-2 ml-auto">
               <Button
@@ -303,7 +352,7 @@ export default function ResumoOrcamentos() {
                       </p>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap justify-end">
                       {orc.status !== "aprovado" && (
                         <Button
                           size="sm"
@@ -333,6 +382,25 @@ export default function ResumoOrcamentos() {
                         >
                           ✗ Reprovar
                         </Button>
+                      )}
+                      {orc.status === "aprovado" && !orc.enviado && (
+                        <Button
+                          size="sm"
+                          className="bg-blue-500 hover:bg-blue-600 text-white whitespace-nowrap gap-1"
+                          onClick={() => {
+                            setSendingKanbanId(orc.id);
+                            enviarKanbanMutation.mutate({ orcamentoId: orc.id });
+                          }}
+                          disabled={sendingKanbanId === orc.id || enviarKanbanMutation.isPending}
+                        >
+                          <Send className="w-4 h-4" />
+                          {sendingKanbanId === orc.id ? "Enviando..." : "Enviar Kanban"}
+                        </Button>
+                      )}
+                      {orc.enviado && (
+                        <Badge className="bg-blue-500 text-white whitespace-nowrap">
+                          ✓ Enviado para Kanban
+                        </Badge>
                       )}
                     </div>
                   </div>

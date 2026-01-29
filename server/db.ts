@@ -1153,6 +1153,7 @@ export async function listOrcamentosComTotaisCalculados(userId: number) {
         nomeCliente: orc.nomeCliente,
         marca: orc.marca,
         status: orc.status,
+        enviado: Boolean(orc.enviado),
         totalPecas,
         subtotal,
         total,
@@ -1232,3 +1233,32 @@ export async function getKPIOrcamentos(userId: number) {
 }
 
 
+
+
+export async function enviarParaKanban(orcamentoId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // Verificar se o orçamento existe e está aprovado
+  const orcamento = await db
+    .select()
+    .from(orcamentos)
+    .where(eq(orcamentos.id, orcamentoId))
+    .limit(1);
+
+  if (!orcamento || orcamento.length === 0) {
+    throw new Error("Orçamento não encontrado");
+  }
+
+  if (orcamento[0].status !== "aprovado") {
+    throw new Error("Apenas orçamentos aprovados podem ser enviados para Kanban");
+  }
+
+  // Marcar como enviado
+  await db
+    .update(orcamentos)
+    .set({ enviado: 1 })
+    .where(eq(orcamentos.id, orcamentoId));
+
+  return { success: true };
+}

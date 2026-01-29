@@ -563,6 +563,8 @@ export const appRouter = router({
     getKPIs: protectedProcedure.query(async ({ ctx }) => {
       return await db.getKPIOrcamentos(ctx.user.id);
     }),
+
+
   }),
 
   dashboard: router({

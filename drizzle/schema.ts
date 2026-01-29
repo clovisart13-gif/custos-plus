@@ -1,4 +1,4 @@
-import { decimal, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { decimal, int, mysqlEnum, mysqlTable, text, timestamp, varchar, tinyint } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -82,6 +82,7 @@ export const orcamentos = mysqlTable("orcamentos", {
   descricaoPrazo: varchar("descricao_prazo", { length: 100 }).default("30 dias").notNull(),
   
   status: mysqlEnum("status", ["pendente", "aprovado", "reprovado"]).default("pendente").notNull(),
+  enviado: tinyint("enviado").default(0).notNull(),
   
   // Novos campos
   observacoes: text("observacoes"),
