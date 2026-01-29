@@ -20,10 +20,16 @@ export default function ResumoOrcamentos() {
 
   // Buscar orçamentos com totais calculados em tempo real
   const { data: orcamentos = [], isLoading: loadingOrcamentos, refetch } =
-    trpc.orcamentos.listComTotaisCalculados.useQuery();
+    trpc.orcamentos.listComTotaisCalculados.useQuery(undefined, {
+      staleTime: 0,
+      gcTime: 0,
+    });
 
   // Buscar KPIs
-  const { data: kpis, isLoading: loadingKpis } = trpc.orcamentos.getKPIs.useQuery();
+  const { data: kpis, isLoading: loadingKpis } = trpc.orcamentos.getKPIs.useQuery(undefined, {
+    staleTime: 0,
+    gcTime: 0,
+  });
 
   // Mutation para atualizar status
   const updateStatusMutation = trpc.orcamentos.updateStatus.useMutation({
