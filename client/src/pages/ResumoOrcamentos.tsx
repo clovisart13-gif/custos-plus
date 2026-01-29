@@ -3,20 +3,26 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, CheckCircle, Clock, Search, Send } from "lucide-react";
+import { AlertCircle, CheckCircle, Clock, Search, Send, Plus, Eye, Trash2 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { toast } from "sonner";
+import { useLocation } from "wouter";
+import CriarOrcamentoSimples from "@/components/CriarOrcamentoSimples";
+import SelecionarFichasModal from "@/components/SelecionarFichasModal";
 
 type StatusType = "pendente" | "aprovado" | "reprovado" | "todos";
 type FilterType = "todos" | "pendente_envio";
 type SortType = "recente" | "cliente";
 
 export default function ResumoOrcamentos() {
+  const [location, navigate] = useLocation();
   const [statusFilter, setStatusFilter] = useState<StatusType>("todos");
   const [filterType, setFilterType] = useState<FilterType>("todos");
   const [sortBy, setSortBy] = useState<SortType>("recente");
   const [searchTerm, setSearchTerm] = useState("");
   const [sendingKanbanId, setSendingKanbanId] = useState<number | null>(null);
+  const [showNovoOrcamento, setShowNovoOrcamento] = useState(false);
+  const [showSelecionarFichas, setShowSelecionarFichas] = useState(false);
 
   // Buscar orçamentos com totais calculados em tempo real
   const { data: orcamentos = [], isLoading: loadingOrcamentos, refetch } =
@@ -60,6 +66,27 @@ export default function ResumoOrcamentos() {
     },
   });
 
+  // Mutation para deletar
+  const deleteOrcamento = trpc.orcamentos.delete.useMutation({
+    onSuccess: () => {
+      toast.success("Orçamento deletado com sucesso");
+      refetch();
+    },
+    onError: (error: any) => {
+      toast.error("Erro ao deletar orçamento: " + error.message);
+    },
+  });
+
+  const handleDelete = (id: number) => {
+    if (confirm("Tem certeza que deseja deletar este orçamento?")) {
+      deleteOrcamento.mutate({ id });
+    }
+  };
+
+  const handleView = (id: number) => {
+    navigate(`/orcamento/${id}`);
+  };
+
   // Filtrar e ordenar orçamentos
   const orcamentosFiltrados = useMemo(() => {
     let filtered = orcamentos;
@@ -99,196 +126,168 @@ export default function ResumoOrcamentos() {
   }, [orcamentos, statusFilter, filterType, searchTerm, sortBy]);
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "pendente":
-        return (
-          <Badge className="bg-amber-500 hover:bg-amber-600 text-white">
-            <Clock className="w-3 h-3 mr-1" />
-            Pendente
-          </Badge>
-        );
-      case "aprovado":
-        return (
-          <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white">
-            <CheckCircle className="w-3 h-3 mr-1" />
-            Aprovado
-          </Badge>
-        );
-      case "reprovado":
-        return (
-          <Badge className="bg-rose-500 hover:bg-rose-600 text-white">
-            <AlertCircle className="w-3 h-3 mr-1" />
-            Reprovado
-          </Badge>
-        );
-      default:
-        return null;
-    }
+    const config: Record<string, { bg: string; text: string; icon: any }> = {
+      pendente: { bg: "bg-yellow-100", text: "text-yellow-800", icon: Clock },
+      aprovado: { bg: "bg-green-100", text: "text-green-800", icon: CheckCircle },
+      reprovado: { bg: "bg-red-100", text: "text-red-800", icon: AlertCircle },
+    };
+
+    const { bg, text, icon: Icon } = config[status] || config.pendente;
+    return (
+      <Badge className={`${bg} ${text} gap-1`}>
+        <Icon className="w-3 h-3" />
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </Badge>
+    );
   };
 
   const getRowClass = (status: string) => {
-    switch (status) {
-      case "pendente":
-        return "border-l-4 border-amber-500 hover:bg-amber-50";
-      case "aprovado":
-        return "border-l-4 border-emerald-500 hover:bg-emerald-50";
-      case "reprovado":
-        return "border-l-4 border-rose-500 hover:bg-rose-50";
-      default:
-        return "";
-    }
+    const classes: Record<string, string> = {
+      pendente: "border-l-4 border-l-yellow-400 hover:bg-yellow-50",
+      aprovado: "border-l-4 border-l-green-400 hover:bg-green-50",
+      reprovado: "border-l-4 border-l-red-400 hover:bg-red-50",
+    };
+    return classes[status] || classes.pendente;
   };
 
-  if (loadingOrcamentos || loadingKpis) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Carregando resumo...</p>
+  return (
+    <div className="container py-8">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold">Resumo de Orçamentos</h1>
+          <p className="text-muted-foreground">Gerencie e aprove seus orçamentos</p>
+        </div>
+        <div className="flex gap-2">
+          <Button 
+            size="lg" 
+            className="gap-2"
+            onClick={() => setShowNovoOrcamento(true)}
+          >
+            <Plus className="w-5 h-5" />
+            Novo Orçamento Manual
+          </Button>
+          <Button 
+            size="lg" 
+            variant="outline"
+            className="gap-2"
+            onClick={() => setShowSelecionarFichas(true)}
+          >
+            <Plus className="w-5 h-5" />
+            Criar de Fichas
+          </Button>
         </div>
       </div>
-    );
-  }
 
-  return (
-    <div className="space-y-6 py-8">
-      {/* Título */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Resumo de Orçamentos</h1>
-        <p className="text-gray-600">Gerencie e aprove seus orçamentos</p>
-      </div>
-
-      {/* KPI Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="border-amber-200 bg-amber-50">
+      {/* KPIs */}
+      <div className="grid grid-cols-3 gap-4 mb-8">
+        <Card>
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-amber-700 font-medium">Pendentes</p>
-                <p className="text-3xl font-bold text-amber-900">
-                  {kpis?.pendente.quantidade || 0}
-                </p>
-                <p className="text-sm text-amber-700">
-                  {formatCurrency(kpis?.pendente.totalValor || 0)}
-                </p>
-              </div>
-              <Clock className="w-12 h-12 text-amber-500 opacity-20" />
+            <div className="text-center">
+              <Clock className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
+              <p className="text-sm text-muted-foreground">Pendentes</p>
+              <p className="text-2xl font-bold">{kpis?.pendente.quantidade || 0}</p>
+              <p className="text-sm text-yellow-600">{formatCurrency(kpis?.pendente.totalValor || 0)}</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-emerald-200 bg-emerald-50">
+        <Card>
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-emerald-700 font-medium">Aprovados</p>
-                <p className="text-3xl font-bold text-emerald-900">
-                  {kpis?.aprovado.quantidade || 0}
-                </p>
-                <p className="text-sm text-emerald-700">
-                  {formatCurrency(kpis?.aprovado.totalValor || 0)}
-                </p>
-              </div>
-              <CheckCircle className="w-12 h-12 text-emerald-500 opacity-20" />
+            <div className="text-center">
+              <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
+              <p className="text-sm text-muted-foreground">Aprovados</p>
+              <p className="text-2xl font-bold">{kpis?.aprovado.quantidade || 0}</p>
+              <p className="text-sm text-green-600">{formatCurrency(kpis?.aprovado.totalValor || 0)}</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-rose-200 bg-rose-50">
+        <Card>
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-rose-700 font-medium">Reprovados</p>
-                <p className="text-3xl font-bold text-rose-900">
-                  {kpis?.reprovado.quantidade || 0}
-                </p>
-                <p className="text-sm text-rose-700">
-                  {formatCurrency(kpis?.reprovado.totalValor || 0)}
-                </p>
-              </div>
-              <AlertCircle className="w-12 h-12 text-rose-500 opacity-20" />
+            <div className="text-center">
+              <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
+              <p className="text-sm text-muted-foreground">Reprovados</p>
+              <p className="text-2xl font-bold">{kpis?.reprovado.quantidade || 0}</p>
+              <p className="text-sm text-red-600">{formatCurrency(kpis?.reprovado.totalValor || 0)}</p>
             </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Filtros e Busca */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Filtros e Busca</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <Card className="mb-8">
+        <CardContent className="pt-6">
           {/* Barra de Busca */}
-          <div className="relative">
-            <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Buscar por cliente ou número do orçamento..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+          <div className="mb-6">
+            <div className="relative">
+              <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Buscar por cliente ou número do orçamento..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
           </div>
 
-          {/* Filtros e Ordenação */}
-          <div className="flex flex-wrap gap-3">
-            {/* Status Filter */}
-            <div className="flex gap-2">
-              <Button
-                variant={statusFilter === "todos" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setStatusFilter("todos")}
-              >
-                Todos ({orcamentos.length})
-              </Button>
-              <Button
-                variant={statusFilter === "pendente" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setStatusFilter("pendente")}
-                className={statusFilter === "pendente" ? "bg-amber-500 hover:bg-amber-600" : ""}
-              >
-                Pendentes ({kpis?.pendente.quantidade || 0})
-              </Button>
-              <Button
-                variant={statusFilter === "aprovado" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setStatusFilter("aprovado")}
-                className={statusFilter === "aprovado" ? "bg-emerald-500 hover:bg-emerald-600" : ""}
-              >
-                Aprovados ({kpis?.aprovado.quantidade || 0})
-              </Button>
-              <Button
-                variant={statusFilter === "reprovado" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setStatusFilter("reprovado")}
-                className={statusFilter === "reprovado" ? "bg-rose-500 hover:bg-rose-600" : ""}
-              >
-                Reprovados ({kpis?.reprovado.quantidade || 0})
-              </Button>
-            </div>
-
-            {/* Filter Type */}
-            <div className="flex gap-2">
-              <Button
-                variant={filterType === "todos" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setFilterType("todos")}
-              >
-                Todos
-              </Button>
-              <Button
-                variant={filterType === "pendente_envio" ? "default" : "outline"}
-                size="sm"
-                onClick={() => {
-                  setFilterType("pendente_envio");
-                  setStatusFilter("todos");
-                }}
-                className={filterType === "pendente_envio" ? "bg-blue-500 hover:bg-blue-600" : ""}
-              >
-                <Send className="w-4 h-4 mr-1" />
-                Pendente de Envio
-              </Button>
-            </div>
+          {/* Filtros */}
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              variant={statusFilter === "todos" && filterType === "todos" ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                setStatusFilter("todos");
+                setFilterType("todos");
+              }}
+            >
+              Todos ({orcamentos.length})
+            </Button>
+            <Button
+              variant={statusFilter === "pendente" && filterType === "todos" ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                setStatusFilter("pendente");
+                setFilterType("todos");
+              }}
+              className={statusFilter === "pendente" && filterType === "todos" ? "bg-yellow-500 hover:bg-yellow-600" : ""}
+            >
+              Pendentes ({kpis?.pendente.quantidade || 0})
+            </Button>
+            <Button
+              variant={statusFilter === "aprovado" && filterType === "todos" ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                setStatusFilter("aprovado");
+                setFilterType("todos");
+              }}
+              className={statusFilter === "aprovado" && filterType === "todos" ? "bg-green-500 hover:bg-green-600" : ""}
+            >
+              Aprovados ({kpis?.aprovado.quantidade || 0})
+            </Button>
+            <Button
+              variant={statusFilter === "reprovado" && filterType === "todos" ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                setStatusFilter("reprovado");
+                setFilterType("todos");
+              }}
+              className={statusFilter === "reprovado" && filterType === "todos" ? "bg-red-500 hover:bg-red-600" : ""}
+            >
+              Reprovados ({kpis?.reprovado.quantidade || 0})
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => {
+                setFilterType("pendente_envio");
+                setStatusFilter("todos");
+              }}
+              className={filterType === "pendente_envio" ? "bg-blue-500 hover:bg-blue-600" : ""}
+            >
+              <Send className="w-4 h-4 mr-1" />
+              Pendente de Envio
+            </Button>
 
             {/* Sort */}
             <div className="flex gap-2 ml-auto">
@@ -352,71 +351,77 @@ export default function ResumoOrcamentos() {
                         <span className="font-medium">Marca:</span> {orc.marca || "-"}
                       </span>
                       <span>
-                        <span className="font-medium">Peças:</span>{" "}
-                        {orc.totalPecas.toLocaleString("pt-BR")}
+                        <span className="font-medium">Peças:</span> {orc.totalPecas}
                       </span>
                     </div>
                   </div>
 
-                  {/* Valor e Ações */}
-                  <div className="flex items-center gap-4 ml-4">
-                    <div className="text-right min-w-fit">
-                      <p className="text-2xl font-bold text-gray-900">
-                        {formatCurrency(orc.total)}
-                      </p>
-                    </div>
+                  {/* Total */}
+                  <div className="text-right mr-6">
+                    <p className="text-lg font-bold text-gray-900">
+                      {formatCurrency(orc.total)}
+                    </p>
+                    <p className="text-xs text-gray-500">{orc.totalPecas} peças</p>
+                  </div>
 
-                    <div className="flex gap-2 flex-wrap justify-end">
-                      {orc.status !== "aprovado" && (
+                  {/* Ações */}
+                  <div className="flex gap-2">
+                    {/* Botões de Aprovação/Reprovação */}
+                    {orc.status === "pendente" && (
+                      <>
                         <Button
                           size="sm"
-                          className="bg-emerald-500 hover:bg-emerald-600 text-white whitespace-nowrap"
-                          onClick={() =>
-                            updateStatusMutation.mutate({
-                              orcamentoId: orc.id,
-                              status: "aprovado",
-                            })
-                          }
+                          variant="outline"
+                          className="text-green-600 border-green-600 hover:bg-green-50"
+                          onClick={() => updateStatusMutation.mutate({ orcamentoId: orc.id, status: "aprovado" })}
                           disabled={updateStatusMutation.isPending}
                         >
                           ✓ Aprovar
                         </Button>
-                      )}
-                      {orc.status !== "reprovado" && (
                         <Button
                           size="sm"
-                          className="bg-rose-500 hover:bg-rose-600 text-white whitespace-nowrap"
-                          onClick={() =>
-                            updateStatusMutation.mutate({
-                              orcamentoId: orc.id,
-                              status: "reprovado",
-                            })
-                          }
+                          variant="outline"
+                          className="text-red-600 border-red-600 hover:bg-red-50"
+                          onClick={() => updateStatusMutation.mutate({ orcamentoId: orc.id, status: "reprovado" })}
                           disabled={updateStatusMutation.isPending}
                         >
                           ✗ Reprovar
                         </Button>
-                      )}
-                      {orc.status === "aprovado" && !orc.enviado && (
-                        <Button
-                          size="sm"
-                          className="bg-blue-500 hover:bg-blue-600 text-white whitespace-nowrap gap-1"
-                          onClick={() => {
-                            setSendingKanbanId(orc.id);
-                            enviarKanbanMutation.mutate({ orcamentoId: orc.id });
-                          }}
-                          disabled={sendingKanbanId === orc.id || enviarKanbanMutation.isPending}
-                        >
-                          <Send className="w-4 h-4" />
-                          {sendingKanbanId === orc.id ? "Enviando..." : "Enviar Kanban"}
-                        </Button>
-                      )}
-                      {orc.enviado && (
-                        <Badge className="bg-blue-500 text-white whitespace-nowrap">
-                          ✓ Enviado para Kanban
-                        </Badge>
-                      )}
-                    </div>
+                      </>
+                    )}
+
+                    {/* Botão Enviar para Kanban */}
+                    {orc.status === "aprovado" && !orc.enviado && (
+                      <Button
+                        size="sm"
+                        className="bg-blue-500 hover:bg-blue-600 text-white"
+                        onClick={() => {
+                          setSendingKanbanId(orc.id);
+                          enviarKanbanMutation.mutate({ orcamentoId: orc.id });
+                        }}
+                        disabled={sendingKanbanId === orc.id}
+                      >
+                        <Send className="w-4 h-4 mr-1" />
+                        Enviar Kanban
+                      </Button>
+                    )}
+
+                    {/* Botões Visualizar e Deletar */}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleView(orc.id)}
+                    >
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="text-red-600 border-red-600 hover:bg-red-50"
+                      onClick={() => handleDelete(orc.id)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -424,6 +429,23 @@ export default function ResumoOrcamentos() {
           )}
         </CardContent>
       </Card>
+
+      {/* Modais */}
+      <CriarOrcamentoSimples
+        isOpen={showNovoOrcamento}
+        onClose={() => {
+          setShowNovoOrcamento(false);
+          refetch();
+        }}
+      />
+
+      <SelecionarFichasModal
+        isOpen={showSelecionarFichas}
+        onClose={() => {
+          setShowSelecionarFichas(false);
+          refetch();
+        }}
+      />
     </div>
   );
 }

@@ -24,8 +24,7 @@ export function Navigation() {
   const navItems = [
     { path: "/", label: "Dashboard", icon: LayoutDashboard },
     { path: "/fichas-custo", label: "Fichas de Custo", icon: FileText },
-    { path: "/orcamentos", label: "Orçamentos", icon: FileCheck },
-    { path: "/resumo-orcamentos", label: "Resumo", icon: BarChart3 },
+    { path: "/resumo-orcamentos", label: "Orçamentos", icon: FileCheck },
   ];
 
   const adminItems = [

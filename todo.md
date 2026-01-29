@@ -317,3 +317,45 @@ Em vez de armazenar totais no banco e tentar atualizar (que está falhando), cal
 - [x] KPI stats simplificados no topo
 - [ ] Testar cálculos com todos os orçamentos existentes (be green, fence, ballet, sara regina)
 - [ ] Validar que totais calculados correspondem aos valores detalhados no orçamento
+
+
+## Consolidar Abas Orçamentos e Resumo em Uma Única Aba (29/01/2026)
+
+- [ ] Mover botões "Novo Orçamento" e "Criar de Fichas" para Resumo
+  - Objetivo: Consolidar funcionalidades de criação na aba Resumo
+  - Implementação:
+    * Adicionar botões no topo do Resumo
+    * Manter modais de criação funcionando
+  - Status: PENDENTE
+
+- [ ] Adicionar botões "Visualizar" e "Deletar" na lista do Resumo
+  - Objetivo: Permitir visualizar e deletar orçamentos diretamente do Resumo
+  - Implementação:
+    * Adicionar coluna de ações com botões
+    * Integrar com modais de visualização (PDF/Imprimir)
+  - Status: PENDENTE
+
+- [ ] Reorganizar layout para UX agradável
+  - Objetivo: Manter interface limpa e intuitiva mesmo com mais funcionalidades
+  - Implementação:
+    * Agrupar botões de ação por seção
+    * Melhorar espaçamento e hierarquia visual
+  - Status: PENDENTE
+
+- [ ] Remover aba "Orçamentos"
+  - Objetivo: Eliminar redundância de abas
+  - Implementação:
+    * Remover rota /orcamentos do App.tsx
+    * Remover link do menu de navegação
+  - Status: PENDENTE
+
+- [ ] Testar fluxo completo
+  - Objetivo: Validar todas as funcionalidades consolidadas
+  - Testes:
+    * Criar novo orçamento
+    * Criar de fichas
+    * Visualizar (PDF/Imprimir)
+    * Deletar
+    * Aprovar/Reprovar
+    * Enviar para Kanban
+  - Status: PENDENTE

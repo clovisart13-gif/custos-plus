@@ -9,7 +9,7 @@ import { useAuth } from "./_core/hooks/useAuth";
 import Dashboard from "./pages/Dashboard";
 import FichasCusto from "./pages/FichasCusto";
 import VisualizarFicha from "./pages/VisualizarFicha";
-import Orcamentos from "./pages/Orcamentos";
+
 import VisualizarOrcamento from "./pages/VisualizarOrcamento";
 import ResumoOrcamentos from "./pages/ResumoOrcamentos";
 import GerenciarUsuarios from "./pages/GerenciarUsuarios";
@@ -23,7 +23,7 @@ function ProtectedRoute({ path, component: Component }: { path: string; componen
   
   if (adminRoutes.some(route => path.startsWith(route.split(":")[0]))) {
     if (user?.role !== "admin") {
-      return <Redirect to="/orcamentos" />;
+      return <Redirect to="/resumo-orcamentos" />;
     }
   }
   
@@ -42,7 +42,7 @@ function Router() {
         <Route path="/ficha/:id">
           {() => <ProtectedRoute path="/ficha/:id" component={VisualizarFicha} />}
         </Route>
-        <Route path="/orcamentos" component={Orcamentos} />
+        <Route path="/orcamentos" component={ResumoOrcamentos} />
         <Route path="/resumo-orcamentos" component={ResumoOrcamentos} />
         <Route path="/orcamento/:id" component={VisualizarOrcamento} />
         <Route path="/gerenciar-usuarios">
