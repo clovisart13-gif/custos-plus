@@ -41,6 +41,7 @@ export default function ResumoOrcamentos() {
   const enviarKanbanMutation = trpc.orcamentos.enviarParaKanban.useMutation({
     onSuccess: () => {
       setSendingKanbanId(null);
+      trpc.useUtils().orcamentos.listComTotaisCalculados.invalidate();
       refetch();
       toast.success("Enviado para Kanban!");
     },
