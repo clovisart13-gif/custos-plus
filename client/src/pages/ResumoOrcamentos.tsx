@@ -315,11 +315,15 @@ export default function ResumoOrcamentos() {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">
-            {orcamentosFiltrados.length} orçamento(s)
+            {loadingOrcamentos ? "Carregando..." : `${orcamentosFiltrados.length} orçamento(s)`}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {orcamentosFiltrados.length === 0 ? (
+          {loadingOrcamentos ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">Carregando orçamentos...</p>
+            </div>
+          ) : orcamentosFiltrados.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-500 text-lg">Nenhum orçamento encontrado</p>
             </div>
