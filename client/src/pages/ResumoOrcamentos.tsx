@@ -55,14 +55,14 @@ export default function ResumoOrcamentos() {
   const orcamentosFiltrados = useMemo(() => {
     let filtered = orcamentos;
 
-    // Filtrar por status
-    if (statusFilter !== "todos") {
-      filtered = filtered.filter((orc) => orc.status === statusFilter);
-    }
-
-    // Filtrar por tipo (pendente de envio)
+    // Filtrar por tipo (pendente de envio) - tem prioridade
     if (filterType === "pendente_envio") {
       filtered = filtered.filter((orc) => orc.status === "aprovado" && !orc.enviado);
+    } else {
+      // Filtrar por status (só se não estiver em "pendente de envio")
+      if (statusFilter !== "todos") {
+        filtered = filtered.filter((orc) => orc.status === statusFilter);
+      }
     }
 
     // Filtrar por busca
