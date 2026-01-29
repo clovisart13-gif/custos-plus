@@ -1262,3 +1262,16 @@ export async function enviarParaKanban(orcamentoId: number) {
 
   return { success: true };
 }
+
+
+export async function updateOrcamentoEnviado(orcamentoId: number, enviado: boolean) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .update(orcamentos)
+    .set({ enviado: enviado ? 1 : 0 })
+    .where(eq(orcamentos.id, orcamentoId));
+
+  return { success: true };
+}

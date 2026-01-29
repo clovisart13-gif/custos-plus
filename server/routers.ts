@@ -564,6 +564,10 @@ export const appRouter = router({
 
         const result = await response.json();
         console.log("[Kanban] Success:", result);
+        
+        // Marcar como enviado no banco de dados
+        await db.updateOrcamentoEnviado(input.orcamentoId, true);
+        
         return { success: true, result };
       }),
 
