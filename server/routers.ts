@@ -502,17 +502,27 @@ export const appRouter = router({
           throw new Error("Orçamento não possui itens");
         }
 
+        // Calcular totais em tempo real a partir dos itens
+        const totalPecas = itens.reduce((sum: number, item: any) => sum + (item.quantidade || 0), 0);
+        const subtotal = itens.reduce((sum: number, item: any) => sum + parseFloat(item.valorTotal || "0"), 0);
+        const percentualSinal = typeof orcamento.percentualSinal === 'string' ? parseFloat(orcamento.percentualSinal) : (orcamento.percentualSinal || 0);
+        const percentualRetirada = typeof orcamento.percentualRetirada === 'string' ? parseFloat(orcamento.percentualRetirada) : (orcamento.percentualRetirada || 0);
+        const percentualPrazo = typeof orcamento.percentualPrazo === 'string' ? parseFloat(orcamento.percentualPrazo) : (orcamento.percentualPrazo || 0);
+        
+        // Calcular total com percentuais
+        const total = subtotal + (subtotal * percentualSinal / 100) + (subtotal * percentualRetirada / 100) + (subtotal * percentualPrazo / 100);
+
         const payload = {
           numeroOrcamento: orcamento.numeroOrcamento,
           nomeCliente: orcamento.nomeCliente,
           marca: orcamento.marca || "",
           prazoDias: orcamento.prazoDias || 30,
-          totalPecas: orcamento.totalPecas || 0,
-          subtotal: Math.round(parseFloat(orcamento.subtotal || "0") * 100),
-          total: Math.round(parseFloat(orcamento.total || "0") * 100),
-          percentualSinal: typeof orcamento.percentualSinal === 'string' ? parseFloat(orcamento.percentualSinal) : (orcamento.percentualSinal || 0),
-          percentualRetirada: typeof orcamento.percentualRetirada === 'string' ? parseFloat(orcamento.percentualRetirada) : (orcamento.percentualRetirada || 0),
-          percentualPrazo: typeof orcamento.percentualPrazo === 'string' ? parseFloat(orcamento.percentualPrazo) : (orcamento.percentualPrazo || 0),
+          totalPecas: totalPecas,
+          subtotal: Math.round(subtotal * 100),
+          total: Math.round(total * 100),
+          percentualSinal: percentualSinal,
+          percentualRetirada: percentualRetirada,
+          percentualPrazo: percentualPrazo,
           itens: itens.map((item: any) => ({
             referencia: item.referencia || "",
             descricao: item.descricao || "",
