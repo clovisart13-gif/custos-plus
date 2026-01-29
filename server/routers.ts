@@ -509,8 +509,8 @@ export const appRouter = router({
         const percentualRetirada = typeof orcamento.percentualRetirada === 'string' ? parseFloat(orcamento.percentualRetirada) : (orcamento.percentualRetirada || 0);
         const percentualPrazo = typeof orcamento.percentualPrazo === 'string' ? parseFloat(orcamento.percentualPrazo) : (orcamento.percentualPrazo || 0);
         
-        // Calcular total com percentuais
-        const total = subtotal + (subtotal * percentualSinal / 100) + (subtotal * percentualRetirada / 100) + (subtotal * percentualPrazo / 100);
+        // Total é igual ao subtotal (Kanban calcula o sinal)
+        const total = subtotal;
 
         const payload = {
           numeroOrcamento: orcamento.numeroOrcamento,
