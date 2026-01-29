@@ -31,11 +31,14 @@ export default function ResumoOrcamentos() {
     gcTime: 0,
   });
 
+  // Hooks de utils (fora das mutations)
+  const utils = trpc.useUtils();
+
   // Mutation para atualizar status
   const updateStatusMutation = trpc.orcamentos.updateStatus.useMutation({
     onSuccess: () => {
       refetch();
-      trpc.useUtils().orcamentos.getKPIs.invalidate();
+      utils.orcamentos.getKPIs.invalidate();
       toast.success("Status atualizado!");
     },
     onError: (error) => {
@@ -47,7 +50,7 @@ export default function ResumoOrcamentos() {
   const enviarKanbanMutation = trpc.orcamentos.enviarParaKanban.useMutation({
     onSuccess: () => {
       setSendingKanbanId(null);
-      trpc.useUtils().orcamentos.listComTotaisCalculados.invalidate();
+      utils.orcamentos.listComTotaisCalculados.invalidate();
       refetch();
       toast.success("Enviado para Kanban!");
     },
