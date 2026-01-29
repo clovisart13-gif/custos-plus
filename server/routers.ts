@@ -537,7 +537,9 @@ export const appRouter = router({
         console.log("[Kanban] Payload sendo enviado:", JSON.stringify(payload, null, 2));
 
         // Enviar para Kanban
-        const response = await fetch(
+        let response;
+        try {
+          response = await fetch(
           "https://kanbanprod-phheyds3.manus.space/api/custos-plus/importar-orcamento",
           {
             method: "POST",
@@ -547,15 +549,21 @@ export const appRouter = router({
             body: JSON.stringify(payload),
           }
         );
+        } catch (fetchError) {
+          console.error("[Kanban] Fetch error:", fetchError);
+          throw new Error(`Erro de conexao com Kanban: ${fetchError instanceof Error ? fetchError.message : 'Desconhecido'}`);
+        }
 
         console.log("[Kanban] Response status:", response.status);
 
         if (!response.ok) {
           const error = await response.text();
+          console.error("[Kanban] Error response:", error);
           throw new Error(`Erro ao enviar para Kanban: ${response.status} - ${error}`);
         }
 
         const result = await response.json();
+        console.log("[Kanban] Success:", result);
         return { success: true, result };
       }),
 
