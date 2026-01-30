@@ -338,6 +338,40 @@ export default function ResumoOrcamentos() {
         </CardContent>
       </Card>
 
+      {/* Legenda de Alertas */}
+      <Card className="mb-8 bg-blue-50 border-blue-200">
+        <CardContent className="pt-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Vencido */}
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-1 h-12 bg-red-600 rounded"></div>
+              <div>
+                <h4 className="font-semibold text-red-700 mb-1">Orçamento Vencido</h4>
+                <p className="text-sm text-gray-600">Orçamento pendente que já ultrapassou a data de validade. Requer ação imediata.</p>
+              </div>
+            </div>
+
+            {/* Vencendo em breve */}
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-1 h-12 bg-orange-500 rounded"></div>
+              <div>
+                <h4 className="font-semibold text-orange-700 mb-1">Vencendo em Breve</h4>
+                <p className="text-sm text-gray-600">Orçamento pendente que vence nos próximos 3 dias. Aprove ou reprove em breve.</p>
+              </div>
+            </div>
+
+            {/* Normal */}
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-1 h-12 bg-yellow-400 rounded"></div>
+              <div>
+                <h4 className="font-semibold text-yellow-700 mb-1">Pendente</h4>
+                <p className="text-sm text-gray-600">Orçamento aguardando aprovação ou reprovação.</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Lista de Orçamentos */}
       <Card>
         <CardHeader>
