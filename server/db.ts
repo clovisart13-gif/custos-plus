@@ -1160,6 +1160,7 @@ export async function listOrcamentosComTotaisCalculados(userId: number) {
         desconto: orc.descontoValor,
         descontoTipo: orc.descontoTipo,
         dataEmissao: orc.dataEmissao,
+        validade: orc.validade,
         createdAt: orc.createdAt,
       };
     })

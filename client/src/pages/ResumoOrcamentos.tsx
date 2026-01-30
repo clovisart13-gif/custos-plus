@@ -3,7 +3,7 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, CheckCircle, Clock, Search, Send, Plus, Eye, Trash2 } from "lucide-react";
+import { AlertCircle, CheckCircle, Clock, Search, Send, Plus, Eye, Trash2, AlertTriangle } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -141,7 +141,35 @@ export default function ResumoOrcamentos() {
     );
   };
 
-  const getRowClass = (status: string) => {
+  const isOrcamentoVencido = (dataEmissao: Date, validade: number, status: string): boolean => {
+    if (status !== "pendente") return false;
+    const dataVencimento = new Date(dataEmissao);
+    dataVencimento.setDate(dataVencimento.getDate() + validade);
+    return new Date() > dataVencimento;
+  };
+
+  const diasParaVencer = (dataEmissao: Date, validade: number, status: string): number => {
+    if (status !== "pendente") return Infinity;
+    const dataVencimento = new Date(dataEmissao);
+    dataVencimento.setDate(dataVencimento.getDate() + validade);
+    const hoje = new Date();
+    const diferenca = dataVencimento.getTime() - hoje.getTime();
+    return Math.ceil(diferenca / (1000 * 60 * 60 * 24));
+  };
+
+  const getRowClass = (status: string, dataEmissao: Date, validade: number) => {
+    // Verificar se está vencido e pendente
+    if (isOrcamentoVencido(dataEmissao, validade, status)) {
+      return "border-l-4 border-l-red-600 bg-red-50 hover:bg-red-100";
+    }
+
+    // Verificar se vence nos próximos 3 dias e está pendente
+    const dias = diasParaVencer(dataEmissao, validade, status);
+    if (dias <= 3 && dias > 0 && status === "pendente") {
+      return "border-l-4 border-l-orange-500 bg-orange-50 hover:bg-orange-100";
+    }
+
+    // Cores padrão
     const classes: Record<string, string> = {
       pendente: "border-l-4 border-l-yellow-400 hover:bg-yellow-50",
       aprovado: "border-l-4 border-l-green-400 hover:bg-green-50",
@@ -331,13 +359,25 @@ export default function ResumoOrcamentos() {
               {orcamentosFiltrados.map((orc) => (
                 <div
                   key={orc.id}
-                  className={`flex items-center justify-between p-4 bg-white border rounded-lg transition-colors ${getRowClass(
-                    orc.status
-                  )}`}
+                  className={`flex items-center justify-between p-4 bg-white border rounded-lg transition-colors ${
+                    getRowClass(
+                      orc.status,
+                      orc.dataEmissao,
+                      orc.validade
+                    )
+                  }`}
                 >
                   {/* Informações */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-2">
+                      {orc.validade && isOrcamentoVencido(orc.dataEmissao, orc.validade, orc.status) && (
+                        <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                      )}
+                      {orc.validade && diasParaVencer(orc.dataEmissao, orc.validade, orc.status) <= 3 &&
+                        diasParaVencer(orc.dataEmissao, orc.validade, orc.status) > 0 &&
+                        orc.status === "pendente" && (
+                          <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0" />
+                        )}
                       <h3 className="font-semibold text-gray-900 truncate">
                         {orc.nomeCliente}
                       </h3>
