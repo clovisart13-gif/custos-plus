@@ -839,11 +839,11 @@ export default function VisualizarOrcamento() {
           <table className="print-table">
             <thead>
               <tr>
-                <th style={{ width: '12%' }}>Referência</th>
-                <th style={{ width: '30%' }}>Descrição</th>
-                <th style={{ width: '10%', textAlign: 'right' }}>Qtd.</th>
-                <th style={{ width: '16%', textAlign: 'right' }}>Vlr. Unit.</th>
-                <th style={{ width: '32%', textAlign: 'right' }}>Total</th>
+                <th style={{ width: '10%' }}>Referência</th>
+                <th style={{ width: '28%' }}>Descrição</th>
+                <th style={{ width: '8%', textAlign: 'right' }}>Qtd.</th>
+                <th style={{ width: '14%', textAlign: 'right' }}>Vlr. Unit.</th>
+                <th style={{ width: '40%', textAlign: 'right' }}>Total</th>
               </tr>
             </thead>
             <tbody>
