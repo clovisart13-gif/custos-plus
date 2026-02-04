@@ -314,6 +314,7 @@ export const appRouter = router({
     updateItem: protectedProcedure
       .input(z.object({
         itemId: z.number(),
+        referencia: z.string().optional(),
         quantidade: z.number().min(1),
         valorUnitario: z.number().min(0),
         markup: z.number().min(0),
@@ -340,7 +341,8 @@ export const appRouter = router({
           valorTotal,
           input.markup,
           valorComMarkup,
-          input.descricao
+          input.descricao,
+          input.referencia
         );
 
         // Buscar o orcamentoId do item para recalcular totais

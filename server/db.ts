@@ -575,7 +575,8 @@ export async function updateItemOrcamento(
   valorTotal: number,
   markup?: number,
   valorComMarkup?: number,
-  descricao?: string
+  descricao?: string,
+  referencia?: string
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -593,6 +594,10 @@ export async function updateItemOrcamento(
 
   if (descricao !== undefined) {
     updateData.descricao = descricao;
+  }
+
+  if (referencia !== undefined) {
+    updateData.referencia = referencia;
   }
 
   await db

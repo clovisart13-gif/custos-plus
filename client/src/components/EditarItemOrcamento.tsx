@@ -41,6 +41,7 @@ export default function EditarItemOrcamento({
   onSuccess,
   onCancel,
 }: EditarItemOrcamentoProps) {
+  const [referencia, setReferencia] = useState(item.referencia);
   const [quantidade, setQuantidade] = useState(item.quantidade.toString());
   const [valorUnitario, setValorUnitario] = useState(item.valorUnitario);
   const [markup, setMarkup] = useState((item.markupDivisor || 0.5).toString());
@@ -122,6 +123,7 @@ export default function EditarItemOrcamento({
     try {
       const payload = {
         itemId: item.id,
+        referencia: referencia,
         quantidade: parseFloat(quantidade),
         valorUnitario: parseFloat(valorUnitario),
         markup: parseFloat(markup),
@@ -146,8 +148,13 @@ export default function EditarItemOrcamento({
       {/* Informações do Item */}
       <div className="space-y-3 pb-3 border-b">
         <div>
-          <label className="text-sm font-medium">Referência</label>
-          <Input value={item.referencia} disabled className="bg-gray-100" />
+          <label className="text-sm font-medium">Código de Referência *</label>
+          <Input 
+            value={referencia} 
+            onChange={(e) => setReferencia(e.target.value)}
+            placeholder="Ex: 26VES-002"
+            required
+          />
         </div>
         <div>
           <label className="text-sm font-medium">Descrição</label>

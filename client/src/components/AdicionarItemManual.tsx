@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useState, useMemo } from "react";
 
 interface AdicionarItemManualProps {
   orcamentoId: number;
@@ -17,17 +17,38 @@ export default function AdicionarItemManual({
   onSuccess,
   onCancel,
 }: AdicionarItemManualProps) {
+  const [codigoReferencia, setCodigoReferencia] = useState("");
   const [descricao, setDescricao] = useState("");
   const [valorUnitario, setValorUnitario] = useState("");
   const [quantidade, setQuantidade] = useState("1");
   const [isLoading, setIsLoading] = useState(false);
+  const [searchReferencia, setSearchReferencia] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
+  const { data: fichas } = trpc.fichasCusto.list.useQuery();
   const createItemMutation = trpc.orcamentos.createItem.useMutation();
+
+  // Filtrar referências disponíveis
+  const referenciasDisponiveis = useMemo(() => {
+    if (!fichas || !searchReferencia) return [];
+    return fichas
+      .filter((f) =>
+        `${f.referencia} - ${f.tipo}`.toLowerCase().includes(searchReferencia.toLowerCase())
+      )
+      .slice(0, 10);
+  }, [fichas, searchReferencia]);
+
+  const handleSelectReferencia = (ficha: any) => {
+    setCodigoReferencia(ficha.referencia);
+    setDescricao(ficha.tipo);
+    setSearchReferencia("");
+    setShowSuggestions(false);
+  };
 
   const handleAddItem = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!descricao || !valorUnitario || !quantidade) {
+    if (!codigoReferencia || !descricao || !valorUnitario || !quantidade) {
       toast.error("Preencha todos os campos!");
       return;
     }
@@ -46,7 +67,7 @@ export default function AdicionarItemManual({
       await createItemMutation.mutateAsync({
         orcamentoId,
         fichaId: 0,
-        referencia: descricao.substring(0, 20),
+        referencia: codigoReferencia,
         descricao,
         quantidade: qtd,
         custo: 0,
@@ -55,6 +76,7 @@ export default function AdicionarItemManual({
       });
 
       toast.success("Item adicionado com sucesso!");
+      setCodigoReferencia("");
       setDescricao("");
       setValorUnitario("");
       setQuantidade("1");
@@ -71,6 +93,51 @@ export default function AdicionarItemManual({
     <form onSubmit={handleAddItem} className="space-y-4 p-4 bg-muted rounded-lg">
       <h3 className="font-semibold">Adicionar Item Manualmente</h3>
 
+      {/* Buscar Referência */}
+      <div>
+        <Label htmlFor="searchReferencia">Buscar Referência</Label>
+        <div className="relative">
+          <Input
+            id="searchReferencia"
+            value={searchReferencia}
+            onChange={(e) => {
+              setSearchReferencia(e.target.value);
+              setShowSuggestions(true);
+            }}
+            onFocus={() => setShowSuggestions(true)}
+            placeholder="Digite para buscar referência..."
+          />
+          {showSuggestions && referenciasDisponiveis.length > 0 && (
+            <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-md mt-1 z-10 max-h-40 overflow-y-auto">
+              {referenciasDisponiveis.map((ficha) => (
+                <button
+                  key={ficha.id}
+                  type="button"
+                  className="w-full text-left px-3 py-2 hover:bg-gray-100 border-b last:border-b-0"
+                  onClick={() => handleSelectReferencia(ficha)}
+                >
+                  <div className="font-semibold text-sm">{ficha.referencia}</div>
+                  <div className="text-xs text-gray-600">{ficha.tipo}</div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Código de Referência */}
+      <div>
+        <Label htmlFor="codigoReferencia">Código de Referência *</Label>
+        <Input
+          id="codigoReferencia"
+          value={codigoReferencia}
+          onChange={(e) => setCodigoReferencia(e.target.value)}
+          placeholder="Ex: 26VES-002"
+          required
+        />
+      </div>
+
+      {/* Descrição */}
       <div>
         <Label htmlFor="descricao">Descrição *</Label>
         <Input

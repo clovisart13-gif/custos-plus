@@ -840,10 +840,10 @@ export default function VisualizarOrcamento() {
             <thead>
               <tr>
                 <th style={{ width: '10%' }}>Referência</th>
-                <th style={{ width: '28%' }}>Descrição</th>
+                <th style={{ width: '25%' }}>Descrição</th>
                 <th style={{ width: '8%', textAlign: 'right' }}>Qtd.</th>
-                <th style={{ width: '14%', textAlign: 'right' }}>Vlr. Unit.</th>
-                <th style={{ width: '40%', textAlign: 'right' }}>Total</th>
+                <th style={{ width: '12%', textAlign: 'right' }}>Vlr. Unit.</th>
+                <th style={{ width: '45%', textAlign: 'right' }}>Total</th>
               </tr>
             </thead>
             <tbody>
