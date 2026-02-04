@@ -305,6 +305,8 @@ export default function VisualizarOrcamento() {
             border-collapse: collapse;
             margin: 8px 0;
             font-size: 9px;
+            overflow: visible;
+            table-layout: fixed;
           }
           
           .print-table thead {
@@ -324,6 +326,9 @@ export default function VisualizarOrcamento() {
           .print-table td {
             padding: 5px 8px;
             border-bottom: 1px solid #e5e7eb;
+            overflow: visible;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
           }
           
           .print-table tbody tr:nth-child(even) {
@@ -404,6 +409,8 @@ export default function VisualizarOrcamento() {
             margin: 0 auto;
             background: white;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow: visible;
+            box-sizing: border-box;
           }
         }
       `}</style>
