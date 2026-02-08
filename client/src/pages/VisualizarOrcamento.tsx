@@ -297,7 +297,8 @@ export default function VisualizarOrcamento() {
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: #374151;
-            border-left: 4px solid #3b82f6;
+            border-left: none;
+            margin-left: -4px;
           }
           
           .print-section-content {
