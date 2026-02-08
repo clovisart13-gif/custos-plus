@@ -866,7 +866,7 @@ export default function VisualizarOrcamento() {
                   <td>{item.descricao}</td>
                   <td style={{ textAlign: 'right' }}>{item.quantidade}</td>
                   <td style={{ textAlign: 'right' }}>{formatCurrency(Number(item.valorUnitario))}</td>
-                  <td style={{ textAlign: 'right', fontWeight: '600' }}>{formatCurrency(Number(item.valorTotal))}</td>
+                  <td style={{ textAlign: 'right' }}>{formatCurrency(Number(item.valorTotal))}</td>
                 </tr>
               ))}
             </tbody>
