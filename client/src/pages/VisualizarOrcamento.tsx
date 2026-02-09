@@ -346,6 +346,20 @@ export default function VisualizarOrcamento() {
             background: #f3f4f6;
           }
           
+          .print-table tbody tr:first-child td {
+            padding: 8px 8px;
+            line-height: 1.6;
+            min-height: 25px;
+            overflow: visible !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+          }
+          
+          .print-table tbody tr:first-child td:last-child {
+            padding-right: 12px !important;
+            text-align: right !important;
+          }
+          
           .print-totals {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
