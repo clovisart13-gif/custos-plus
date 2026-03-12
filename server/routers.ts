@@ -420,20 +420,25 @@ export const appRouter = router({
       .input(z.object({
         orcamentoId: z.number(),
         percentualSinal: z.number().min(0),
+        tipoSinal: z.enum(["percentual", "valor"]).optional(),
         percentualRetirada: z.number().min(0),
+        tipoRetirada: z.enum(["percentual", "valor"]).optional(),
         percentualPrazo: z.number().min(0),
+        tipoPrazo: z.enum(["percentual", "valor"]).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamento) {
           throw new Error("Orcamento nao encontrado");
         }
-        await db.updateOrcamentoPercentuais(
+        await db.updateOrcamentoPercentuaisComTipos(
           input.orcamentoId,
-          undefined,
           input.percentualSinal,
+          input.tipoSinal,
           input.percentualRetirada,
-          input.percentualPrazo
+          input.tipoRetirada,
+          input.percentualPrazo,
+          input.tipoPrazo
         );
         return { success: true };
       }),

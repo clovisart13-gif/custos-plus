@@ -680,6 +680,51 @@ export async function updateOrcamentoPercentuais(
   return { success: true };
 }
 
+export async function updateOrcamentoPercentuaisComTipos(
+  orcamentoId: number,
+  percentualSinal?: number,
+  tipoSinal?: "percentual" | "valor",
+  percentualRetirada?: number,
+  tipoRetirada?: "percentual" | "valor",
+  percentualPrazo?: number,
+  tipoPrazo?: "percentual" | "valor"
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const updateData: any = {};
+
+  if (percentualSinal !== undefined) {
+    updateData.percentualSinal = percentualSinal.toString();
+  }
+  if (tipoSinal !== undefined) {
+    updateData.tipoSinal = tipoSinal;
+  }
+  if (percentualRetirada !== undefined) {
+    updateData.percentualRetirada = percentualRetirada.toString();
+  }
+  if (tipoRetirada !== undefined) {
+    updateData.tipoRetirada = tipoRetirada;
+  }
+  if (percentualPrazo !== undefined) {
+    updateData.percentualPrazo = percentualPrazo.toString();
+  }
+  if (tipoPrazo !== undefined) {
+    updateData.tipoPrazo = tipoPrazo;
+  }
+
+  if (Object.keys(updateData).length === 0) {
+    return { success: true };
+  }
+
+  await db
+    .update(orcamentos)
+    .set(updateData)
+    .where(eq(orcamentos.id, orcamentoId));
+
+  return { success: true };
+}
+
 export async function updateOrcamentoDescontoObservacoes(
   orcamentoId: number,
   observacoes?: string,
