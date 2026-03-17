@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Trash2, Plus, Loader2 } from "lucide-react";
+import { Trash2, Plus, Loader2, Copy, Check } from "lucide-react";
 import { useRouter } from "wouter";
 import { getLoginUrl } from "@/const";
 
@@ -29,21 +29,35 @@ export default function GerenciarUsuarios() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<"user" | "admin">("user");
+  const [tenantId, setTenantId] = useState<string>("");
   const [isCreating, setIsCreating] = useState(false);
+  const [senhaGerada, setSenhaGerada] = useState<string | null>(null);
+  const [copiado, setCopiado] = useState(false);
 
-  // Query para listar usuários - SEMPRE executar, mas com enabled condicional
+  // Query para listar usuários
   const { data: usuarios, isLoading: usuariosLoading, refetch } = trpc.admin.listUsers.useQuery(
+    undefined,
+    { enabled: isAuthenticated && user?.role === "admin" }
+  );
+
+  // Query para listar empresas
+  const { data: empresas, isLoading: empresasLoading } = trpc.admin.listEmpresas.useQuery(
     undefined,
     { enabled: isAuthenticated && user?.role === "admin" }
   );
 
   // Mutation para criar usuário
   const createUserMutation = trpc.admin.createUser.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
       setNome("");
       setEmail("");
       setRole("user");
+      setTenantId("");
       setIsCreating(false);
+      // Mostrar senha gerada
+      if (data.password) {
+        setSenhaGerada(data.password);
+      }
       refetch();
     },
     onError: (error) => {
@@ -63,18 +77,31 @@ export default function GerenciarUsuarios() {
   });
 
   const handleCreateUser = async () => {
-    if (!nome || !email) {
+    if (!nome || !email || !tenantId) {
       alert("Preencha todos os campos");
       return;
     }
 
     setIsCreating(true);
-    createUserMutation.mutate({ nome, email, role });
+    createUserMutation.mutate({ 
+      nome, 
+      email, 
+      role,
+      tenantId: parseInt(tenantId),
+    });
   };
 
   const handleDeleteUser = (userId: number) => {
     if (confirm("Tem certeza que deseja deletar este usuário?")) {
       deleteUserMutation.mutate({ userId });
+    }
+  };
+
+  const handleCopiarSenha = () => {
+    if (senhaGerada) {
+      navigator.clipboard.writeText(senhaGerada);
+      setCopiado(true);
+      setTimeout(() => setCopiado(false), 2000);
     }
   };
 
@@ -109,9 +136,50 @@ export default function GerenciarUsuarios() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground">Gerenciar Usuários</h1>
           <p className="text-muted-foreground mt-1">
-            Crie e gerencie usuários do sistema
+            Crie e gerencie usuários do sistema por empresa
           </p>
         </div>
+
+        {/* Alerta de Senha Gerada */}
+        {senhaGerada && (
+          <Card className="mb-8 border-green-200 bg-green-50">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="font-medium text-green-900">✅ Usuário criado com sucesso!</p>
+                  <p className="text-sm text-green-800 mt-1">Senha temporária gerada:</p>
+                  <p className="font-mono text-lg font-bold text-green-900 mt-2">{senhaGerada}</p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCopiarSenha}
+                  className="gap-2"
+                >
+                  {copiado ? (
+                    <>
+                      <Check className="h-4 w-4" />
+                      Copiado!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-4 w-4" />
+                      Copiar
+                    </>
+                  )}
+                </Button>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSenhaGerada(null)}
+                className="mt-4"
+              >
+                Fechar
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Formulário de Criar Usuário */}
         <Card className="mb-8">
@@ -122,7 +190,7 @@ export default function GerenciarUsuarios() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div>
                 <label className="text-sm font-medium text-foreground">Nome</label>
                 <Input
@@ -145,6 +213,21 @@ export default function GerenciarUsuarios() {
                 />
               </div>
               <div>
+                <label className="text-sm font-medium text-foreground">Empresa</label>
+                <Select value={tenantId} onValueChange={setTenantId} disabled={isCreating || empresasLoading}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Selecione uma empresa" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {empresas?.map((empresa: any) => (
+                      <SelectItem key={empresa.id} value={empresa.tenantId.toString()}>
+                        {empresa.nome}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
                 <label className="text-sm font-medium text-foreground">Alçada</label>
                 <Select value={role} onValueChange={(value) => setRole(value as "user" | "admin")}>
                   <SelectTrigger className="mt-1" disabled={isCreating}>
@@ -159,7 +242,7 @@ export default function GerenciarUsuarios() {
               <div className="flex items-end">
                 <Button
                   onClick={handleCreateUser}
-                  disabled={isCreating || !nome || !email}
+                  disabled={isCreating || !nome || !email || !tenantId}
                   className="w-full"
                 >
                   {isCreating ? (
@@ -170,7 +253,7 @@ export default function GerenciarUsuarios() {
                   ) : (
                     <>
                       <Plus className="h-4 w-4 mr-2" />
-                      Criar Usuário
+                      Criar
                     </>
                   )}
                 </Button>
@@ -196,42 +279,47 @@ export default function GerenciarUsuarios() {
                     <TableRow>
                       <TableHead>Nome</TableHead>
                       <TableHead>Email</TableHead>
+                      <TableHead>Empresa</TableHead>
                       <TableHead>Alçada</TableHead>
                       <TableHead>Data de Criação</TableHead>
                       <TableHead>Ações</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {usuarios?.map((u: any) => (
-                      <TableRow key={u.id}>
-                        <TableCell className="font-medium">{u.name || "N/A"}</TableCell>
-                        <TableCell>{u.email || "N/A"}</TableCell>
-                        <TableCell>
-                          <span
-                            className={`px-2 py-1 rounded text-sm font-medium ${
-                              u.role === "admin"
-                                ? "bg-red-100 text-red-800"
-                                : "bg-blue-100 text-blue-800"
-                            }`}
-                          >
-                            {u.role === "admin" ? "Administrador" : "Usuário"}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          {new Date(u.createdAt).toLocaleDateString("pt-BR")}
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleDeleteUser(u.id)}
-                            disabled={deleteUserMutation.isPending}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {usuarios?.map((u: any) => {
+                      const empresa = empresas?.find((e: any) => e.tenantId === u.tenantId);
+                      return (
+                        <TableRow key={u.id}>
+                          <TableCell className="font-medium">{u.name || "N/A"}</TableCell>
+                          <TableCell>{u.email || "N/A"}</TableCell>
+                          <TableCell>{empresa?.nome || `Tenant ${u.tenantId}`}</TableCell>
+                          <TableCell>
+                            <span
+                              className={`px-2 py-1 rounded text-sm font-medium ${
+                                u.role === "admin"
+                                  ? "bg-red-100 text-red-800"
+                                  : "bg-blue-100 text-blue-800"
+                              }`}
+                            >
+                              {u.role === "admin" ? "Administrador" : "Usuário"}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            {new Date(u.createdAt).toLocaleDateString("pt-BR")}
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => handleDeleteUser(u.id)}
+                              disabled={deleteUserMutation.isPending}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
                 {!usuarios || usuarios.length === 0 && (

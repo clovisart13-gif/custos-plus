@@ -746,12 +746,21 @@ export const appRouter = router({
         nome: z.string().min(1, "Nome é obrigatório"),
         email: z.string().email("Email inválido"),
         role: z.enum(["user", "admin"]),
+        tenantId: z.number().min(1, "Empresa é obrigatória"),
       }))
       .mutation(async ({ ctx, input }) => {
         if (ctx.user.role !== 'admin') {
           throw new Error('Apenas administradores podem criar usuários');
         }
-        return await db.createUser(input.nome, input.email, input.role);
+        return await db.createUser(input.nome, input.email, input.role, input.tenantId);
+      }),
+
+    listEmpresas: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Apenas administradores podem listar empresas');
+        }
+        return await db.getAllEmpresas();
       }),
 
     deleteUser: protectedProcedure

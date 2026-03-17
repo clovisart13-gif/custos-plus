@@ -959,10 +959,15 @@ export async function getAllUsers() {
   }
 }
 
-export async function createUser(nome: string, email: string, role: "user" | "admin") {
+export async function createUser(nome: string, email: string, role: "user" | "admin", tenantId: number) {
   const db = await getDb();
   if (!db) {
     throw new Error("Database not available");
+  }
+
+  // Validar tenantId
+  if (!tenantId || tenantId <= 0) {
+    throw new Error("TenantId é obrigatório e deve ser válido");
   }
 
   try {
@@ -974,10 +979,14 @@ export async function createUser(nome: string, email: string, role: "user" | "ad
       name: nome,
       email,
       role,
+      tenantId,
       loginMethod: "admin-created",
     });
 
-    return { success: true };
+    return { 
+      success: true,
+      password: "temp-password-generated" // Placeholder - será gerado no frontend
+    };
   } catch (error) {
     console.error("[Database] Error creating user:", error);
     throw error;
@@ -1050,6 +1059,16 @@ export async function createEmpresa(
   });
 
   return result;
+}
+
+export async function getAllEmpresas() {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  return await db
+    .select()
+    .from(empresas)
+    .orderBy(desc(empresas.createdAt));
 }
 
 export async function getEmpresasByUser(userId: number) {
