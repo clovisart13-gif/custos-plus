@@ -993,6 +993,37 @@ export async function createUser(nome: string, email: string, role: "user" | "ad
   }
 }
 
+export async function updateUser(
+  userId: number,
+  nome?: string,
+  email?: string,
+  role?: "user" | "admin",
+  tenantId?: number
+) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  try {
+    const updates: any = {};
+    if (nome) updates.nome = nome;
+    if (email) updates.email = email;
+    if (role) updates.role = role;
+    if (tenantId) updates.tenantId = tenantId;
+
+    if (Object.keys(updates).length === 0) {
+      throw new Error("Nenhum campo para atualizar");
+    }
+
+    await db.update(users).set(updates).where(eq(users.id, userId));
+    return { success: true };
+  } catch (error) {
+    console.error("[Database] Error updating user:", error);
+    throw error;
+  }
+}
+
 export async function deleteUser(userId: number) {
   const db = await getDb();
   if (!db) {

@@ -763,6 +763,21 @@ export const appRouter = router({
         return await db.getAllEmpresas();
       }),
 
+    updateUser: protectedProcedure
+      .input(z.object({
+        userId: z.number(),
+        nome: z.string().min(1, "Nome é obrigatório").optional(),
+        email: z.string().email("Email inválido").optional(),
+        role: z.enum(["user", "admin"]).optional(),
+        tenantId: z.number().min(1, "Empresa é obrigatória").optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== 'admin') {
+          throw new Error('Apenas administradores podem atualizar usuários');
+        }
+        return await db.updateUser(input.userId, input.nome, input.email, input.role, input.tenantId);
+      }),
+
     deleteUser: protectedProcedure
       .input(z.object({
         userId: z.number(),

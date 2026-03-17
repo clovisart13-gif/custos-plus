@@ -19,7 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Trash2, Plus, Loader2, Copy, Check } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Trash2, Plus, Loader2, Copy, Check, Edit2 } from "lucide-react";
 import { useRouter } from "wouter";
 import { getLoginUrl } from "@/const";
 
@@ -33,6 +40,12 @@ export default function GerenciarUsuarios() {
   const [isCreating, setIsCreating] = useState(false);
   const [senhaGerada, setSenhaGerada] = useState<string | null>(null);
   const [copiado, setCopiado] = useState(false);
+  const [editingUser, setEditingUser] = useState<any>(null);
+  const [editNome, setEditNome] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editTenantId, setEditTenantId] = useState<string>("");
+  const [editRole, setEditRole] = useState<"user" | "admin">("user");
+  const [isUpdating, setIsUpdating] = useState(false);
 
   // Query para listar usuários
   const { data: usuarios, isLoading: usuariosLoading, refetch } = trpc.admin.listUsers.useQuery(
@@ -63,6 +76,19 @@ export default function GerenciarUsuarios() {
     onError: (error) => {
       alert(`Erro ao criar usuário: ${error.message}`);
       setIsCreating(false);
+    },
+  });
+
+  // Mutation para atualizar usuário
+  const updateUserMutation = trpc.admin.updateUser.useMutation({
+    onSuccess: () => {
+      setEditingUser(null);
+      setIsUpdating(false);
+      refetch();
+    },
+    onError: (error) => {
+      alert(`Erro ao atualizar usuário: ${error.message}`);
+      setIsUpdating(false);
     },
   });
 
@@ -103,6 +129,30 @@ export default function GerenciarUsuarios() {
       setCopiado(true);
       setTimeout(() => setCopiado(false), 2000);
     }
+  };
+
+  const handleEditUser = (user: any) => {
+    setEditingUser(user);
+    setEditNome(user.name || "");
+    setEditEmail(user.email || "");
+    setEditTenantId(user.tenantId.toString());
+    setEditRole(user.role);
+  };
+
+  const handleUpdateUser = async () => {
+    if (!editNome || !editEmail || !editTenantId) {
+      alert("Preencha todos os campos");
+      return;
+    }
+
+    setIsUpdating(true);
+    updateUserMutation.mutate({
+      userId: editingUser.id,
+      nome: editNome,
+      email: editEmail,
+      tenantId: parseInt(editTenantId),
+      role: editRole,
+    });
   };
 
   // Verificar se é admin - APÓS todos os hooks
@@ -307,7 +357,15 @@ export default function GerenciarUsuarios() {
                           <TableCell>
                             {new Date(u.createdAt).toLocaleDateString("pt-BR")}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEditUser(u)}
+                              disabled={updateUserMutation.isPending}
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </Button>
                             <Button
                               variant="destructive"
                               size="sm"
@@ -331,6 +389,87 @@ export default function GerenciarUsuarios() {
             )}
           </CardContent>
         </Card>
+
+        {/* Dialog de Editar Usuário */}
+        <Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Editar Usuário</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div>
+                <label className="text-sm font-medium text-foreground">Nome</label>
+                <Input
+                  placeholder="Nome do usuário"
+                  value={editNome}
+                  onChange={(e) => setEditNome(e.target.value)}
+                  disabled={isUpdating}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-foreground">Email</label>
+                <Input
+                  placeholder="email@example.com"
+                  type="email"
+                  value={editEmail}
+                  onChange={(e) => setEditEmail(e.target.value)}
+                  disabled={isUpdating}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-foreground">Empresa</label>
+                <Select value={editTenantId} onValueChange={setEditTenantId} disabled={isUpdating || empresasLoading}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Selecione uma empresa" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {empresas?.map((empresa: any) => (
+                      <SelectItem key={empresa.id} value={empresa.tenantId.toString()}>
+                        {empresa.nome}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-foreground">Alçada</label>
+                <Select value={editRole} onValueChange={(value) => setEditRole(value as "user" | "admin")} disabled={isUpdating}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem key="user" value="user">Usuário</SelectItem>
+                    <SelectItem key="admin" value="admin">Administrador</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setEditingUser(null)}
+                disabled={isUpdating}
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={handleUpdateUser}
+                disabled={isUpdating || !editNome || !editEmail || !editTenantId}
+              >
+                {isUpdating ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Atualizando...
+                  </>
+                ) : (
+                  "Salvar Alterações"
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

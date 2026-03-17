@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, nome, tenant_id, user_id, createdAt FROM empresas ORDER BY createdAt DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute SELECT id, nome, tenant_id, user_id, createdAt FROM empresas ORDER BY createdAt DESC;",
+  "rows": [
+    {
+      "id": "1",
+      "nome": "kmc comercial ltda",
+      "tenant_id": "1",
+      "user_id": "1",
+      "createdAt": "2026-03-17 15:56:31"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\ttenant_id\tuser_id\tcreatedAt\n1\tkmc comercial ltda\t1\t1\t2026-03-17 15:56:31\n",
+  "stderr": "",
+  "execution_time_ms": 71
+}
