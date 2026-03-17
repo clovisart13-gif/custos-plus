@@ -271,11 +271,13 @@ export default function GerenciarUsuarios() {
                     <SelectValue placeholder="Selecione uma empresa" />
                   </SelectTrigger>
                   <SelectContent>
-                    {empresas?.map((empresa: any) => (
-                      <SelectItem key={empresa.id} value={empresa.tenantId.toString()}>
-                        {empresa.nome}
-                      </SelectItem>
-                    ))}
+                    {empresas
+                      ?.filter((empresa: any) => empresa.tenantId === selectedTenantId)
+                      .map((empresa: any) => (
+                        <SelectItem key={empresa.id} value={empresa.tenantId.toString()}>
+                          {empresa.nome}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               </div>
