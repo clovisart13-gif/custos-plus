@@ -223,7 +223,7 @@ export const appRouter = router({
     getById: protectedProcedure
       .input(z.object({ id: z.number() }))
       .query(async ({ ctx, input }) => {
-        return await db.getOrcamentoById(input.id, ctx.user.id, ctx.user.tenantId);
+        return await db.getOrcamentoById(input.id, ctx.user.id, ctx.user.tenantId, ctx.user.role);
       }),
 
     getItens: protectedProcedure

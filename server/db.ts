@@ -450,19 +450,22 @@ export async function getOrcamentosByUser(userId: number, tenantId: number) {
     .orderBy(desc(orcamentos.createdAt));
 }
 
-export async function getOrcamentoById(id: number, userId: number, tenantId: number) {
+export async function getOrcamentoById(id: number, userId: number, tenantId: number, userRole?: string) {
   const db = await getDb();
   if (!db) return undefined;
 
-  // ✅ FILTRO CRÍTICO: tenantId + userId + id para segurança
+  // ✅ FILTRO CRÍTICO: Se é admin, pode ver qualquer orçamento do tenant
+  // Se é usuário comum, só vê seus próprios orçamentos
+  const conditions = [eq(orcamentos.id, id), eq(orcamentos.tenantId, tenantId)];
+  
+  if (userRole !== 'admin') {
+    conditions.push(eq(orcamentos.userId, userId));
+  }
+  
   const result = await db
     .select()
     .from(orcamentos)
-    .where(and(
-      eq(orcamentos.id, id),
-      eq(orcamentos.userId, userId),
-      eq(orcamentos.tenantId, tenantId)
-    ))
+    .where(and(...conditions))
     .limit(1);
 
   if (result.length > 0) {
