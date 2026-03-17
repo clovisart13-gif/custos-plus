@@ -1,0 +1,40 @@
+{
+  "query": "SELECT 'fichas_custo' as tabela, tenant_id, COUNT(*) as total FROM fichas_custo GROUP BY tenant_id\nUNION ALL\nSELECT 'orcamentos', tenant_id, COUNT(*) FROM orcamentos GROUP BY tenant_id\nUNION ALL\nSELECT 'itens_orcamento', tenant_id, COUNT(*) FROM itens_orcamento GROUP BY tenant_id\nUNION ALL\nSELECT 'users', tenant_id, COUNT(*) FROM users GROUP BY tenant_id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute SELECT 'fichas_custo' as tabela, tenant_id, COUNT(*) as total FROM fichas_custo GROUP BY tenant_id\nUNION ALL\nSELECT 'orcamentos', tenant_id, COUNT(*) FROM orcamentos GROUP BY tenant_id\nUNION ALL\nSELECT 'itens_orcamento', tenant_id, COUNT(*) FROM itens_orcamento GROUP BY tenant_id\nUNION ALL\nSELECT 'users', tenant_id, COUNT(*) FROM users GROUP BY tenant_id;",
+  "rows": [
+    {
+      "tabela": "orcamentos",
+      "tenant_id": "1",
+      "total": "46"
+    },
+    {
+      "tabela": "users",
+      "tenant_id": "1",
+      "total": "2"
+    },
+    {
+      "tabela": "fichas_custo",
+      "tenant_id": "1",
+      "total": "140"
+    },
+    {
+      "tabela": "users",
+      "tenant_id": "3",
+      "total": "1"
+    },
+    {
+      "tabela": "users",
+      "tenant_id": "2",
+      "total": "1"
+    },
+    {
+      "tabela": "itens_orcamento",
+      "tenant_id": "1",
+      "total": "322"
+    }
+  ],
+  "messages": [],
+  "stdout": "tabela\ttenant_id\ttotal\norcamentos\t1\t46\nusers\t1\t2\nfichas_custo\t1\t140\nusers\t3\t1\nusers\t2\t1\nitens_orcamento\t1\t322\n",
+  "stderr": "",
+  "execution_time_ms": 65
+}
