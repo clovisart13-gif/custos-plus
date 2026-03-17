@@ -6,7 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { Navigation } from "./components/Navigation";
 import { useAuth } from "./_core/hooks/useAuth";
-// import Dashboard from "./pages/Dashboard"; // Removido temporariamente
+import Dashboard from "./pages/Dashboard";
 import FichasCusto from "./pages/FichasCusto";
 import VisualizarFicha from "./pages/VisualizarFicha";
 
@@ -35,8 +35,7 @@ function Router() {
     <>
       <Navigation />
       <Switch>
-        <Route path="/" component={ResumoOrcamentos} />
-        <Route path="/dashboard" component={ResumoOrcamentos} />
+        <Route path="/" component={Dashboard} />
         <Route path="/fichas-custo">
           {() => <ProtectedRoute path="/fichas-custo" component={FichasCusto} />}
         </Route>
