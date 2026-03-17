@@ -1,4 +1,5 @@
 import { Link, useLocation } from "wouter";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -15,6 +16,20 @@ export function Navigation() {
   const [location] = useLocation();
   const { user, isAuthenticated } = useAuth();
   const logoutMutation = trpc.auth.logout.useMutation();
+  const [currentTenant, setCurrentTenant] = useState<{ id: number; name: string } | null>(null);
+
+  // Carregar tenant atual do usuário
+  useEffect(() => {
+    if (user?.tenantId) {
+      // Mapear tenantId para nome
+      const tenantMap: Record<number, string> = {
+        1: "R2PB Confecções",
+        2: "Mirage",
+      };
+      const tenantName = tenantMap[user.tenantId] || `Tenant ${user.tenantId}`;
+      setCurrentTenant({ id: user.tenantId, name: tenantName });
+    }
+  }, [user?.tenantId]);
 
   const handleLogout = async () => {
     await logoutMutation.mutateAsync();
@@ -85,6 +100,14 @@ export function Navigation() {
                 })}
               </div>
 
+              {/* Tenant Selector (apenas para admin) */}
+              {user?.role === "admin" && currentTenant && (
+                <div className="flex items-center gap-2 px-3 py-1 rounded-md bg-muted text-sm border border-border">
+                  <Building2 className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-medium text-foreground">{currentTenant.name}</span>
+                </div>
+              )}
+
               {/* User Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -100,6 +123,11 @@ export function Navigation() {
                   <div className="px-2 py-1.5 text-sm">
                     <p className="font-medium">{user?.name || "Usuário"}</p>
                     <p className="text-xs text-muted-foreground">{user?.email}</p>
+                    {currentTenant && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        <span className="font-medium">Tenant:</span> {currentTenant.name}
+                      </p>
+                    )}
                   </div>
                   <DropdownMenuItem onClick={handleLogout} className="gap-2 cursor-pointer">
                     <LogOut className="h-4 w-4" />

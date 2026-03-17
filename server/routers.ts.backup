@@ -40,7 +40,7 @@ export const appRouter = router({
 
   fichasCusto: router({
     list: protectedProcedure.query(async ({ ctx }) => {
-      return await db.getFichasCustoByUser(ctx.user.id, ctx.user.tenantId);
+      return await db.getFichasCustoByUser(ctx.user.id);
     }),
 
     generateNextCode: protectedProcedure
@@ -79,7 +79,7 @@ export const appRouter = router({
     getById: protectedProcedure
       .input(z.object({ id: z.number() }))
       .query(async ({ ctx, input }) => {
-        return await db.getFichaCustoById(input.id, ctx.user.id, ctx.user.tenantId);
+        return await db.getFichaCustoById(input.id, ctx.user.id);
       }),
 
     update: protectedProcedure
@@ -117,14 +117,14 @@ export const appRouter = router({
           tecido: data.tecido.toString(),
           aviamento: data.aviamento.toString(),
         };
-        await db.updateFichaCusto(id, ctx.user.id, ctx.user.tenantId, convertedData);
-        return await db.getFichaCustoById(id, ctx.user.id, ctx.user.tenantId);
+        await db.updateFichaCusto(id, ctx.user.id, convertedData);
+        return await db.getFichaCustoById(id, ctx.user.id);
       }),
 
     delete: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ ctx, input }) => {
-        await db.deleteFichaCusto(input.id, ctx.user.id, ctx.user.tenantId);
+        await db.deleteFichaCusto(input.id, ctx.user.id);
         return { success: true };
       }),
 
@@ -158,7 +158,7 @@ export const appRouter = router({
         field: z.enum(['tipo', 'familia', 'cliente']),
       }))
       .query(async ({ ctx, input }) => {
-        const fichas = await db.getFichasCustoByUser(ctx.user.id, ctx.user.tenantId);
+        const fichas = await db.getFichasCustoByUser(ctx.user.id);
         const values = new Set<string>();
         fichas.forEach((ficha: any) => {
           const value = ficha[input.field];
@@ -175,7 +175,7 @@ export const appRouter = router({
         search: z.string().optional(),
       }))
       .query(async ({ ctx, input }) => {
-        const fichas = await db.getFichasCustoByUser(ctx.user.id, ctx.user.tenantId);
+        const fichas = await db.getFichasCustoByUser(ctx.user.id);
         return fichas.filter((ficha: any) => {
           if (input.tipo && ficha.tipo !== input.tipo) return false;
           if (input.familia && ficha.familia !== input.familia) return false;
@@ -196,13 +196,13 @@ export const appRouter = router({
 
   orcamentos: router({
     list: protectedProcedure.query(async ({ ctx }) => {
-      return await db.getOrcamentosByUser(ctx.user.id, ctx.user.tenantId);
+      return await db.getOrcamentosByUser(ctx.user.id);
     }),
 
     getById: protectedProcedure
       .input(z.object({ id: z.number() }))
       .query(async ({ ctx, input }) => {
-        return await db.getOrcamentoById(input.id, ctx.user.id, ctx.user.tenantId);
+        return await db.getOrcamentoById(input.id, ctx.user.id);
       }),
 
     getItens: protectedProcedure
@@ -258,7 +258,7 @@ export const appRouter = router({
           }
           
           // Buscar o orçamento criado para retornar os dados completos
-          const orcamentoCriado = await db.getOrcamentoById(orcamentoId, ctx.user.id, ctx.user.tenantId);
+          const orcamentoCriado = await db.getOrcamentoById(orcamentoId, ctx.user.id);
           
           if (!orcamentoCriado) {
             console.error('Orcamento nao encontrado:', { orcamentoId, userId: ctx.user.id });
@@ -285,7 +285,7 @@ export const appRouter = router({
         markup: z.number().min(0).default(0.5),
       }))
       .mutation(async ({ ctx, input }) => {
-        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id, ctx.user.tenantId);
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamento) {
           throw new Error("Orçamento não encontrado");
         }
@@ -393,7 +393,7 @@ export const appRouter = router({
         marca: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
-        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id, ctx.user.tenantId);
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamento) {
           throw new Error("Orçamento não encontrado");
         }
@@ -408,7 +408,7 @@ export const appRouter = router({
         prazoEntregaTexto: z.string().min(1),
       }))
       .mutation(async ({ ctx, input }) => {
-        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id, ctx.user.tenantId);
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamento) {
           throw new Error("Orcamento nao encontrado");
         }
@@ -427,7 +427,7 @@ export const appRouter = router({
         tipoPrazo: z.enum(["percentual", "valor"]).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
-        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id, ctx.user.tenantId);
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamento) {
           throw new Error("Orcamento nao encontrado");
         }
@@ -451,7 +451,7 @@ export const appRouter = router({
         descontoValor: z.number().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
-        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id, ctx.user.tenantId);
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamento) {
           throw new Error("Orçamento não encontrado");
         }
@@ -468,7 +468,7 @@ export const appRouter = router({
         const subtotal = itens.reduce((sum: number, item: any) => sum + Number(item.valorTotal), 0);
         
         // Buscar desconto atualizado
-        const orcamentoAtualizado = await db.getOrcamentoById(input.orcamentoId, ctx.user.id, ctx.user.tenantId);
+        const orcamentoAtualizado = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamentoAtualizado) {
           throw new Error("Orcamento nao encontrado apos atualizacao");
         }
@@ -493,7 +493,7 @@ export const appRouter = router({
         orcamentoId: z.number(),
       }))
       .mutation(async ({ ctx, input }) => {
-        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id, ctx.user.tenantId);
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamento) {
           throw new Error("Orçamento não encontrado");
         }
@@ -581,7 +581,7 @@ export const appRouter = router({
     delete: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ ctx, input }) => {
-        await db.deleteOrcamento(input.id, ctx.user.id, ctx.user.tenantId);
+        await db.deleteOrcamento(input.id, ctx.user.id);
         return { success: true };
       }),
 
@@ -600,8 +600,8 @@ export const appRouter = router({
     kpis: protectedProcedure
       .input(z.object({ familia: z.string().optional() }))
       .query(async ({ ctx, input }) => {
-        const fichas = await db.getFichasCustoByUser(ctx.user.id, ctx.user.tenantId);
-      const orcamentos = await db.getOrcamentosByUser(ctx.user.id, ctx.user.tenantId);
+        const fichas = await db.getFichasCustoByUser(ctx.user.id);
+      const orcamentos = await db.getOrcamentosByUser(ctx.user.id);
       
       // Filtrar fichas por família se fornecida
       const fichasFiltradas = input.familia && input.familia !== 'todos'
@@ -666,7 +666,7 @@ export const appRouter = router({
     }),
 
     custosMediosPorFamilia: protectedProcedure.query(async ({ ctx }) => {
-      const fichas = await db.getFichasCustoByUser(ctx.user.id, ctx.user.tenantId);
+      const fichas = await db.getFichasCustoByUser(ctx.user.id);
       
       const familias = new Map<string, any>();
       

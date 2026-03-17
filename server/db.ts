@@ -94,18 +94,27 @@ export async function createFichaCusto(data: InsertFichaCusto) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
+  // ✅ VALIDAÇÃO CRÍTICA: tenantId é obrigatório
+  if (!data.tenantId) {
+    throw new Error("TenantId é obrigatório para criar ficha de custo");
+  }
+
   await db.insert(fichasCusto).values(data);
   return { success: true };
 }
 
-export async function getFichasCustoByUser(userId: number) {
+export async function getFichasCustoByUser(userId: number, tenantId: number) {
   const db = await getDb();
   if (!db) return [];
 
+  // ✅ FILTRO CRÍTICO: tenantId + userId para Row-Level Isolation
   const fichas = await db
     .select()
     .from(fichasCusto)
-    .where(eq(fichasCusto.userId, userId))
+    .where(and(
+      eq(fichasCusto.tenantId, tenantId),
+      eq(fichasCusto.userId, userId)
+    ))
     .orderBy(desc(fichasCusto.createdAt));
 
   // Calcular custo total para cada ficha
@@ -115,36 +124,51 @@ export async function getFichasCustoByUser(userId: number) {
   }));
 }
 
-export async function getFichaCustoById(id: number, userId: number) {
+export async function getFichaCustoById(id: number, userId: number, tenantId: number) {
   const db = await getDb();
   if (!db) return undefined;
 
+  // ✅ FILTRO CRÍTICO: tenantId + userId + id para segurança
   const result = await db
     .select()
     .from(fichasCusto)
-    .where(and(eq(fichasCusto.id, id), eq(fichasCusto.userId, userId)))
+    .where(and(
+      eq(fichasCusto.id, id),
+      eq(fichasCusto.userId, userId),
+      eq(fichasCusto.tenantId, tenantId)
+    ))
     .limit(1);
 
   return result.length > 0 ? result[0] : undefined;
 }
 
-export async function updateFichaCusto(id: number, userId: number, data: Partial<InsertFichaCusto>) {
+export async function updateFichaCusto(id: number, userId: number, tenantId: number, data: Partial<InsertFichaCusto>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
+  // ✅ FILTRO CRÍTICO: tenantId + userId + id para segurança
   await db
     .update(fichasCusto)
     .set(data)
-    .where(and(eq(fichasCusto.id, id), eq(fichasCusto.userId, userId)));
+    .where(and(
+      eq(fichasCusto.id, id),
+      eq(fichasCusto.userId, userId),
+      eq(fichasCusto.tenantId, tenantId)
+    ));
 }
 
-export async function deleteFichaCusto(id: number, userId: number) {
+export async function deleteFichaCusto(id: number, userId: number, tenantId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
+  // ✅ FILTRO CRÍTICO: tenantId + userId + id para segurança
   await db
     .delete(fichasCusto)
-    .where(and(eq(fichasCusto.id, id), eq(fichasCusto.userId, userId)));
+    .where(and(
+      eq(fichasCusto.id, id),
+      eq(fichasCusto.userId, userId),
+      eq(fichasCusto.tenantId, tenantId)
+    ));
 }
 
 export interface FichasCustoFilters {
@@ -383,13 +407,21 @@ export async function createOrcamento(data: InsertOrcamento) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
+  // ✅ VALIDAÇÃO CRÍTICA: tenantId é obrigatório
+  if (!data.tenantId) {
+    throw new Error("TenantId é obrigatório para criar orçamento");
+  }
+
   const result = await db.insert(orcamentos).values(data);
   
   // Buscar o orcamento criado para retornar o ID
   const created = await db
     .select()
     .from(orcamentos)
-    .where(eq(orcamentos.userId, data.userId))
+    .where(and(
+      eq(orcamentos.userId, data.userId),
+      eq(orcamentos.tenantId, data.tenantId)
+    ))
     .orderBy(desc(orcamentos.createdAt))
     .limit(1);
   
@@ -400,25 +432,34 @@ export async function createOrcamento(data: InsertOrcamento) {
   throw new Error("Nao foi possivel obter o ID do orcamento criado");
 }
 
-export async function getOrcamentosByUser(userId: number) {
+export async function getOrcamentosByUser(userId: number, tenantId: number) {
   const db = await getDb();
   if (!db) return [];
 
+  // ✅ FILTRO CRÍTICO: tenantId + userId para Row-Level Isolation
   return await db
     .select()
     .from(orcamentos)
-    .where(eq(orcamentos.userId, userId))
+    .where(and(
+      eq(orcamentos.tenantId, tenantId),
+      eq(orcamentos.userId, userId)
+    ))
     .orderBy(desc(orcamentos.createdAt));
 }
 
-export async function getOrcamentoById(id: number, userId: number) {
+export async function getOrcamentoById(id: number, userId: number, tenantId: number) {
   const db = await getDb();
   if (!db) return undefined;
 
+  // ✅ FILTRO CRÍTICO: tenantId + userId + id para segurança
   const result = await db
     .select()
     .from(orcamentos)
-    .where(and(eq(orcamentos.id, id), eq(orcamentos.userId, userId)))
+    .where(and(
+      eq(orcamentos.id, id),
+      eq(orcamentos.userId, userId),
+      eq(orcamentos.tenantId, tenantId)
+    ))
     .limit(1);
 
   if (result.length > 0) {
@@ -433,23 +474,33 @@ export async function getOrcamentoById(id: number, userId: number) {
   return undefined;
 }
 
-export async function updateOrcamento(id: number, userId: number, data: Partial<InsertOrcamento>) {
+export async function updateOrcamento(id: number, userId: number, tenantId: number, data: Partial<InsertOrcamento>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
+  // ✅ FILTRO CRÍTICO: tenantId + userId + id para segurança
   await db
     .update(orcamentos)
     .set(data)
-    .where(and(eq(orcamentos.id, id), eq(orcamentos.userId, userId)));
+    .where(and(
+      eq(orcamentos.id, id),
+      eq(orcamentos.userId, userId),
+      eq(orcamentos.tenantId, tenantId)
+    ));
 }
 
-export async function deleteOrcamento(id: number, userId: number) {
+export async function deleteOrcamento(id: number, userId: number, tenantId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
+  // ✅ FILTRO CRÍTICO: tenantId + userId + id para segurança
   await db
     .delete(orcamentos)
-    .where(and(eq(orcamentos.id, id), eq(orcamentos.userId, userId)));
+    .where(and(
+      eq(orcamentos.id, id),
+      eq(orcamentos.userId, userId),
+      eq(orcamentos.tenantId, tenantId)
+    ));
 }
 
 // ============ Itens de Orçamento Queries ============

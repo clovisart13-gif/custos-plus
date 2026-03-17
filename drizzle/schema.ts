@@ -10,6 +10,7 @@ export const users = mysqlTable("users", {
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin", "production"]).default("user").notNull(),
+  tenantId: int("tenant_id").default(1).notNull(), // 1=R2PB, 2=Mirage, 3+=clientes
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -23,6 +24,7 @@ export type InsertUser = typeof users.$inferInsert;
  */
 export const fichasCusto = mysqlTable("fichas_custo", {
   id: int("id").autoincrement().primaryKey(),
+  tenantId: int("tenant_id").default(1).notNull(), // Row-Level Isolation: separa dados por tenant
   userId: int("user_id").notNull(),
   referencia: varchar("referencia", { length: 100 }).notNull(),
   tipo: varchar("tipo", { length: 50 }).notNull(),
@@ -59,6 +61,7 @@ export type InsertFichaCusto = typeof fichasCusto.$inferInsert;
  */
 export const orcamentos = mysqlTable("orcamentos", {
   id: int("id").autoincrement().primaryKey(),
+  tenantId: int("tenant_id").default(1).notNull(), // Row-Level Isolation: separa dados por tenant
   userId: int("user_id").notNull(),
   nomeCliente: varchar("nome_cliente", { length: 100 }).notNull(),
   marca: varchar("marca", { length: 100 }).notNull(),
@@ -107,6 +110,7 @@ export type UpdateOrcamento = Partial<InsertOrcamento>;
  */
 export const itensOrcamento = mysqlTable("itens_orcamento", {
   id: int("id").autoincrement().primaryKey(),
+  tenantId: int("tenant_id").default(1).notNull(), // Row-Level Isolation: separa dados por tenant
   orcamentoId: int("orcamento_id").notNull(),
   fichaId: int("ficha_id").notNull(),
   referencia: varchar("referencia", { length: 100 }).notNull(),
@@ -128,6 +132,7 @@ export type InsertItemOrcamento = typeof itensOrcamento.$inferInsert;
  */
 export const empresas = mysqlTable("empresas", {
   id: int("id").autoincrement().primaryKey(),
+  tenantId: int("tenant_id").default(1).notNull(), // Identificador único do tenant (empresa)
   userId: int("user_id").notNull(),
   nome: varchar("nome", { length: 100 }).notNull(),
   cnpj: varchar("cnpj", { length: 20 }),
