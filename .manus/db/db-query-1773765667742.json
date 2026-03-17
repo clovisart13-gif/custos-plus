@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, name, email, tenant_id FROM users WHERE name = 'Marcelo Ferreira';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute SELECT id, name, email, tenant_id FROM users WHERE name = 'Marcelo Ferreira';",
+  "rows": [
+    {
+      "id": "4710103",
+      "name": "Marcelo Ferreira",
+      "email": "contato@uniformeskmc.com.br",
+      "tenant_id": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\ttenant_id\n4710103\tMarcelo Ferreira\tcontato@uniformeskmc.com.br\t1\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}
