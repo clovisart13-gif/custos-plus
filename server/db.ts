@@ -355,7 +355,7 @@ export async function getCustosMediosPorFamilia(userId: number) {
  * Onde: AA = Ano (2 dígitos), FFFF = 3 primeiras letras da família, NNN = sequencial
  * Exemplo: 26CAM-001, 26BER-002
  */
-export async function generateNextReferenceCode(userId: number, familia: string): Promise<string> {
+export async function generateNextReferenceCode(userId: number, familia: string, tenantId: number): Promise<string> {
   const db = await getDb();
   if (!db) {
     throw new Error("Database not available");
@@ -371,7 +371,10 @@ export async function generateNextReferenceCode(userId: number, familia: string)
   const fichas = await db
     .select()
     .from(fichasCusto)
-    .where(eq(fichasCusto.userId, userId));
+    .where(and(
+      eq(fichasCusto.userId, userId),
+      eq(fichasCusto.tenantId, tenantId)
+    ));
   
   // Filtrar fichas que começam com o padrão AAFFFF-
   const padrao = `${ano}${prefixoFamilia}-`;
@@ -1261,15 +1264,18 @@ export async function getOrcamentoComTotaisCalculados(orcamentoId: number) {
 /**
  * Lista todos os orçamentos com totais calculados em tempo real
  */
-export async function listOrcamentosComTotaisCalculados(userId: number) {
+export async function listOrcamentosComTotaisCalculados(userId: number, tenantId: number) {
   const db = await getDb();
   if (!db) return [];
 
-  // Buscar todos os orçamentos do usuário
+  // Buscar todos os orçamentos do usuário e tenant
   const allOrcamentos = await db
     .select()
     .from(orcamentos)
-    .where(eq(orcamentos.userId, userId))
+    .where(and(
+      eq(orcamentos.userId, userId),
+      eq(orcamentos.tenantId, tenantId)
+    ))
     .orderBy(desc(orcamentos.createdAt));
 
   // Para cada orçamento, calcular totais a partir dos itens
@@ -1323,15 +1329,18 @@ export async function listOrcamentosComTotaisCalculados(userId: number) {
 /**
  * Calcula KPIs de orçamentos por status
  */
-export async function getKPIOrcamentos(userId: number) {
+export async function getKPIOrcamentos(userId: number, tenantId: number) {
   const db = await getDb();
   if (!db) return null;
 
-  // Buscar todos os orçamentos
+  // Buscar todos os orçamentos do usuário e tenant
   const allOrcamentos = await db
     .select()
     .from(orcamentos)
-    .where(eq(orcamentos.userId, userId));
+    .where(and(
+      eq(orcamentos.userId, userId),
+      eq(orcamentos.tenantId, tenantId)
+    ));
 
   // Para cada orçamento, calcular totais
   const orcamentosComTotais = await Promise.all(

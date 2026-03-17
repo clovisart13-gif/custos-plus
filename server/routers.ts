@@ -39,16 +39,32 @@ export const appRouter = router({
   }),
 
   fichasCusto: router({
-    list: protectedProcedure.query(async ({ ctx }) => {
-      return await db.getFichasCustoByUser(ctx.user.id, ctx.user.tenantId);
-    }),
+    list: protectedProcedure
+      .input(z.object({ tenantId: z.number().optional() }).optional())
+      .query(async ({ ctx, input }) => {
+        // Se é admin, permitir visualizar qualquer tenant
+        // Se não é admin, usar apenas seu tenant
+        let tenantIdToUse = ctx.user.tenantId;
+        
+        if (ctx.user.role === 'admin' && input?.tenantId) {
+          tenantIdToUse = input.tenantId;
+        }
+        
+        return await db.getFichasCustoByUser(ctx.user.id, tenantIdToUse);
+      }),
 
     generateNextCode: protectedProcedure
       .input(z.object({
         familia: z.string().min(1),
+        tenantId: z.number().optional(),
       }))
       .query(async ({ ctx, input }) => {
-        return await db.generateNextReferenceCode(ctx.user.id, input.familia);
+        // Se é admin, permitir usar qualquer tenant
+        let tenantIdToUse = ctx.user.tenantId;
+        if (ctx.user.role === 'admin' && input.tenantId) {
+          tenantIdToUse = input.tenantId;
+        }
+        return await db.generateNextReferenceCode(ctx.user.id, input.familia, tenantIdToUse);
       }),
 
     create: protectedProcedure
@@ -173,9 +189,14 @@ export const appRouter = router({
         familia: z.string().optional(),
         cliente: z.string().optional(),
         search: z.string().optional(),
+        tenantId: z.number().optional(),
       }))
       .query(async ({ ctx, input }) => {
-        const fichas = await db.getFichasCustoByUser(ctx.user.id, ctx.user.tenantId);
+        let tenantIdToUse = ctx.user.tenantId;
+        if (ctx.user.role === 'admin' && input.tenantId) {
+          tenantIdToUse = input.tenantId;
+        }
+        const fichas = await db.getFichasCustoByUser(ctx.user.id, tenantIdToUse);
         return fichas.filter((ficha: any) => {
           if (input.tipo && ficha.tipo !== input.tipo) return false;
           if (input.familia && ficha.familia !== input.familia) return false;
@@ -585,13 +606,25 @@ export const appRouter = router({
         return { success: true };
       }),
 
-    listComTotaisCalculados: protectedProcedure.query(async ({ ctx }) => {
-      return await db.listOrcamentosComTotaisCalculados(ctx.user.id);
-    }),
+    listComTotaisCalculados: protectedProcedure
+      .input(z.object({ tenantId: z.number().optional() }).optional())
+      .query(async ({ ctx, input }) => {
+        let tenantIdToUse = ctx.user.tenantId;
+        if (ctx.user.role === 'admin' && input?.tenantId) {
+          tenantIdToUse = input.tenantId;
+        }
+        return await db.listOrcamentosComTotaisCalculados(ctx.user.id, tenantIdToUse);
+      }),
 
-    getKPIs: protectedProcedure.query(async ({ ctx }) => {
-      return await db.getKPIOrcamentos(ctx.user.id);
-    }),
+    getKPIs: protectedProcedure
+      .input(z.object({ tenantId: z.number().optional() }).optional())
+      .query(async ({ ctx, input }) => {
+        let tenantIdToUse = ctx.user.tenantId;
+        if (ctx.user.role === 'admin' && input?.tenantId) {
+          tenantIdToUse = input.tenantId;
+        }
+        return await db.getKPIOrcamentos(ctx.user.id, tenantIdToUse);
+      }),
 
 
   }),

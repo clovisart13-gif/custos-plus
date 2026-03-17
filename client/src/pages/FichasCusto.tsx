@@ -18,6 +18,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { useTenant } from "@/contexts/TenantContext";
 import { Loader2, Plus, Search, Pencil, Trash2, Eye } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
@@ -40,6 +41,7 @@ import {
 
 export default function FichasCusto() {
   const { user, loading: authLoading, isAuthenticated } = useAuth();
+  const { selectedTenantId } = useTenant();
   const [, setLocation] = useLocation();
   const [search, setSearch] = useState("");
   const [filterTipo, setFilterTipo] = useState<string>("");
@@ -61,8 +63,9 @@ export default function FichasCusto() {
       tipo: filterTipo === "todos" ? undefined : filterTipo || undefined,
       familia: filterFamilia === "todos" ? undefined : filterFamilia || undefined,
       cliente: filterCliente === "todos" ? undefined : filterCliente || undefined,
+      tenantId: selectedTenantId || undefined,
     },
-    { enabled: isAuthenticated }
+    { enabled: isAuthenticated && !!selectedTenantId }
   );
 
   const { data: tipos } = trpc.fichasCusto.getDistinctValues.useQuery(

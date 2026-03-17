@@ -4,14 +4,13 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch, Redirect } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { TenantProvider } from "./contexts/TenantContext";
 import { Navigation } from "./components/Navigation";
 import { useAuth } from "./_core/hooks/useAuth";
-import Dashboard from "./pages/Dashboard";
+import ResumoOrcamentos from "./pages/ResumoOrcamentos";
 import FichasCusto from "./pages/FichasCusto";
 import VisualizarFicha from "./pages/VisualizarFicha";
-
 import VisualizarOrcamento from "./pages/VisualizarOrcamento";
-import ResumoOrcamentos from "./pages/ResumoOrcamentos";
 import GerenciarUsuarios from "./pages/GerenciarUsuarios";
 import Empresas from "./pages/Empresas";
 
@@ -35,7 +34,7 @@ function Router() {
     <>
       <Navigation />
       <Switch>
-        <Route path="/" component={Dashboard} />
+        <Route path="/" component={ResumoOrcamentos} />
         <Route path="/fichas-custo">
           {() => <ProtectedRoute path="/fichas-custo" component={FichasCusto} />}
         </Route>
@@ -62,10 +61,12 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+        <TenantProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </TenantProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );
