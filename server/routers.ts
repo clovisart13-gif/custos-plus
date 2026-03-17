@@ -221,9 +221,14 @@ export const appRouter = router({
     }),
 
     getById: protectedProcedure
-      .input(z.object({ id: z.number() }))
+      .input(z.object({ id: z.number(), tenantId: z.number().optional() }))
       .query(async ({ ctx, input }) => {
-        return await db.getOrcamentoById(input.id, ctx.user.id, ctx.user.tenantId, ctx.user.role);
+        // Se é admin e passou tenantId, usar esse. Se não, usar seu tenant
+        let tenantIdToUse = ctx.user.tenantId;
+        if (ctx.user.role === 'admin' && input.tenantId) {
+          tenantIdToUse = input.tenantId;
+        }
+        return await db.getOrcamentoById(input.id, ctx.user.id, tenantIdToUse, ctx.user.role);
       }),
 
     getItens: protectedProcedure

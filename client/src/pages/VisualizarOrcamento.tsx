@@ -7,6 +7,7 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 import { useState, useRef } from "react";
 import AdicionarItemManual from "@/components/AdicionarItemManual";
 import EditarItemOrcamento from "@/components/EditarItemOrcamento";
+import { useTenant } from "@/contexts/TenantContext";
 import {
   Dialog,
   DialogContent,
@@ -57,9 +58,11 @@ export default function VisualizarOrcamento() {
 
   const orcamentoId = id ? parseInt(id) : 0;
 
+  const { selectedTenantId } = useTenant();
+
   const { data: orcamento, isLoading: loadingOrcamento, refetch } = trpc.orcamentos.getById.useQuery(
-    { id: orcamentoId },
-    { enabled: orcamentoId > 0 }
+    { id: orcamentoId, tenantId: selectedTenantId || undefined },
+    { enabled: !!(orcamentoId > 0 && selectedTenantId) }
   );
 
   const { data: itens = [], isLoading: loadingItens, refetch: refetchItens } = trpc.orcamentos.getItens.useQuery(
