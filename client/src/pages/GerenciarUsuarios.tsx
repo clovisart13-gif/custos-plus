@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { useTenant } from "@/contexts/TenantContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -33,6 +34,7 @@ import { getLoginUrl } from "@/const";
 export default function GerenciarUsuarios() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
+  const { selectedTenantId } = useTenant();
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<"user" | "admin">("user");
@@ -425,11 +427,13 @@ export default function GerenciarUsuarios() {
                     <SelectValue placeholder="Selecione uma empresa" />
                   </SelectTrigger>
                   <SelectContent>
-                    {empresas?.map((empresa: any) => (
-                      <SelectItem key={empresa.id} value={empresa.tenantId.toString()}>
-                        {empresa.nome}
-                      </SelectItem>
-                    ))}
+                    {empresas
+                      ?.filter((empresa: any) => empresa.tenantId === selectedTenantId)
+                      .map((empresa: any) => (
+                        <SelectItem key={empresa.id} value={empresa.tenantId.toString()}>
+                          {empresa.nome}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               </div>
