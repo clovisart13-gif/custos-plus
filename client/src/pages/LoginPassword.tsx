@@ -15,7 +15,7 @@ export default function LoginPassword() {
     onSuccess: (data) => {
       if (data.success) {
         // Refresh auth state and redirect
-        window.location.href = "/";
+        window.location.href = "/resumo-orcamentos";
       } else {
         setError(data.error || "Erro ao fazer login");
       }

@@ -409,3 +409,13 @@ Em vez de armazenar totais no banco e tentar atualizar (que está falhando), cal
     * Criar tabela audit_logs com: user_id, tenant_id, action, timestamp
     * Registrar: login, visualização de fichas/orçamentos, edições
   - Status: PENDENTE
+
+## Correção: Login com Email+Senha Redireciona para OAuth (18/03/2026)
+
+- [x] Corrigir redirect após login com email+senha
+  - Problema: Após fazer login com email+senha, usuário era redirecionado para `/` que redireciona para OAuth
+  - Causa: LoginPassword.tsx estava usando `window.location.href = "/"` que ativa o fluxo de OAuth
+  - Solução: Redirecionar para `/resumo-orcamentos` em vez de `/`
+  - Arquivo: client/src/pages/LoginPassword.tsx (linha 18)
+  - Status: ✅ CORRIGIDO - Usuário agora faz login com sucesso e vai para dashboard
+
