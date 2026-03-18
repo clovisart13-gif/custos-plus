@@ -8,6 +8,7 @@ export const users = mysqlTable("users", {
   openId: varchar("openId", { length: 64 }).notNull().unique(),
   name: text("name"),
   email: varchar("email", { length: 320 }),
+  passwordHash: text("password_hash"), // Hash bcrypt da senha
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin", "production"]).default("user").notNull(),
   tenantId: int("tenant_id").default(1).notNull(), // 1=R2PB, 2=Mirage, 3+=clientes

@@ -2,6 +2,7 @@ import { and, desc, eq, gte, like, lte, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { fichasCusto, InsertFichaCusto, InsertUser, users, orcamentos, InsertOrcamento, Orcamento, itensOrcamento, InsertItemOrcamento, ItemOrcamento, empresas, InsertEmpresa, Empresa } from "../drizzle/schema";
 import { ENV } from './_core/env';
+import bcryptjs from 'bcryptjs';
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -999,12 +1000,14 @@ export async function createUser(nome: string, email: string, role: "user" | "ad
     };
     
     const tempPassword = generatePassword();
+    const passwordHash = await bcryptjs.hash(tempPassword, 10);
     const openId = `temp-${Date.now()}-${Math.random().toString(36).substring(7)}`;
     
     await db.insert(users).values({
       openId,
       name: nome,
       email,
+      passwordHash,
       role,
       tenantId,
       loginMethod: "admin-created",
@@ -1017,6 +1020,33 @@ export async function createUser(nome: string, email: string, role: "user" | "ad
   } catch (error) {
     console.error("[Database] Error creating user:", error);
     throw error;
+  }
+}
+
+export async function validateUserPassword(email: string, password: string) {
+  try {
+    const db = await getDb();
+    if (!db) {
+      console.warn("[Database] Cannot validate password: database not available");
+      return null;
+    }
+
+    const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+    const user = result.length > 0 ? result[0] : null;
+
+    if (!user || !user.passwordHash) {
+      return null;
+    }
+
+    const isValid = await bcryptjs.compare(password, user.passwordHash);
+    if (!isValid) {
+      return null;
+    }
+
+    return user;
+  } catch (error) {
+    console.error("[Database] Error validating password:", error);
+    return null;
   }
 }
 

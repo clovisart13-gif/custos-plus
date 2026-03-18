@@ -36,6 +36,18 @@ export const appRouter = router({
         success: true,
       } as const;
     }),
+    loginWithPassword: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+        password: z.string().min(1),
+      }))
+      .mutation(async ({ input }) => {
+        const user = await db.validateUserPassword(input.email, input.password);
+        if (!user) {
+          return { success: false, error: "Email ou senha inválidos" };
+        }
+        return { success: true, user };
+      }),
   }),
 
   fichasCusto: router({

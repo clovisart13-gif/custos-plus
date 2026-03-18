@@ -43,6 +43,13 @@
       "when": 1773761091801,
       "tag": "0005_brief_sentry",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1773834732741,
+      "tag": "0006_open_randall_flagg",
+      "breakpoints": true
     }
   ]
 }
