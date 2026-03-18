@@ -802,7 +802,7 @@ export const appRouter = router({
         if (ctx.user.role !== 'admin') {
           throw new Error('Apenas administradores podem criar usuários');
         }
-        return await db.createUser(input.nome, input.email, input.role, input.tenantId);
+      return await db.createUser(input.nome, input.email, input.role, input.tenantId);
       }),
 
     listEmpresas: protectedProcedure

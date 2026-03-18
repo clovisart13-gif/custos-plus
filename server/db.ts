@@ -1013,6 +1013,8 @@ export async function createUser(nome: string, email: string, role: "user" | "ad
       loginMethod: "admin-created",
     });
 
+
+    
     return { 
       success: true,
       password: tempPassword
