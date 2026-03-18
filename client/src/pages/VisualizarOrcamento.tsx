@@ -7,7 +7,6 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 import { useState, useRef } from "react";
 import AdicionarItemManual from "@/components/AdicionarItemManual";
 import EditarItemOrcamento from "@/components/EditarItemOrcamento";
-import { useTenant } from "@/contexts/TenantContext";
 import {
   Dialog,
   DialogContent,
@@ -16,13 +15,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Edit2 } from "lucide-react";
 import { toast } from "sonner";
 import { EditarDescontoModal } from "@/components/EditarDescontoModal";
@@ -45,24 +37,19 @@ export default function VisualizarOrcamento() {
   const [prazoEdit, setPrazoEdit] = useState("");
   const [editingCondicoesPagamento, setEditingCondicoesPagamento] = useState(false);
   const [percentualSinalEdit, setPercentualSinalEdit] = useState("");
-  const [tipoSinalEdit, setTipoSinalEdit] = useState<"percentual" | "valor">("percentual");
   const [descricaoSinalEdit, setDescricaoSinalEdit] = useState("Sinal");
   const [percentualRetiradaEdit, setPercentualRetiradaEdit] = useState("");
-  const [tipoRetiradaEdit, setTipoRetiradaEdit] = useState<"percentual" | "valor">("percentual");
   const [descricaoRetiradaEdit, setDescricaoRetiradaEdit] = useState("Retirada");
   const [percentualPrazoEdit, setPercentualPrazoEdit] = useState("");
-  const [tipoPrazoEdit, setTipoPrazoEdit] = useState<"percentual" | "valor">("percentual");
   const [descricaoPrazoEdit, setDescricaoPrazoEdit] = useState("30 dias");
   const [showEditarDescontoModal, setShowEditarDescontoModal] = useState(false);
   const [showEditarObservacoesModal, setShowEditarObservacoesModal] = useState(false);
 
   const orcamentoId = id ? parseInt(id) : 0;
 
-  const { selectedTenantId } = useTenant();
-
   const { data: orcamento, isLoading: loadingOrcamento, refetch } = trpc.orcamentos.getById.useQuery(
-    { id: orcamentoId, tenantId: selectedTenantId || undefined },
-    { enabled: !!(orcamentoId > 0 && selectedTenantId) }
+    { id: orcamentoId },
+    { enabled: orcamentoId > 0 }
   );
 
   const { data: itens = [], isLoading: loadingItens, refetch: refetchItens } = trpc.orcamentos.getItens.useQuery(
@@ -163,17 +150,14 @@ export default function VisualizarOrcamento() {
 
   const handleSalvarCondicoesPagamento = async () => {
     if (!percentualSinalEdit || !percentualRetiradaEdit || !percentualPrazoEdit) {
-      toast.error("Preencha todos os valores!");
+      toast.error("Preencha todos os percentuais!");
       return;
     }
     await updateCondicoesPagamentoMutation.mutateAsync({
       orcamentoId,
       percentualSinal: parseFloat(percentualSinalEdit),
-      tipoSinal: tipoSinalEdit,
       percentualRetirada: parseFloat(percentualRetiradaEdit),
-      tipoRetirada: tipoRetiradaEdit,
       percentualPrazo: parseFloat(percentualPrazoEdit),
-      tipoPrazo: tipoPrazoEdit,
     });
   };
 
@@ -224,27 +208,9 @@ export default function VisualizarOrcamento() {
   
   const total = subtotal - valorDesconto;
 
-  // Calcular valores de pagamento (suporta percentual e valor fixo)
-  let valorSinal = 0;
-  if (orcamento.tipoSinal === 'valor') {
-    valorSinal = Number(orcamento.percentualSinal);
-  } else {
-    valorSinal = (total * Number(orcamento.percentualSinal)) / 100;
-  }
-
-  let valorRetirada = 0;
-  if (orcamento.tipoRetirada === 'valor') {
-    valorRetirada = Number(orcamento.percentualRetirada);
-  } else {
-    valorRetirada = (total * Number(orcamento.percentualRetirada)) / 100;
-  }
-
-  let valorPrazo = 0;
-  if (orcamento.tipoPrazo === 'valor') {
-    valorPrazo = Number(orcamento.percentualPrazo);
-  } else {
-    valorPrazo = (total * Number(orcamento.percentualPrazo)) / 100;
-  }
+  const valorSinal = (total * Number(orcamento.percentualSinal)) / 100;
+  const valorRetirada = (total * Number(orcamento.percentualRetirada)) / 100;
+  const valorPrazo = (total * Number(orcamento.percentualPrazo)) / 100;
 
   return (
     <>
@@ -796,11 +762,8 @@ export default function VisualizarOrcamento() {
                   variant="outline"
                   onClick={() => {
                     setPercentualSinalEdit(orcamento.percentualSinal?.toString() || "0");
-                    setTipoSinalEdit(orcamento.tipoSinal || "percentual");
                     setPercentualRetiradaEdit(orcamento.percentualRetirada?.toString() || "0");
-                    setTipoRetiradaEdit(orcamento.tipoRetirada || "percentual");
                     setPercentualPrazoEdit(orcamento.percentualPrazo?.toString() || "0");
-                    setTipoPrazoEdit(orcamento.tipoPrazo || "percentual");
                     setEditingCondicoesPagamento(true);
                   }}
                   className="gap-2"
@@ -813,87 +776,30 @@ export default function VisualizarOrcamento() {
             <CardContent>
               {editingCondicoesPagamento ? (
                 <div className="space-y-4 p-4 bg-muted rounded-lg">
-                  {/* Sinal */}
-                  <div className="space-y-2">
-                    <Label className="font-semibold">Sinal</Label>
-                    <div className="flex gap-2">
-                      <div className="flex-1">
-                        <Label className="text-xs text-muted-foreground">Valor</Label>
-                        <Input
-                          type="number"
-                          value={percentualSinalEdit}
-                          onChange={(e) => setPercentualSinalEdit(e.target.value)}
-                          placeholder="0"
-                        />
-                      </div>
-                      <div className="w-24">
-                        <Label className="text-xs text-muted-foreground">Tipo</Label>
-                        <Select value={tipoSinalEdit} onValueChange={(value) => setTipoSinalEdit(value as "percentual" | "valor")}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="percentual">%</SelectItem>
-                            <SelectItem value="valor">R$</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Sinal (%)</Label>
+                      <Input
+                        type="number"
+                        value={percentualSinalEdit}
+                        onChange={(e) => setPercentualSinalEdit(e.target.value)}
+                      />
                     </div>
-                  </div>
-
-                  {/* Retirada */}
-                  <div className="space-y-2">
-                    <Label className="font-semibold">Retirada</Label>
-                    <div className="flex gap-2">
-                      <div className="flex-1">
-                        <Label className="text-xs text-muted-foreground">Valor</Label>
-                        <Input
-                          type="number"
-                          value={percentualRetiradaEdit}
-                          onChange={(e) => setPercentualRetiradaEdit(e.target.value)}
-                          placeholder="0"
-                        />
-                      </div>
-                      <div className="w-24">
-                        <Label className="text-xs text-muted-foreground">Tipo</Label>
-                        <Select value={tipoRetiradaEdit} onValueChange={(value) => setTipoRetiradaEdit(value as "percentual" | "valor")}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="percentual">%</SelectItem>
-                            <SelectItem value="valor">R$</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+                    <div>
+                      <Label>Retirada (%)</Label>
+                      <Input
+                        type="number"
+                        value={percentualRetiradaEdit}
+                        onChange={(e) => setPercentualRetiradaEdit(e.target.value)}
+                      />
                     </div>
-                  </div>
-
-                  {/* Prazo */}
-                  <div className="space-y-2">
-                    <Label className="font-semibold">Prazo</Label>
-                    <div className="flex gap-2">
-                      <div className="flex-1">
-                        <Label className="text-xs text-muted-foreground">Valor</Label>
-                        <Input
-                          type="number"
-                          value={percentualPrazoEdit}
-                          onChange={(e) => setPercentualPrazoEdit(e.target.value)}
-                          placeholder="0"
-                        />
-                      </div>
-                      <div className="w-24">
-                        <Label className="text-xs text-muted-foreground">Tipo</Label>
-                        <Select value={tipoPrazoEdit} onValueChange={(value) => setTipoPrazoEdit(value as "percentual" | "valor")}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="percentual">%</SelectItem>
-                            <SelectItem value="valor">R$</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+                    <div>
+                      <Label>Prazo (%)</Label>
+                      <Input
+                        type="number"
+                        value={percentualPrazoEdit}
+                        onChange={(e) => setPercentualPrazoEdit(e.target.value)}
+                      />
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -915,15 +821,9 @@ export default function VisualizarOrcamento() {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <p>
-                    <strong>Sinal:</strong> {orcamento.tipoSinal === 'valor' ? `R$ ${Number(orcamento.percentualSinal).toFixed(2).replace('.', ',')}` : `${orcamento.percentualSinal}%`} = {formatCurrency(valorSinal)}
-                  </p>
-                  <p>
-                    <strong>Retirada:</strong> {orcamento.tipoRetirada === 'valor' ? `R$ ${Number(orcamento.percentualRetirada).toFixed(2).replace('.', ',')}` : `${orcamento.percentualRetirada}%`} = {formatCurrency(valorRetirada)}
-                  </p>
-                  <p>
-                    <strong>Prazo:</strong> {orcamento.tipoPrazo === 'valor' ? `R$ ${Number(orcamento.percentualPrazo).toFixed(2).replace('.', ',')}` : `${orcamento.percentualPrazo}%`} = {formatCurrency(valorPrazo)}
-                  </p>
+                  <p><strong>Sinal:</strong> {orcamento.percentualSinal}% = {formatCurrency(valorSinal)}</p>
+                  <p><strong>Retirada:</strong> {orcamento.percentualRetirada}% = {formatCurrency(valorRetirada)}</p>
+                  <p><strong>Prazo:</strong> {orcamento.percentualPrazo}% = {formatCurrency(valorPrazo)}</p>
                 </div>
               )}
             </CardContent>
@@ -1035,15 +935,15 @@ export default function VisualizarOrcamento() {
         <div className="print-payment">
           <div style={{ fontWeight: '700', marginBottom: '6px', fontSize: '11px', color: '#92400e' }}>CONDIÇÕES DE PAGAMENTO</div>
           <div className="print-payment-item">
-            <span><strong>Sinal ({orcamento.tipoSinal === 'valor' ? `R$ ${Number(orcamento.percentualSinal).toFixed(2).replace('.', ',')}` : `${orcamento.percentualSinal}%`}):</strong></span>
+            <span><strong>Sinal ({orcamento.percentualSinal}%):</strong></span>
             <span>{formatCurrency(valorSinal)}</span>
           </div>
           <div className="print-payment-item">
-            <span><strong>Retirada ({orcamento.tipoRetirada === 'valor' ? `R$ ${Number(orcamento.percentualRetirada).toFixed(2).replace('.', ',')}` : `${orcamento.percentualRetirada}%`}):</strong></span>
+            <span><strong>Retirada ({orcamento.percentualRetirada}%):</strong></span>
             <span>{formatCurrency(valorRetirada)}</span>
           </div>
           <div className="print-payment-item">
-            <span><strong>Prazo ({orcamento.tipoPrazo === 'valor' ? `R$ ${Number(orcamento.percentualPrazo).toFixed(2).replace('.', ',')}` : `${orcamento.percentualPrazo}%`}):</strong></span>
+            <span><strong>Prazo ({orcamento.percentualPrazo}%):</strong></span>
             <span>{formatCurrency(valorPrazo)}</span>
           </div>
         </div>

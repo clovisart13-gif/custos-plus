@@ -1,8 +1,6 @@
 import { Link, useLocation } from "wouter";
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { useTenant } from "@/contexts/TenantContext";
 import { trpc } from "@/lib/trpc";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -11,54 +9,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { FileText, LogOut, User, FileCheck, Users, Building2 } from "lucide-react";
 
 export function Navigation() {
   const [location] = useLocation();
   const { user, isAuthenticated } = useAuth();
-  const { selectedTenantId, setSelectedTenantId } = useTenant();
   const logoutMutation = trpc.auth.logout.useMutation();
-  const [currentTenant, setCurrentTenant] = useState<{ id: number; name: string } | null>(null);
-  const [availableTenants, setAvailableTenants] = useState<{ id: number; name: string }[]>([]);
-
-  // Mapear tenantId para nome
-  const tenantMap: Record<number, string> = {
-    1: "R2PB Confecções",
-    2: "Mirage",
-    3: "KMC Comercial",
-  };
-
-  // Carregar tenant selecionado
-  useEffect(() => {
-    if (selectedTenantId) {
-      const tenantName = tenantMap[selectedTenantId] || `Tenant ${selectedTenantId}`;
-      setCurrentTenant({ id: selectedTenantId, name: tenantName });
-    }
-  }, [selectedTenantId]);
-
-  // Carregar tenants disponíveis para admin
-  useEffect(() => {
-    if (user?.role === "admin") {
-      // Admin pode ver todos os tenants
-      const allTenants = [
-        { id: 1, name: "R2PB Confecções" },
-        { id: 2, name: "Mirage" },
-        { id: 3, name: "KMC Comercial" },
-      ];
-      setAvailableTenants(allTenants);
-    } else if (user?.tenantId) {
-      // Usuário comum só vê seu tenant
-      const tenantName = tenantMap[user.tenantId] || `Tenant ${user.tenantId}`;
-      setAvailableTenants([{ id: user.tenantId, name: tenantName }]);
-    }
-  }, [user?.role, user?.tenantId]);
 
   const handleLogout = async () => {
     await logoutMutation.mutateAsync();
@@ -129,29 +85,6 @@ export function Navigation() {
                 })}
               </div>
 
-              {/* Tenant Selector */}
-              {availableTenants.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <Building2 className="h-4 w-4 text-muted-foreground" />
-                  {user?.role === "admin" && availableTenants.length > 1 ? (
-                    <Select value={selectedTenantId?.toString() || ""} onValueChange={(value) => setSelectedTenantId(parseInt(value))}>
-                      <SelectTrigger className="w-48 h-9">
-                        <SelectValue placeholder="Selecionar empresa" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {availableTenants.map((tenant) => (
-                          <SelectItem key={tenant.id} value={tenant.id.toString()}>
-                            {tenant.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <span className="text-sm font-medium text-foreground">{currentTenant?.name}</span>
-                  )}
-                </div>
-              )}
-
               {/* User Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -167,11 +100,6 @@ export function Navigation() {
                   <div className="px-2 py-1.5 text-sm">
                     <p className="font-medium">{user?.name || "Usuário"}</p>
                     <p className="text-xs text-muted-foreground">{user?.email}</p>
-                    {currentTenant && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        <span className="font-medium">Tenant:</span> {currentTenant.name}
-                      </p>
-                    )}
                   </div>
                   <DropdownMenuItem onClick={handleLogout} className="gap-2 cursor-pointer">
                     <LogOut className="h-4 w-4" />

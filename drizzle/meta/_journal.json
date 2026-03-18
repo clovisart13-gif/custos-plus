@@ -29,34 +29,6 @@
       "when": 1769714859402,
       "tag": "0003_living_nocturne",
       "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1773328790468,
-      "tag": "0004_amused_captain_stacy",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1773761091801,
-      "tag": "0005_brief_sentry",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1773834732741,
-      "tag": "0006_open_randall_flagg",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "5",
-      "when": 1773835938823,
-      "tag": "0007_watery_masked_marvel",
-      "breakpoints": true
     }
   ]
 }

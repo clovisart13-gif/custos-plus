@@ -1,19 +1,19 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch, Redirect, useLocation } from "wouter";
+import { Route, Switch, Redirect } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { TenantProvider } from "./contexts/TenantContext";
 import { Navigation } from "./components/Navigation";
 import { useAuth } from "./_core/hooks/useAuth";
-import ResumoOrcamentos from "./pages/ResumoOrcamentos";
+import Dashboard from "./pages/Dashboard";
 import FichasCusto from "./pages/FichasCusto";
 import VisualizarFicha from "./pages/VisualizarFicha";
+
 import VisualizarOrcamento from "./pages/VisualizarOrcamento";
+import ResumoOrcamentos from "./pages/ResumoOrcamentos";
 import GerenciarUsuarios from "./pages/GerenciarUsuarios";
 import Empresas from "./pages/Empresas";
-import LoginPassword from "./pages/LoginPassword";
 
 function ProtectedRoute({ path, component: Component }: { path: string; component: any }) {
   const { user } = useAuth();
@@ -31,17 +31,11 @@ function ProtectedRoute({ path, component: Component }: { path: string; componen
 }
 
 function Router() {
-  const [location] = useLocation();
-  const isLoginPage = location === "/login";
-  
   return (
     <>
+      <Navigation />
       <Switch>
-        <Route path="/login" component={LoginPassword} />
-      </Switch>
-      {!isLoginPage && <Navigation />}
-      <Switch>
-        <Route path="/" component={ResumoOrcamentos} />
+        <Route path="/" component={Dashboard} />
         <Route path="/fichas-custo">
           {() => <ProtectedRoute path="/fichas-custo" component={FichasCusto} />}
         </Route>
@@ -68,12 +62,10 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
-        <TenantProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-          </TooltipProvider>
-        </TenantProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

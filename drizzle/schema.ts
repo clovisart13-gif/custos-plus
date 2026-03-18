@@ -7,11 +7,9 @@ export const users = mysqlTable("users", {
   id: int("id").autoincrement().primaryKey(),
   openId: varchar("openId", { length: 64 }).notNull().unique(),
   name: text("name"),
-  email: varchar("email", { length: 320 }).unique(),
-  passwordHash: text("password_hash"), // Hash bcrypt da senha
+  email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin", "production"]).default("user").notNull(),
-  tenantId: int("tenant_id").default(1).notNull(), // 1=R2PB, 2=Mirage, 3+=clientes
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -25,7 +23,6 @@ export type InsertUser = typeof users.$inferInsert;
  */
 export const fichasCusto = mysqlTable("fichas_custo", {
   id: int("id").autoincrement().primaryKey(),
-  tenantId: int("tenant_id").default(1).notNull(), // Row-Level Isolation: separa dados por tenant
   userId: int("user_id").notNull(),
   referencia: varchar("referencia", { length: 100 }).notNull(),
   tipo: varchar("tipo", { length: 50 }).notNull(),
@@ -62,7 +59,6 @@ export type InsertFichaCusto = typeof fichasCusto.$inferInsert;
  */
 export const orcamentos = mysqlTable("orcamentos", {
   id: int("id").autoincrement().primaryKey(),
-  tenantId: int("tenant_id").default(1).notNull(), // Row-Level Isolation: separa dados por tenant
   userId: int("user_id").notNull(),
   nomeCliente: varchar("nome_cliente", { length: 100 }).notNull(),
   marca: varchar("marca", { length: 100 }).notNull(),
@@ -78,15 +74,12 @@ export const orcamentos = mysqlTable("orcamentos", {
   
   percentualSinal: decimal("percentual_sinal", { precision: 5, scale: 2 }).default("25.00").notNull(),
   descricaoSinal: varchar("descricao_sinal", { length: 100 }).default("Sinal").notNull(),
-  tipoSinal: mysqlEnum("tipo_sinal", ["percentual", "valor"]).default("percentual").notNull(),
   
   percentualRetirada: decimal("percentual_retirada", { precision: 5, scale: 2 }).default("25.00").notNull(),
   descricaoRetirada: varchar("descricao_retirada", { length: 100 }).default("Retirada").notNull(),
-  tipoRetirada: mysqlEnum("tipo_retirada", ["percentual", "valor"]).default("percentual").notNull(),
   
   percentualPrazo: decimal("percentual_prazo", { precision: 5, scale: 2 }).default("50.00").notNull(),
   descricaoPrazo: varchar("descricao_prazo", { length: 100 }).default("30 dias").notNull(),
-  tipoPrazo: mysqlEnum("tipo_prazo", ["percentual", "valor"]).default("percentual").notNull(),
   
   status: mysqlEnum("status", ["pendente", "aprovado", "reprovado"]).default("pendente").notNull(),
   enviado: tinyint("enviado").default(0).notNull(),
@@ -111,7 +104,6 @@ export type UpdateOrcamento = Partial<InsertOrcamento>;
  */
 export const itensOrcamento = mysqlTable("itens_orcamento", {
   id: int("id").autoincrement().primaryKey(),
-  tenantId: int("tenant_id").default(1).notNull(), // Row-Level Isolation: separa dados por tenant
   orcamentoId: int("orcamento_id").notNull(),
   fichaId: int("ficha_id").notNull(),
   referencia: varchar("referencia", { length: 100 }).notNull(),
@@ -133,7 +125,6 @@ export type InsertItemOrcamento = typeof itensOrcamento.$inferInsert;
  */
 export const empresas = mysqlTable("empresas", {
   id: int("id").autoincrement().primaryKey(),
-  tenantId: int("tenant_id").default(1).notNull(), // Identificador único do tenant (empresa)
   userId: int("user_id").notNull(),
   nome: varchar("nome", { length: 100 }).notNull(),
   cnpj: varchar("cnpj", { length: 20 }),

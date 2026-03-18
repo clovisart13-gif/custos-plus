@@ -7,8 +7,6 @@ import { AlertCircle, CheckCircle, Clock, Search, Send, Plus, Eye, Trash2, Alert
 import { formatCurrency } from "@/lib/utils";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
-import { useTenant } from "@/contexts/TenantContext";
-import { useAuth } from "@/_core/hooks/useAuth";
 import CriarOrcamentoSimples from "@/components/CriarOrcamentoSimples";
 import SelecionarFichasModal from "@/components/SelecionarFichasModal";
 
@@ -18,8 +16,6 @@ type SortType = "recente" | "cliente";
 
 export default function ResumoOrcamentos() {
   const [location, navigate] = useLocation();
-  const { user } = useAuth();
-  const { selectedTenantId } = useTenant();
   const [statusFilter, setStatusFilter] = useState<StatusType>("todos");
   const [filterType, setFilterType] = useState<FilterType>("todos");
   const [sortBy, setSortBy] = useState<SortType>("recente");
@@ -30,17 +26,13 @@ export default function ResumoOrcamentos() {
 
   // Buscar orçamentos com totais calculados em tempo real
   const { data: orcamentos = [], isLoading: loadingOrcamentos, refetch } =
-    trpc.orcamentos.listComTotaisCalculados.useQuery(
-      { tenantId: selectedTenantId || undefined },
-      {
+    trpc.orcamentos.listComTotaisCalculados.useQuery(undefined, {
       staleTime: 0,
       gcTime: 0,
     });
 
   // Buscar KPIs
-  const { data: kpis, isLoading: loadingKpis } = trpc.orcamentos.getKPIs.useQuery(
-    { tenantId: selectedTenantId || undefined },
-    {
+  const { data: kpis, isLoading: loadingKpis } = trpc.orcamentos.getKPIs.useQuery(undefined, {
     staleTime: 0,
     gcTime: 0,
   });

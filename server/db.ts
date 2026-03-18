@@ -2,7 +2,6 @@ import { and, desc, eq, gte, like, lte, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { fichasCusto, InsertFichaCusto, InsertUser, users, orcamentos, InsertOrcamento, Orcamento, itensOrcamento, InsertItemOrcamento, ItemOrcamento, empresas, InsertEmpresa, Empresa } from "../drizzle/schema";
 import { ENV } from './_core/env';
-import bcryptjs from 'bcryptjs';
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -95,27 +94,18 @@ export async function createFichaCusto(data: InsertFichaCusto) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  // ✅ VALIDAÇÃO CRÍTICA: tenantId é obrigatório
-  if (!data.tenantId) {
-    throw new Error("TenantId é obrigatório para criar ficha de custo");
-  }
-
   await db.insert(fichasCusto).values(data);
   return { success: true };
 }
 
-export async function getFichasCustoByUser(userId: number, tenantId: number) {
+export async function getFichasCustoByUser(userId: number) {
   const db = await getDb();
   if (!db) return [];
 
-  // ✅ FILTRO CRÍTICO: tenantId + userId para Row-Level Isolation
   const fichas = await db
     .select()
     .from(fichasCusto)
-    .where(and(
-      eq(fichasCusto.tenantId, tenantId),
-      eq(fichasCusto.userId, userId)
-    ))
+    .where(eq(fichasCusto.userId, userId))
     .orderBy(desc(fichasCusto.createdAt));
 
   // Calcular custo total para cada ficha
@@ -125,51 +115,36 @@ export async function getFichasCustoByUser(userId: number, tenantId: number) {
   }));
 }
 
-export async function getFichaCustoById(id: number, userId: number, tenantId: number) {
+export async function getFichaCustoById(id: number, userId: number) {
   const db = await getDb();
   if (!db) return undefined;
 
-  // ✅ FILTRO CRÍTICO: tenantId + userId + id para segurança
   const result = await db
     .select()
     .from(fichasCusto)
-    .where(and(
-      eq(fichasCusto.id, id),
-      eq(fichasCusto.userId, userId),
-      eq(fichasCusto.tenantId, tenantId)
-    ))
+    .where(and(eq(fichasCusto.id, id), eq(fichasCusto.userId, userId)))
     .limit(1);
 
   return result.length > 0 ? result[0] : undefined;
 }
 
-export async function updateFichaCusto(id: number, userId: number, tenantId: number, data: Partial<InsertFichaCusto>) {
+export async function updateFichaCusto(id: number, userId: number, data: Partial<InsertFichaCusto>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  // ✅ FILTRO CRÍTICO: tenantId + userId + id para segurança
   await db
     .update(fichasCusto)
     .set(data)
-    .where(and(
-      eq(fichasCusto.id, id),
-      eq(fichasCusto.userId, userId),
-      eq(fichasCusto.tenantId, tenantId)
-    ));
+    .where(and(eq(fichasCusto.id, id), eq(fichasCusto.userId, userId)));
 }
 
-export async function deleteFichaCusto(id: number, userId: number, tenantId: number) {
+export async function deleteFichaCusto(id: number, userId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  // ✅ FILTRO CRÍTICO: tenantId + userId + id para segurança
   await db
     .delete(fichasCusto)
-    .where(and(
-      eq(fichasCusto.id, id),
-      eq(fichasCusto.userId, userId),
-      eq(fichasCusto.tenantId, tenantId)
-    ));
+    .where(and(eq(fichasCusto.id, id), eq(fichasCusto.userId, userId)));
 }
 
 export interface FichasCustoFilters {
@@ -356,7 +331,7 @@ export async function getCustosMediosPorFamilia(userId: number) {
  * Onde: AA = Ano (2 dígitos), FFFF = 3 primeiras letras da família, NNN = sequencial
  * Exemplo: 26CAM-001, 26BER-002
  */
-export async function generateNextReferenceCode(userId: number, familia: string, tenantId: number): Promise<string> {
+export async function generateNextReferenceCode(userId: number, familia: string): Promise<string> {
   const db = await getDb();
   if (!db) {
     throw new Error("Database not available");
@@ -372,10 +347,7 @@ export async function generateNextReferenceCode(userId: number, familia: string,
   const fichas = await db
     .select()
     .from(fichasCusto)
-    .where(and(
-      eq(fichasCusto.userId, userId),
-      eq(fichasCusto.tenantId, tenantId)
-    ));
+    .where(eq(fichasCusto.userId, userId));
   
   // Filtrar fichas que começam com o padrão AAFFFF-
   const padrao = `${ano}${prefixoFamilia}-`;
@@ -411,21 +383,13 @@ export async function createOrcamento(data: InsertOrcamento) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  // ✅ VALIDAÇÃO CRÍTICA: tenantId é obrigatório
-  if (!data.tenantId) {
-    throw new Error("TenantId é obrigatório para criar orçamento");
-  }
-
   const result = await db.insert(orcamentos).values(data);
   
   // Buscar o orcamento criado para retornar o ID
   const created = await db
     .select()
     .from(orcamentos)
-    .where(and(
-      eq(orcamentos.userId, data.userId),
-      eq(orcamentos.tenantId, data.tenantId)
-    ))
+    .where(eq(orcamentos.userId, data.userId))
     .orderBy(desc(orcamentos.createdAt))
     .limit(1);
   
@@ -436,37 +400,25 @@ export async function createOrcamento(data: InsertOrcamento) {
   throw new Error("Nao foi possivel obter o ID do orcamento criado");
 }
 
-export async function getOrcamentosByUser(userId: number, tenantId: number) {
+export async function getOrcamentosByUser(userId: number) {
   const db = await getDb();
   if (!db) return [];
 
-  // ✅ FILTRO CRÍTICO: tenantId + userId para Row-Level Isolation
   return await db
     .select()
     .from(orcamentos)
-    .where(and(
-      eq(orcamentos.tenantId, tenantId),
-      eq(orcamentos.userId, userId)
-    ))
+    .where(eq(orcamentos.userId, userId))
     .orderBy(desc(orcamentos.createdAt));
 }
 
-export async function getOrcamentoById(id: number, userId: number, tenantId: number, userRole?: string) {
+export async function getOrcamentoById(id: number, userId: number) {
   const db = await getDb();
   if (!db) return undefined;
 
-  // ✅ FILTRO CRÍTICO: Se é admin, pode ver qualquer orçamento do tenant
-  // Se é usuário comum, só vê seus próprios orçamentos
-  const conditions = [eq(orcamentos.id, id), eq(orcamentos.tenantId, tenantId)];
-  
-  if (userRole !== 'admin') {
-    conditions.push(eq(orcamentos.userId, userId));
-  }
-  
   const result = await db
     .select()
     .from(orcamentos)
-    .where(and(...conditions))
+    .where(and(eq(orcamentos.id, id), eq(orcamentos.userId, userId)))
     .limit(1);
 
   if (result.length > 0) {
@@ -481,33 +433,23 @@ export async function getOrcamentoById(id: number, userId: number, tenantId: num
   return undefined;
 }
 
-export async function updateOrcamento(id: number, userId: number, tenantId: number, data: Partial<InsertOrcamento>) {
+export async function updateOrcamento(id: number, userId: number, data: Partial<InsertOrcamento>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  // ✅ FILTRO CRÍTICO: tenantId + userId + id para segurança
   await db
     .update(orcamentos)
     .set(data)
-    .where(and(
-      eq(orcamentos.id, id),
-      eq(orcamentos.userId, userId),
-      eq(orcamentos.tenantId, tenantId)
-    ));
+    .where(and(eq(orcamentos.id, id), eq(orcamentos.userId, userId)));
 }
 
-export async function deleteOrcamento(id: number, userId: number, tenantId: number) {
+export async function deleteOrcamento(id: number, userId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  // ✅ FILTRO CRÍTICO: tenantId + userId + id para segurança
   await db
     .delete(orcamentos)
-    .where(and(
-      eq(orcamentos.id, id),
-      eq(orcamentos.userId, userId),
-      eq(orcamentos.tenantId, tenantId)
-    ));
+    .where(and(eq(orcamentos.id, id), eq(orcamentos.userId, userId)));
 }
 
 // ============ Itens de Orçamento Queries ============
@@ -738,51 +680,6 @@ export async function updateOrcamentoPercentuais(
   return { success: true };
 }
 
-export async function updateOrcamentoPercentuaisComTipos(
-  orcamentoId: number,
-  percentualSinal?: number,
-  tipoSinal?: "percentual" | "valor",
-  percentualRetirada?: number,
-  tipoRetirada?: "percentual" | "valor",
-  percentualPrazo?: number,
-  tipoPrazo?: "percentual" | "valor"
-) {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
-
-  const updateData: any = {};
-
-  if (percentualSinal !== undefined) {
-    updateData.percentualSinal = percentualSinal.toString();
-  }
-  if (tipoSinal !== undefined) {
-    updateData.tipoSinal = tipoSinal;
-  }
-  if (percentualRetirada !== undefined) {
-    updateData.percentualRetirada = percentualRetirada.toString();
-  }
-  if (tipoRetirada !== undefined) {
-    updateData.tipoRetirada = tipoRetirada;
-  }
-  if (percentualPrazo !== undefined) {
-    updateData.percentualPrazo = percentualPrazo.toString();
-  }
-  if (tipoPrazo !== undefined) {
-    updateData.tipoPrazo = tipoPrazo;
-  }
-
-  if (Object.keys(updateData).length === 0) {
-    return { success: true };
-  }
-
-  await db
-    .update(orcamentos)
-    .set(updateData)
-    .where(eq(orcamentos.id, orcamentoId));
-
-  return { success: true };
-}
-
 export async function updateOrcamentoDescontoObservacoes(
   orcamentoId: number,
   observacoes?: string,
@@ -966,119 +863,27 @@ export async function getAllUsers() {
   }
 }
 
-export async function createUser(nome: string, email: string, role: "user" | "admin", tenantId: number) {
+export async function createUser(nome: string, email: string, role: "user" | "admin") {
   const db = await getDb();
   if (!db) {
     throw new Error("Database not available");
   }
 
-  // Validar tenantId
-  if (!tenantId || tenantId <= 0) {
-    throw new Error("TenantId é obrigatório e deve ser válido");
-  }
-
   try {
-    // Gerar uma senha aleatória segura
-    const generatePassword = () => {
-      const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      const lowercase = 'abcdefghijklmnopqrstuvwxyz';
-      const numbers = '0123456789';
-      const symbols = '!@#$%^&*';
-      const allChars = uppercase + lowercase + numbers + symbols;
-      
-      let pwd = '';
-      pwd += uppercase[Math.floor(Math.random() * uppercase.length)];
-      pwd += lowercase[Math.floor(Math.random() * lowercase.length)];
-      pwd += numbers[Math.floor(Math.random() * numbers.length)];
-      pwd += symbols[Math.floor(Math.random() * symbols.length)];
-      
-      for (let i = 0; i < 8; i++) {
-        pwd += allChars[Math.floor(Math.random() * allChars.length)];
-      }
-      
-      return pwd.split('').sort(() => Math.random() - 0.5).join('');
-    };
-    
-    const tempPassword = generatePassword();
-    const passwordHash = await bcryptjs.hash(tempPassword, 10);
+    // Gerar um openId único (será usado como identificador temporário)
     const openId = `temp-${Date.now()}-${Math.random().toString(36).substring(7)}`;
     
     await db.insert(users).values({
       openId,
       name: nome,
       email,
-      passwordHash,
       role,
-      tenantId,
       loginMethod: "admin-created",
     });
 
-
-    
-    return { 
-      success: true,
-      password: tempPassword
-    };
-  } catch (error) {
-    console.error("[Database] Error creating user:", error);
-    throw error;
-  }
-}
-
-export async function validateUserPassword(email: string, password: string) {
-  try {
-    const db = await getDb();
-    if (!db) {
-      console.warn("[Database] Cannot validate password: database not available");
-      return null;
-    }
-
-    const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
-    const user = result.length > 0 ? result[0] : null;
-
-    if (!user || !user.passwordHash) {
-      return null;
-    }
-
-    const isValid = await bcryptjs.compare(password, user.passwordHash);
-    if (!isValid) {
-      return null;
-    }
-
-    return user;
-  } catch (error) {
-    console.error("[Database] Error validating password:", error);
-    return null;
-  }
-}
-
-export async function updateUser(
-  userId: number,
-  nome?: string,
-  email?: string,
-  role?: "user" | "admin",
-  tenantId?: number
-) {
-  const db = await getDb();
-  if (!db) {
-    throw new Error("Database not available");
-  }
-
-  try {
-    const updates: any = {};
-    if (nome) updates.nome = nome;
-    if (email) updates.email = email;
-    if (role) updates.role = role;
-    if (tenantId) updates.tenantId = tenantId;
-
-    if (Object.keys(updates).length === 0) {
-      throw new Error("Nenhum campo para atualizar");
-    }
-
-    await db.update(users).set(updates).where(eq(users.id, userId));
     return { success: true };
   } catch (error) {
-    console.error("[Database] Error updating user:", error);
+    console.error("[Database] Error creating user:", error);
     throw error;
   }
 }
@@ -1149,16 +954,6 @@ export async function createEmpresa(
   });
 
   return result;
-}
-
-export async function getAllEmpresas() {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
-
-  return await db
-    .select()
-    .from(empresas)
-    .orderBy(desc(empresas.createdAt));
 }
 
 export async function getEmpresasByUser(userId: number) {
@@ -1320,18 +1115,15 @@ export async function getOrcamentoComTotaisCalculados(orcamentoId: number) {
 /**
  * Lista todos os orçamentos com totais calculados em tempo real
  */
-export async function listOrcamentosComTotaisCalculados(userId: number, tenantId: number) {
+export async function listOrcamentosComTotaisCalculados(userId: number) {
   const db = await getDb();
   if (!db) return [];
 
-  // Buscar todos os orçamentos do usuário e tenant
+  // Buscar todos os orçamentos do usuário
   const allOrcamentos = await db
     .select()
     .from(orcamentos)
-    .where(and(
-      eq(orcamentos.userId, userId),
-      eq(orcamentos.tenantId, tenantId)
-    ))
+    .where(eq(orcamentos.userId, userId))
     .orderBy(desc(orcamentos.createdAt));
 
   // Para cada orçamento, calcular totais a partir dos itens
@@ -1385,18 +1177,15 @@ export async function listOrcamentosComTotaisCalculados(userId: number, tenantId
 /**
  * Calcula KPIs de orçamentos por status
  */
-export async function getKPIOrcamentos(userId: number, tenantId: number) {
+export async function getKPIOrcamentos(userId: number) {
   const db = await getDb();
   if (!db) return null;
 
-  // Buscar todos os orçamentos do usuário e tenant
+  // Buscar todos os orçamentos
   const allOrcamentos = await db
     .select()
     .from(orcamentos)
-    .where(and(
-      eq(orcamentos.userId, userId),
-      eq(orcamentos.tenantId, tenantId)
-    ));
+    .where(eq(orcamentos.userId, userId));
 
   // Para cada orçamento, calcular totais
   const orcamentosComTotais = await Promise.all(

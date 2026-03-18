@@ -36,47 +36,19 @@ export const appRouter = router({
         success: true,
       } as const;
     }),
-    loginWithPassword: publicProcedure
-      .input(z.object({
-        email: z.string().email(),
-        password: z.string().min(1),
-      }))
-      .mutation(async ({ input }) => {
-        const user = await db.validateUserPassword(input.email, input.password);
-        if (!user) {
-          return { success: false, error: "Email ou senha inválidos" };
-        }
-        return { success: true, user };
-      }),
   }),
 
   fichasCusto: router({
-    list: protectedProcedure
-      .input(z.object({ tenantId: z.number().optional() }).optional())
-      .query(async ({ ctx, input }) => {
-        // Se é admin, permitir visualizar qualquer tenant
-        // Se não é admin, usar apenas seu tenant
-        let tenantIdToUse = ctx.user.tenantId;
-        
-        if (ctx.user.role === 'admin' && input?.tenantId) {
-          tenantIdToUse = input.tenantId;
-        }
-        
-        return await db.getFichasCustoByUser(ctx.user.id, tenantIdToUse);
-      }),
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return await db.getFichasCustoByUser(ctx.user.id);
+    }),
 
     generateNextCode: protectedProcedure
       .input(z.object({
         familia: z.string().min(1),
-        tenantId: z.number().optional(),
       }))
       .query(async ({ ctx, input }) => {
-        // Se é admin, permitir usar qualquer tenant
-        let tenantIdToUse = ctx.user.tenantId;
-        if (ctx.user.role === 'admin' && input.tenantId) {
-          tenantIdToUse = input.tenantId;
-        }
-        return await db.generateNextReferenceCode(ctx.user.id, input.familia, tenantIdToUse);
+        return await db.generateNextReferenceCode(ctx.user.id, input.familia);
       }),
 
     create: protectedProcedure
@@ -107,7 +79,7 @@ export const appRouter = router({
     getById: protectedProcedure
       .input(z.object({ id: z.number() }))
       .query(async ({ ctx, input }) => {
-        return await db.getFichaCustoById(input.id, ctx.user.id, ctx.user.tenantId);
+        return await db.getFichaCustoById(input.id, ctx.user.id);
       }),
 
     update: protectedProcedure
@@ -145,14 +117,14 @@ export const appRouter = router({
           tecido: data.tecido.toString(),
           aviamento: data.aviamento.toString(),
         };
-        await db.updateFichaCusto(id, ctx.user.id, ctx.user.tenantId, convertedData);
-        return await db.getFichaCustoById(id, ctx.user.id, ctx.user.tenantId);
+        await db.updateFichaCusto(id, ctx.user.id, convertedData);
+        return await db.getFichaCustoById(id, ctx.user.id);
       }),
 
     delete: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ ctx, input }) => {
-        await db.deleteFichaCusto(input.id, ctx.user.id, ctx.user.tenantId);
+        await db.deleteFichaCusto(input.id, ctx.user.id);
         return { success: true };
       }),
 
@@ -186,7 +158,7 @@ export const appRouter = router({
         field: z.enum(['tipo', 'familia', 'cliente']),
       }))
       .query(async ({ ctx, input }) => {
-        const fichas = await db.getFichasCustoByUser(ctx.user.id, ctx.user.tenantId);
+        const fichas = await db.getFichasCustoByUser(ctx.user.id);
         const values = new Set<string>();
         fichas.forEach((ficha: any) => {
           const value = ficha[input.field];
@@ -201,14 +173,9 @@ export const appRouter = router({
         familia: z.string().optional(),
         cliente: z.string().optional(),
         search: z.string().optional(),
-        tenantId: z.number().optional(),
       }))
       .query(async ({ ctx, input }) => {
-        let tenantIdToUse = ctx.user.tenantId;
-        if (ctx.user.role === 'admin' && input.tenantId) {
-          tenantIdToUse = input.tenantId;
-        }
-        const fichas = await db.getFichasCustoByUser(ctx.user.id, tenantIdToUse);
+        const fichas = await db.getFichasCustoByUser(ctx.user.id);
         return fichas.filter((ficha: any) => {
           if (input.tipo && ficha.tipo !== input.tipo) return false;
           if (input.familia && ficha.familia !== input.familia) return false;
@@ -229,18 +196,13 @@ export const appRouter = router({
 
   orcamentos: router({
     list: protectedProcedure.query(async ({ ctx }) => {
-      return await db.getOrcamentosByUser(ctx.user.id, ctx.user.tenantId);
+      return await db.getOrcamentosByUser(ctx.user.id);
     }),
 
     getById: protectedProcedure
-      .input(z.object({ id: z.number(), tenantId: z.number().optional() }))
+      .input(z.object({ id: z.number() }))
       .query(async ({ ctx, input }) => {
-        // Se é admin e passou tenantId, usar esse. Se não, usar seu tenant
-        let tenantIdToUse = ctx.user.tenantId;
-        if (ctx.user.role === 'admin' && input.tenantId) {
-          tenantIdToUse = input.tenantId;
-        }
-        return await db.getOrcamentoById(input.id, ctx.user.id, tenantIdToUse, ctx.user.role);
+        return await db.getOrcamentoById(input.id, ctx.user.id);
       }),
 
     getItens: protectedProcedure
@@ -296,7 +258,7 @@ export const appRouter = router({
           }
           
           // Buscar o orçamento criado para retornar os dados completos
-          const orcamentoCriado = await db.getOrcamentoById(orcamentoId, ctx.user.id, ctx.user.tenantId);
+          const orcamentoCriado = await db.getOrcamentoById(orcamentoId, ctx.user.id);
           
           if (!orcamentoCriado) {
             console.error('Orcamento nao encontrado:', { orcamentoId, userId: ctx.user.id });
@@ -323,7 +285,7 @@ export const appRouter = router({
         markup: z.number().min(0).default(0.5),
       }))
       .mutation(async ({ ctx, input }) => {
-        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id, ctx.user.tenantId);
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamento) {
           throw new Error("Orçamento não encontrado");
         }
@@ -431,7 +393,7 @@ export const appRouter = router({
         marca: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
-        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id, ctx.user.tenantId);
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamento) {
           throw new Error("Orçamento não encontrado");
         }
@@ -446,7 +408,7 @@ export const appRouter = router({
         prazoEntregaTexto: z.string().min(1),
       }))
       .mutation(async ({ ctx, input }) => {
-        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id, ctx.user.tenantId);
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamento) {
           throw new Error("Orcamento nao encontrado");
         }
@@ -458,25 +420,20 @@ export const appRouter = router({
       .input(z.object({
         orcamentoId: z.number(),
         percentualSinal: z.number().min(0),
-        tipoSinal: z.enum(["percentual", "valor"]).optional(),
         percentualRetirada: z.number().min(0),
-        tipoRetirada: z.enum(["percentual", "valor"]).optional(),
         percentualPrazo: z.number().min(0),
-        tipoPrazo: z.enum(["percentual", "valor"]).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
-        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id, ctx.user.tenantId);
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamento) {
           throw new Error("Orcamento nao encontrado");
         }
-        await db.updateOrcamentoPercentuaisComTipos(
+        await db.updateOrcamentoPercentuais(
           input.orcamentoId,
+          undefined,
           input.percentualSinal,
-          input.tipoSinal,
           input.percentualRetirada,
-          input.tipoRetirada,
-          input.percentualPrazo,
-          input.tipoPrazo
+          input.percentualPrazo
         );
         return { success: true };
       }),
@@ -489,7 +446,7 @@ export const appRouter = router({
         descontoValor: z.number().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
-        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id, ctx.user.tenantId);
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamento) {
           throw new Error("Orçamento não encontrado");
         }
@@ -506,7 +463,7 @@ export const appRouter = router({
         const subtotal = itens.reduce((sum: number, item: any) => sum + Number(item.valorTotal), 0);
         
         // Buscar desconto atualizado
-        const orcamentoAtualizado = await db.getOrcamentoById(input.orcamentoId, ctx.user.id, ctx.user.tenantId);
+        const orcamentoAtualizado = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamentoAtualizado) {
           throw new Error("Orcamento nao encontrado apos atualizacao");
         }
@@ -531,7 +488,7 @@ export const appRouter = router({
         orcamentoId: z.number(),
       }))
       .mutation(async ({ ctx, input }) => {
-        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id, ctx.user.tenantId);
+        const orcamento = await db.getOrcamentoById(input.orcamentoId, ctx.user.id);
         if (!orcamento) {
           throw new Error("Orçamento não encontrado");
         }
@@ -619,29 +576,17 @@ export const appRouter = router({
     delete: protectedProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ ctx, input }) => {
-        await db.deleteOrcamento(input.id, ctx.user.id, ctx.user.tenantId);
+        await db.deleteOrcamento(input.id, ctx.user.id);
         return { success: true };
       }),
 
-    listComTotaisCalculados: protectedProcedure
-      .input(z.object({ tenantId: z.number().optional() }).optional())
-      .query(async ({ ctx, input }) => {
-        let tenantIdToUse = ctx.user.tenantId;
-        if (ctx.user.role === 'admin' && input?.tenantId) {
-          tenantIdToUse = input.tenantId;
-        }
-        return await db.listOrcamentosComTotaisCalculados(ctx.user.id, tenantIdToUse);
-      }),
+    listComTotaisCalculados: protectedProcedure.query(async ({ ctx }) => {
+      return await db.listOrcamentosComTotaisCalculados(ctx.user.id);
+    }),
 
-    getKPIs: protectedProcedure
-      .input(z.object({ tenantId: z.number().optional() }).optional())
-      .query(async ({ ctx, input }) => {
-        let tenantIdToUse = ctx.user.tenantId;
-        if (ctx.user.role === 'admin' && input?.tenantId) {
-          tenantIdToUse = input.tenantId;
-        }
-        return await db.getKPIOrcamentos(ctx.user.id, tenantIdToUse);
-      }),
+    getKPIs: protectedProcedure.query(async ({ ctx }) => {
+      return await db.getKPIOrcamentos(ctx.user.id);
+    }),
 
 
   }),
@@ -650,8 +595,8 @@ export const appRouter = router({
     kpis: protectedProcedure
       .input(z.object({ familia: z.string().optional() }))
       .query(async ({ ctx, input }) => {
-        const fichas = await db.getFichasCustoByUser(ctx.user.id, ctx.user.tenantId);
-      const orcamentos = await db.getOrcamentosByUser(ctx.user.id, ctx.user.tenantId);
+        const fichas = await db.getFichasCustoByUser(ctx.user.id);
+      const orcamentos = await db.getOrcamentosByUser(ctx.user.id);
       
       // Filtrar fichas por família se fornecida
       const fichasFiltradas = input.familia && input.familia !== 'todos'
@@ -716,7 +661,7 @@ export const appRouter = router({
     }),
 
     custosMediosPorFamilia: protectedProcedure.query(async ({ ctx }) => {
-      const fichas = await db.getFichasCustoByUser(ctx.user.id, ctx.user.tenantId);
+      const fichas = await db.getFichasCustoByUser(ctx.user.id);
       
       const familias = new Map<string, any>();
       
@@ -796,36 +741,12 @@ export const appRouter = router({
         nome: z.string().min(1, "Nome é obrigatório"),
         email: z.string().email("Email inválido"),
         role: z.enum(["user", "admin"]),
-        tenantId: z.number().min(1, "Empresa é obrigatória"),
       }))
       .mutation(async ({ ctx, input }) => {
         if (ctx.user.role !== 'admin') {
           throw new Error('Apenas administradores podem criar usuários');
         }
-      return await db.createUser(input.nome, input.email, input.role, input.tenantId);
-      }),
-
-    listEmpresas: protectedProcedure
-      .query(async ({ ctx }) => {
-        if (ctx.user.role !== 'admin') {
-          throw new Error('Apenas administradores podem listar empresas');
-        }
-        return await db.getAllEmpresas();
-      }),
-
-    updateUser: protectedProcedure
-      .input(z.object({
-        userId: z.number(),
-        nome: z.string().min(1, "Nome é obrigatório").optional(),
-        email: z.string().email("Email inválido").optional(),
-        role: z.enum(["user", "admin"]).optional(),
-        tenantId: z.number().min(1, "Empresa é obrigatória").optional(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== 'admin') {
-          throw new Error('Apenas administradores podem atualizar usuários');
-        }
-        return await db.updateUser(input.userId, input.nome, input.email, input.role, input.tenantId);
+        return await db.createUser(input.nome, input.email, input.role);
       }),
 
     deleteUser: protectedProcedure
