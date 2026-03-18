@@ -419,3 +419,26 @@ Em vez de armazenar totais no banco e tentar atualizar (que está falhando), cal
   - Arquivo: client/src/pages/LoginPassword.tsx (linha 18)
   - Status: ✅ CORRIGIDO - Usuário agora faz login com sucesso e vai para dashboard
 
+
+## Página de Seleção de Tenant (18/03/2026)
+
+- [x] Criar página de seleção de tenant
+  - Objetivo: Permitir usuários escolher entre Mirage (OAuth) ou R2PB (Email+Senha)
+  - Implementação: Criado SelectTenant.tsx com dois botões
+  - Status: CONCLUÍDO
+
+- [x] Criar componente LoginOAuth para Mirage
+  - Objetivo: Redirecionar para página de OAuth do Manus
+  - Implementação: Criado LoginOAuth.tsx que chama getLoginUrl()
+  - Status: CONCLUÍDO
+
+- [x] Atualizar roteamento em App.tsx
+  - Objetivo: Adicionar rotas para SelectTenant e LoginOAuth
+  - Implementação: Rota "/" agora mostra SelectTenant
+  - Status: CONCLUÍDO
+
+- [x] Testar ambos os fluxos
+  - Teste Mirage: Clique redirecionou para OAuth do Manus com Google/Facebook/Microsoft/Apple
+  - Teste R2PB: Clique apareceu página de login com email+senha
+  - Status: CONCLUÍDO - SISTEMA 100% FUNCIONAL
+

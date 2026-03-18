@@ -18,8 +18,29 @@ type SortType = "recente" | "cliente";
 
 export default function ResumoOrcamentos() {
   const [location, navigate] = useLocation();
-  const { user } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
   const { selectedTenantId } = useTenant();
+
+  // Se não está autenticado, redireciona para seleção de tenant
+  if (!loading && !isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600 mb-4">Redirecionando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
   const [statusFilter, setStatusFilter] = useState<StatusType>("todos");
   const [filterType, setFilterType] = useState<FilterType>("todos");
   const [sortBy, setSortBy] = useState<SortType>("recente");

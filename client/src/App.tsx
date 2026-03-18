@@ -14,6 +14,8 @@ import VisualizarOrcamento from "./pages/VisualizarOrcamento";
 import GerenciarUsuarios from "./pages/GerenciarUsuarios";
 import Empresas from "./pages/Empresas";
 import LoginPassword from "./pages/LoginPassword";
+import SelectTenant from "./pages/SelectTenant";
+import LoginOAuth from "./pages/LoginOAuth";
 
 function ProtectedRoute({ path, component: Component }: { path: string; component: any }) {
   const { user } = useAuth();
@@ -32,16 +34,19 @@ function ProtectedRoute({ path, component: Component }: { path: string; componen
 
 function Router() {
   const [location] = useLocation();
-  const isLoginPage = location === "/login";
+  const isLoginPage = location === "/login" || location === "/login-oauth";
+  const isSelectTenant = location === "/select-tenant";
   
   return (
     <>
       <Switch>
+        <Route path="/select-tenant" component={SelectTenant} />
         <Route path="/login" component={LoginPassword} />
+        <Route path="/login-oauth" component={LoginOAuth} />
       </Switch>
-      {!isLoginPage && <Navigation />}
+      {!isLoginPage && !isSelectTenant && <Navigation />}
       <Switch>
-        <Route path="/" component={ResumoOrcamentos} />
+        <Route path="/" component={SelectTenant} />
         <Route path="/fichas-custo">
           {() => <ProtectedRoute path="/fichas-custo" component={FichasCusto} />}
         </Route>
