@@ -977,7 +977,28 @@ export async function createUser(nome: string, email: string, role: "user" | "ad
   }
 
   try {
-    // Gerar um openId único (será usado como identificador temporário)
+    // Gerar uma senha aleatória segura
+    const generatePassword = () => {
+      const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+      const numbers = '0123456789';
+      const symbols = '!@#$%^&*';
+      const allChars = uppercase + lowercase + numbers + symbols;
+      
+      let pwd = '';
+      pwd += uppercase[Math.floor(Math.random() * uppercase.length)];
+      pwd += lowercase[Math.floor(Math.random() * lowercase.length)];
+      pwd += numbers[Math.floor(Math.random() * numbers.length)];
+      pwd += symbols[Math.floor(Math.random() * symbols.length)];
+      
+      for (let i = 0; i < 8; i++) {
+        pwd += allChars[Math.floor(Math.random() * allChars.length)];
+      }
+      
+      return pwd.split('').sort(() => Math.random() - 0.5).join('');
+    };
+    
+    const tempPassword = generatePassword();
     const openId = `temp-${Date.now()}-${Math.random().toString(36).substring(7)}`;
     
     await db.insert(users).values({
@@ -991,7 +1012,7 @@ export async function createUser(nome: string, email: string, role: "user" | "ad
 
     return { 
       success: true,
-      password: "temp-password-generated" // Placeholder - será gerado no frontend
+      password: tempPassword
     };
   } catch (error) {
     console.error("[Database] Error creating user:", error);
