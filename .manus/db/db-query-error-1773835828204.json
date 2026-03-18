@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO users (openId, name, email, password, role, tenant_id, loginMethod, createdAt, updatedAt, lastSignedIn) VALUES ('temp-r2pb-user-1', 'Clovis Art', 'clovisart@hotmail.com', '$2b$10$QWkDv01XnGAWsfS0qNH1tOZJdg2KFuOcN3mVETjWevQKS7IswyXp.', 'admin', 1, 'admin-created', NOW(), NOW(), NOW());",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute INSERT INTO users (openId, name, email, password, role, tenant_id, loginMethod, createdAt, updatedAt, lastSignedIn) VALUES ('temp-r2pb-user-1', 'Clovis Art', 'clovisart@hotmail.com', '$2b$10$QWkDv01XnGAWsfS0qNH1tOZJdg2KFuOcN3mVETjWevQKS7IswyXp.', 'admin', 1, 'admin-created', NOW(), NOW(), NOW());",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'password' in 'field list'"
+  ]
+}
