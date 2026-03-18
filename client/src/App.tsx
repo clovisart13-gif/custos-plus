@@ -13,6 +13,7 @@ import VisualizarFicha from "./pages/VisualizarFicha";
 import VisualizarOrcamento from "./pages/VisualizarOrcamento";
 import GerenciarUsuarios from "./pages/GerenciarUsuarios";
 import Empresas from "./pages/Empresas";
+import LoginPassword from "./pages/LoginPassword";
 
 function ProtectedRoute({ path, component: Component }: { path: string; component: any }) {
   const { user } = useAuth();
@@ -32,6 +33,9 @@ function ProtectedRoute({ path, component: Component }: { path: string; componen
 function Router() {
   return (
     <>
+      <Switch>
+        <Route path="/login" component={LoginPassword} />
+      </Switch>
       <Navigation />
       <Switch>
         <Route path="/" component={ResumoOrcamentos} />
