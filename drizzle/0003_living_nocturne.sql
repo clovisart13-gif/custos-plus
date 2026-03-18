@@ -1,1 +1,0 @@
-ALTER TABLE `orcamentos` ADD `enviado` tinyint DEFAULT 0 NOT NULL;

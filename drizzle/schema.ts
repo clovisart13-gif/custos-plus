@@ -1,17 +1,22 @@
-import { decimal, int, mysqlEnum, mysqlTable, text, timestamp, varchar, tinyint } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
+ * Extend this file with additional tables as your product grows.
+ * Columns use camelCase to match both database fields and generated types.
  */
 export const users = mysqlTable("users", {
+  /**
+   * Surrogate primary key. Auto-incremented numeric value managed by the database.
+   * Use this for relations between tables.
+   */
   id: int("id").autoincrement().primaryKey(),
+  /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
   openId: varchar("openId", { length: 64 }).notNull().unique(),
   name: text("name"),
-  email: varchar("email", { length: 320 }).unique(),
-  passwordHash: text("password_hash"), // Hash bcrypt da senha
+  email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
-  role: mysqlEnum("role", ["user", "admin", "production"]).default("user").notNull(),
-  tenantId: int("tenant_id").default(1).notNull(), // 1=R2PB, 2=Mirage, 3+=clientes
+  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -20,133 +25,4 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-/**
- * Fichas de Custo - Cost Sheets for production references
- */
-export const fichasCusto = mysqlTable("fichas_custo", {
-  id: int("id").autoincrement().primaryKey(),
-  tenantId: int("tenant_id").default(1).notNull(), // Row-Level Isolation: separa dados por tenant
-  userId: int("user_id").notNull(),
-  referencia: varchar("referencia", { length: 100 }).notNull(),
-  tipo: varchar("tipo", { length: 50 }).notNull(),
-  familia: varchar("familia", { length: 50 }).notNull(),
-  cliente: varchar("cliente", { length: 100 }).notNull(),
-  fotoUrl: text("foto_url"),
-  
-  // Custos de Mão-de-Obra (8 etapas)
-  modelagem: decimal("modelagem", { precision: 10, scale: 2 }).default("0.00").notNull(),
-  piloto: decimal("piloto", { precision: 10, scale: 2 }).default("0.00").notNull(),
-  corte: decimal("corte", { precision: 10, scale: 2 }).default("0.00").notNull(),
-  beneficiamento: decimal("beneficiamento", { precision: 10, scale: 2 }).default("0.00").notNull(),
-  costura: decimal("costura", { precision: 10, scale: 2 }).default("0.00").notNull(),
-  lavanderia: decimal("lavanderia", { precision: 10, scale: 2 }).default("0.00").notNull(),
-  acabamento: decimal("acabamento", { precision: 10, scale: 2 }).default("0.00").notNull(),
-  passadoria: decimal("passadoria", { precision: 10, scale: 2 }).default("0.00").notNull(),
-  
-  // Custos de Matéria-Prima
-  tecido: decimal("tecido", { precision: 10, scale: 2 }).default("0.00").notNull(),
-  aviamento: decimal("aviamento", { precision: 10, scale: 2 }).default("0.00").notNull(),
-  
-  observacoes: text("observacoes"),
-  
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
-export type FichaCusto = typeof fichasCusto.$inferSelect;
-export type InsertFichaCusto = typeof fichasCusto.$inferInsert;
-
-
-/**
- * Orçamentos - Quotations/Budgets
- */
-export const orcamentos = mysqlTable("orcamentos", {
-  id: int("id").autoincrement().primaryKey(),
-  tenantId: int("tenant_id").default(1).notNull(), // Row-Level Isolation: separa dados por tenant
-  userId: int("user_id").notNull(),
-  nomeCliente: varchar("nome_cliente", { length: 100 }).notNull(),
-  marca: varchar("marca", { length: 100 }).notNull(),
-  numeroOrcamento: varchar("numero_orcamento", { length: 50 }).notNull().unique(),
-  dataEmissao: timestamp("data_emissao").defaultNow().notNull(),
-  validade: int("validade").default(30).notNull(),
-  prazoDias: int("prazo_dias").default(30).notNull(),
-  prazoEntregaTexto: varchar("prazo_entrega_texto", { length: 255 }).default("30 dias").notNull(),
-  
-  totalPecas: int("total_pecas").default(0).notNull(),
-  subtotal: decimal("subtotal", { precision: 12, scale: 2 }).default("0.00").notNull(),
-  total: decimal("total", { precision: 12, scale: 2 }).default("0.00").notNull(),
-  
-  percentualSinal: decimal("percentual_sinal", { precision: 5, scale: 2 }).default("25.00").notNull(),
-  descricaoSinal: varchar("descricao_sinal", { length: 100 }).default("Sinal").notNull(),
-  tipoSinal: mysqlEnum("tipo_sinal", ["percentual", "valor"]).default("percentual").notNull(),
-  
-  percentualRetirada: decimal("percentual_retirada", { precision: 5, scale: 2 }).default("25.00").notNull(),
-  descricaoRetirada: varchar("descricao_retirada", { length: 100 }).default("Retirada").notNull(),
-  tipoRetirada: mysqlEnum("tipo_retirada", ["percentual", "valor"]).default("percentual").notNull(),
-  
-  percentualPrazo: decimal("percentual_prazo", { precision: 5, scale: 2 }).default("50.00").notNull(),
-  descricaoPrazo: varchar("descricao_prazo", { length: 100 }).default("30 dias").notNull(),
-  tipoPrazo: mysqlEnum("tipo_prazo", ["percentual", "valor"]).default("percentual").notNull(),
-  
-  status: mysqlEnum("status", ["pendente", "aprovado", "reprovado"]).default("pendente").notNull(),
-  enviado: tinyint("enviado").default(0).notNull(),
-  
-  // Novos campos
-  observacoes: text("observacoes"),
-  descontoTipo: mysqlEnum("desconto_tipo", ["percentual", "valor"]),
-  descontoValor: decimal("desconto_valor", { precision: 12, scale: 2 }).default("0.00"),
-  
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
-export type Orcamento = typeof orcamentos.$inferSelect;
-export type InsertOrcamento = typeof orcamentos.$inferInsert;
-
-// Adicionar tipo para update que torna prazoEntregaTexto opcional
-export type UpdateOrcamento = Partial<InsertOrcamento>;
-
-/**
- * Itens de Orçamento - Quotation Items
- */
-export const itensOrcamento = mysqlTable("itens_orcamento", {
-  id: int("id").autoincrement().primaryKey(),
-  tenantId: int("tenant_id").default(1).notNull(), // Row-Level Isolation: separa dados por tenant
-  orcamentoId: int("orcamento_id").notNull(),
-  fichaId: int("ficha_id").notNull(),
-  referencia: varchar("referencia", { length: 100 }).notNull(),
-  descricao: text("descricao").notNull(),
-  quantidade: int("quantidade").notNull(),
-  custo: decimal("custo", { precision: 12, scale: 2 }).notNull(),
-  valorUnitario: decimal("valor_unitario", { precision: 12, scale: 2 }).notNull(),
-  valorTotal: decimal("valor_total", { precision: 12, scale: 2 }).notNull(),
-  markupDivisor: decimal("markup_divisor", { precision: 4, scale: 2 }).default("0.50").notNull(),
-  
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
-
-export type ItemOrcamento = typeof itensOrcamento.$inferSelect;
-export type InsertItemOrcamento = typeof itensOrcamento.$inferInsert;
-
-/**
- * Empresas - Clients/Companies
- */
-export const empresas = mysqlTable("empresas", {
-  id: int("id").autoincrement().primaryKey(),
-  tenantId: int("tenant_id").default(1).notNull(), // Identificador único do tenant (empresa)
-  userId: int("user_id").notNull(),
-  nome: varchar("nome", { length: 100 }).notNull(),
-  cnpj: varchar("cnpj", { length: 20 }),
-  email: varchar("email", { length: 100 }),
-  telefone: varchar("telefone", { length: 20 }),
-  endereco: varchar("endereco", { length: 255 }),
-  cidade: varchar("cidade", { length: 100 }),
-  estado: varchar("estado", { length: 2 }),
-  observacoes: text("observacoes"),
-  
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
-export type Empresa = typeof empresas.$inferSelect;
-export type InsertEmpresa = typeof empresas.$inferInsert;
+// TODO: Add your tables here

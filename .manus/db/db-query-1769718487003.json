@@ -1,9 +1,0 @@
-{
-  "query": "UPDATE orcamentos SET enviado = 0 WHERE numero_orcamento = 'ORC-2026-022';",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute UPDATE orcamentos SET enviado = 0 WHERE numero_orcamento = 'ORC-2026-022';",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 349
-}

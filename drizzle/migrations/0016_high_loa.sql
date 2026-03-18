@@ -1,1 +1,0 @@
-ALTER TABLE `orcamentos` ADD `parcelas_json` text;
