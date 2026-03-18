@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch, Redirect } from "wouter";
+import { Route, Switch, Redirect, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { TenantProvider } from "./contexts/TenantContext";
@@ -31,14 +31,16 @@ function ProtectedRoute({ path, component: Component }: { path: string; componen
 }
 
 function Router() {
+  const [location] = useLocation();
+  const isLoginPage = location === "/login";
+  
   return (
     <>
       <Switch>
         <Route path="/login" component={LoginPassword} />
       </Switch>
-      <Navigation />
+      {!isLoginPage && <Navigation />}
       <Switch>
-        <Route path="/login" component={LoginPassword} />
         <Route path="/" component={ResumoOrcamentos} />
         <Route path="/fichas-custo">
           {() => <ProtectedRoute path="/fichas-custo" component={FichasCusto} />}
