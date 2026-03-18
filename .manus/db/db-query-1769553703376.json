@@ -1,0 +1,18 @@
+{
+  "query": "SELECT id, numero_orcamento, nome_cliente, total, total_pecas, subtotal FROM orcamentos WHERE nome_cliente = 'be green' LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute SELECT id, numero_orcamento, nome_cliente, total, total_pecas, subtotal FROM orcamentos WHERE nome_cliente = 'be green' LIMIT 1;",
+  "rows": [
+    {
+      "id": "660001",
+      "numero_orcamento": "ORC-2026-023",
+      "nome_cliente": "be green",
+      "total": "141.00",
+      "total_pecas": "2",
+      "subtotal": "141.00"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnumero_orcamento\tnome_cliente\ttotal\ttotal_pecas\tsubtotal\n660001\tORC-2026-023\tbe green\t141.00\t2\t141.00\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

@@ -1,0 +1,292 @@
+{
+  "query": "SELECT id, tenant_id, numero_orcamento, nome_cliente FROM orcamentos ORDER BY tenant_id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute SELECT id, tenant_id, numero_orcamento, nome_cliente FROM orcamentos ORDER BY tenant_id;",
+  "rows": [
+    {
+      "id": "120001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORÇ-26-1768695814543",
+      "nome_cliente": "gallm"
+    },
+    {
+      "id": "420001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-013",
+      "nome_cliente": "claudia done"
+    },
+    {
+      "id": "480001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-014",
+      "nome_cliente": "bromance"
+    },
+    {
+      "id": "540001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-015",
+      "nome_cliente": "Delfina"
+    },
+    {
+      "id": "570002",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-017",
+      "nome_cliente": "robson thurium"
+    },
+    {
+      "id": "570003",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-018",
+      "nome_cliente": "buggio"
+    },
+    {
+      "id": "570004",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-019",
+      "nome_cliente": "sara regina"
+    },
+    {
+      "id": "570005",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-020",
+      "nome_cliente": "ballet"
+    },
+    {
+      "id": "630001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-022",
+      "nome_cliente": "fence"
+    },
+    {
+      "id": "660001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-023",
+      "nome_cliente": "be green"
+    },
+    {
+      "id": "690001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-024",
+      "nome_cliente": "sartoria"
+    },
+    {
+      "id": "690002",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-025",
+      "nome_cliente": "resiliens"
+    },
+    {
+      "id": "720001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-026",
+      "nome_cliente": "tata martello"
+    },
+    {
+      "id": "750001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-027",
+      "nome_cliente": "dimitri"
+    },
+    {
+      "id": "750002",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-028",
+      "nome_cliente": "owell"
+    },
+    {
+      "id": "780001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-029",
+      "nome_cliente": "mack"
+    },
+    {
+      "id": "810001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-030",
+      "nome_cliente": "cinara"
+    },
+    {
+      "id": "840001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-031",
+      "nome_cliente": "Mariana redai"
+    },
+    {
+      "id": "840002",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-032",
+      "nome_cliente": "caio nope"
+    },
+    {
+      "id": "840003",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-033",
+      "nome_cliente": "danilo glim"
+    },
+    {
+      "id": "840004",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-034",
+      "nome_cliente": "maria clara, stark"
+    },
+    {
+      "id": "870001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-035",
+      "nome_cliente": "rafael first negative"
+    },
+    {
+      "id": "900001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-037",
+      "nome_cliente": "bruna modelan"
+    },
+    {
+      "id": "960001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-038",
+      "nome_cliente": "rurik"
+    },
+    {
+      "id": "990001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-039",
+      "nome_cliente": "mack"
+    },
+    {
+      "id": "1020001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-040",
+      "nome_cliente": "naice"
+    },
+    {
+      "id": "1050001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-041",
+      "nome_cliente": "luara activewear"
+    },
+    {
+      "id": "1080001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-042",
+      "nome_cliente": "lucas re-build"
+    },
+    {
+      "id": "1110001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-043",
+      "nome_cliente": "mdz"
+    },
+    {
+      "id": "1140001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-044",
+      "nome_cliente": "franciele"
+    },
+    {
+      "id": "1170001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-045",
+      "nome_cliente": "marcos mendes"
+    },
+    {
+      "id": "1200001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-046",
+      "nome_cliente": "Dalmoro sartoria"
+    },
+    {
+      "id": "1230001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-047",
+      "nome_cliente": "marisa"
+    },
+    {
+      "id": "1230002",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-048",
+      "nome_cliente": "kenoa labs"
+    },
+    {
+      "id": "1230003",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-049",
+      "nome_cliente": "paula nobrier"
+    },
+    {
+      "id": "1230004",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-050",
+      "nome_cliente": "Sabrina sismo"
+    },
+    {
+      "id": "1260001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-051",
+      "nome_cliente": "caio pineapple"
+    },
+    {
+      "id": "1290001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-052",
+      "nome_cliente": "sismo"
+    },
+    {
+      "id": "1290002",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-053",
+      "nome_cliente": "cristiane riechelmann"
+    },
+    {
+      "id": "1320001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-054",
+      "nome_cliente": "lucas nevora"
+    },
+    {
+      "id": "1320002",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-055",
+      "nome_cliente": "kenoa labs"
+    },
+    {
+      "id": "1350001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-056",
+      "nome_cliente": "fernanda Feat & co"
+    },
+    {
+      "id": "1380001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-057",
+      "nome_cliente": "cinara teste"
+    },
+    {
+      "id": "1410001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-058",
+      "nome_cliente": "done"
+    },
+    {
+      "id": "1440001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-059",
+      "nome_cliente": "naice"
+    },
+    {
+      "id": "1440002",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-2026-060",
+      "nome_cliente": "natalia bag2go"
+    },
+    {
+      "id": "1470001",
+      "tenant_id": "1",
+      "numero_orcamento": "ORC-001",
+      "nome_cliente": "Cliente A"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttenant_id\tnumero_orcamento\tnome_cliente\n120001\t1\tORÇ-26-1768695814543\tgallm\n420001\t1\tORC-2026-013\tclaudia done\n480001\t1\tORC-2026-014\tbromance\n540001\t1\tORC-2026-015\tDelfina\n570002\t1\tORC-2026-017\trobson thurium\n570003\t1\tORC-2026-018\tbuggio\n570004\t1\tORC-2026-019\tsara regina\n570005\t1\tORC-2026-020\tballet\n630001\t1\tORC-2026-022\tfence\n660001\t1\tORC-2026-023\tbe green\n690001\t1\tORC-2026-024\tsartoria\n690002\t1\tORC-2026-025\tresiliens\n720001\t1\tORC-2026-026\ttata martello\n750001\t1\tORC-2026-027\tdimitri\n750002\t1\tORC-2026-028\towell\n780001\t1\tORC-2026-029\tmack\n810001\t1\tORC-2026-030\tcinara\n840001\t1\tORC-2026-031\tMariana redai\n840002\t1\tORC-2026-032\tcaio nope\n840003\t1\tORC-2026-033\tdanilo glim\n840004\t1\tORC-2026-034\tmaria clara, stark\n870001\t1\tORC-2026-035\trafael first negative\n900001\t1\tORC-2026-037\tbruna modelan\n960001\t1\tORC-2026-038\trurik\n990001\t1\tORC-2026-039\tmack\n1020001\t1\tORC-2026-040\tnaice\n1050001\t1\tORC-2026-041\tluara activewear\n1080001\t1\tORC-2026-042\tlucas re-build\n1110001\t1\tORC-2026-043\tmdz\n1140001\t1\tORC-2026-044\tfranciele\n1170001\t1\tORC-2026-045\tmarcos mendes\n1200001\t1\tORC-2026-046\tDalmoro sartoria\n1230001\t1\tORC-2026-047\tmarisa\n1230002\t1\tORC-2026-048\tkenoa labs\n1230003\t1\tORC-2026-049\tpaula nobrier\n1230004\t1\tORC-2026-050\tSabrina sismo\n1260001\t1\tORC-2026-051\tcaio pineapple\n1290001\t1\tORC-2026-052\tsismo\n1290002\t1\tORC-2026-053\tcristiane riechelmann\n1320001\t1\tORC-2026-054\tlucas nevora\n1320002\t1\tORC-2026-055\tkenoa labs\n1350001\t1\tORC-2026-056\tfernanda Feat & co\n1380001\t1\tORC-2026-057\tcinara teste\n1410001\t1\tORC-2026-058\tdone\n1440001\t1\tORC-2026-059\tnaice\n1440002\t1\tORC-2026-060\tnatalia bag2go\n1470001\t1\tORC-001\tCliente A\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

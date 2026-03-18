@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE orcamentos SET enviado = 1 WHERE status = 'aprovado';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute UPDATE orcamentos SET enviado = 1 WHERE status = 'aprovado';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 360
+}

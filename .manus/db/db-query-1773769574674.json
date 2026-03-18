@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, name, email, tenant_id, role FROM users WHERE email = 'clovisart13@gmail.com';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute SELECT id, name, email, tenant_id, role FROM users WHERE email = 'clovisart13@gmail.com';",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Clovis Art",
+      "email": "clovisart13@gmail.com",
+      "tenant_id": "2",
+      "role": "admin"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\ttenant_id\trole\n1\tClovis Art\tclovisart13@gmail.com\t2\tadmin\n",
+  "stderr": "",
+  "execution_time_ms": 145
+}

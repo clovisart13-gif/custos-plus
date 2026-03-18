@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, percentual_sinal, percentual_retirada, percentual_prazo, prazo_entrega_texto FROM orcamentos WHERE id = 90019;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute SELECT id, percentual_sinal, percentual_retirada, percentual_prazo, prazo_entrega_texto FROM orcamentos WHERE id = 90019;",
+  "rows": [
+    {
+      "id": "90019",
+      "percentual_sinal": "50.00",
+      "percentual_retirada": "50.00",
+      "percentual_prazo": "0.00",
+      "prazo_entrega_texto": "30 dias após aprovação do protótipo"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tpercentual_sinal\tpercentual_retirada\tpercentual_prazo\tprazo_entrega_texto\n90019\t50.00\t50.00\t0.00\t30 dias após aprovação do protótipo\n",
+  "stderr": "",
+  "execution_time_ms": 52
+}

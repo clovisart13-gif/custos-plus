@@ -1,0 +1,55 @@
+{
+  "query": "SELECT * FROM empresas;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute SELECT * FROM empresas;",
+  "rows": [
+    {
+      "id": "1",
+      "user_id": "1",
+      "nome": "kmc comercial ltda",
+      "cnpj": "47833002/0001-25",
+      "email": "contato@uniformeskmc.com.br",
+      "telefone": "1197254-1907",
+      "endereco": "rua fernando renzo, 85 - cep 02466-100",
+      "cidade": "sao apulo",
+      "estado": "SP",
+      "observacoes": "NULL",
+      "createdAt": "2026-03-17 15:56:31",
+      "updatedAt": "2026-03-17 15:57:24",
+      "tenant_id": "1"
+    },
+    {
+      "id": "2",
+      "user_id": "1",
+      "nome": "R2PB Confecções",
+      "cnpj": "NULL",
+      "email": "NULL",
+      "telefone": "NULL",
+      "endereco": "NULL",
+      "cidade": "NULL",
+      "estado": "NULL",
+      "observacoes": "NULL",
+      "createdAt": "2026-03-17 16:18:54",
+      "updatedAt": "2026-03-17 16:18:54",
+      "tenant_id": "1"
+    },
+    {
+      "id": "3",
+      "user_id": "1",
+      "nome": "Mirage",
+      "cnpj": "NULL",
+      "email": "NULL",
+      "telefone": "NULL",
+      "endereco": "NULL",
+      "cidade": "NULL",
+      "estado": "NULL",
+      "observacoes": "NULL",
+      "createdAt": "2026-03-17 16:18:54",
+      "updatedAt": "2026-03-17 16:18:54",
+      "tenant_id": "2"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuser_id\tnome\tcnpj\temail\ttelefone\tendereco\tcidade\testado\tobservacoes\tcreatedAt\tupdatedAt\ttenant_id\n1\t1\tkmc comercial ltda\t47833002/0001-25\tcontato@uniformeskmc.com.br\t1197254-1907\trua fernando renzo, 85 - cep 02466-100\tsao apulo\tSP\tNULL\t2026-03-17 15:56:31\t2026-03-17 15:57:24\t1\n2\t1\tR2PB Confecções\tNULL\tNULL\tNULL\tNULL\tNULL\tNULL\tNULL\t2026-03-17 16:18:54\t2026-03-17 16:18:54\t1\n3\t1\tMirage\tNULL\tNULL\tNULL\tNULL\tNULL\tNULL\tNULL\t2026-03-17 16:18:54\t2026-03-17 16:18:54\t2\n",
+  "stderr": "",
+  "execution_time_ms": 64
+}

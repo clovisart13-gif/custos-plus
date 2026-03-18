@@ -1,0 +1,50 @@
+{
+  "query": "SELECT id, nome, tenant_id FROM empresas;\nSELECT name, email, tenant_id FROM users;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute SELECT id, nome, tenant_id FROM empresas;\nSELECT name, email, tenant_id FROM users;",
+  "rows": [
+    {
+      "id": "1",
+      "nome": "kmc comercial ltda",
+      "tenant_id": "3"
+    },
+    {
+      "id": "2",
+      "nome": "R2PB Confecções",
+      "tenant_id": "1"
+    },
+    {
+      "id": "3",
+      "nome": "Mirage",
+      "tenant_id": "2"
+    },
+    {
+      "id": "name",
+      "nome": "email",
+      "tenant_id": "tenant_id"
+    },
+    {
+      "id": "Clovis Art",
+      "nome": "clovisart13@gmail.com",
+      "tenant_id": "2"
+    },
+    {
+      "id": "Jackson ",
+      "nome": "comercial@quickthreads.com.br",
+      "tenant_id": "1"
+    },
+    {
+      "id": "João Silva",
+      "nome": "joao.silva@example.com",
+      "tenant_id": "1"
+    },
+    {
+      "id": "Marcelo Ferreira",
+      "nome": "contato@uniformeskmc.com.br",
+      "tenant_id": "3"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\ttenant_id\n1\tkmc comercial ltda\t3\n2\tR2PB Confecções\t1\n3\tMirage\t2\nname\temail\ttenant_id\nClovis Art\tclovisart13@gmail.com\t2\nJackson \tcomercial@quickthreads.com.br\t1\nJoão Silva\tjoao.silva@example.com\t1\nMarcelo Ferreira\tcontato@uniformeskmc.com.br\t3\n",
+  "stderr": "",
+  "execution_time_ms": 67
+}

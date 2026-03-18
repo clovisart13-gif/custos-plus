@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE orcamentos \nSET observacoes = 'Desconto especial de 10% aplicado por ser cliente fiel. Prazo de entrega: 15 dias úteis.',\n    desconto_tipo = 'percentual',\n    desconto_valor = 10\nWHERE numero_orcamento = 'ORC-2026-010';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute UPDATE orcamentos \nSET observacoes = 'Desconto especial de 10% aplicado por ser cliente fiel. Prazo de entrega: 15 dias úteis.',\n    desconto_tipo = 'percentual',\n    desconto_valor = 10\nWHERE numero_orcamento = 'ORC-2026-010';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 62
+}

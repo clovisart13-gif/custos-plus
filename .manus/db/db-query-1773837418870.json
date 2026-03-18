@@ -1,0 +1,25 @@
+{
+  "query": "SELECT id, nome, tenant_id FROM empresas;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute SELECT id, nome, tenant_id FROM empresas;",
+  "rows": [
+    {
+      "id": "1",
+      "nome": "kmc comercial ltda",
+      "tenant_id": "3"
+    },
+    {
+      "id": "3",
+      "nome": "Mirage",
+      "tenant_id": "2"
+    },
+    {
+      "id": "4",
+      "nome": "R2PB",
+      "tenant_id": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnome\ttenant_id\n1\tkmc comercial ltda\t3\n3\tMirage\t2\n4\tR2PB\t1\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

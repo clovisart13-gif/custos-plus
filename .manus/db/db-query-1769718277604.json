@@ -1,0 +1,18 @@
+{
+  "query": "SELECT id, numero_orcamento, nome_cliente, subtotal, total, percentual_sinal FROM orcamentos WHERE numero_orcamento = 'ORC-2026-022';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3FX9kxqoNJJuMBk.343696d1365a --database Yu3PrAdTbLSYySKTFr5ZCD --execute SELECT id, numero_orcamento, nome_cliente, subtotal, total, percentual_sinal FROM orcamentos WHERE numero_orcamento = 'ORC-2026-022';",
+  "rows": [
+    {
+      "id": "630001",
+      "numero_orcamento": "ORC-2026-022",
+      "nome_cliente": "fence",
+      "subtotal": "117.70",
+      "total": "117.70",
+      "percentual_sinal": "50.00"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tnumero_orcamento\tnome_cliente\tsubtotal\ttotal\tpercentual_sinal\n630001\tORC-2026-022\tfence\t117.70\t117.70\t50.00\n",
+  "stderr": "",
+  "execution_time_ms": 354
+}

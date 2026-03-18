@@ -2,6 +2,24 @@ import type { CookieOptions, Request } from "express";
 
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
 
+// Domínios permitidos para cookies cross-site
+const ALLOWED_DOMAINS = new Set([
+  "manus.im",
+  "manus.space",
+  "localhost",
+  "127.0.0.1",
+]);
+
+function isAllowedDomain(host: string): boolean {
+  if (!host) return false;
+  // Remover porta se existir
+  const hostname = host.split(":")[0];
+  // Verificar se é localhost ou IP
+  if (LOCAL_HOSTS.has(hostname)) return true;
+  // Verificar se termina com domínios permitidos
+  return Array.from(ALLOWED_DOMAINS).some(domain => hostname.endsWith(domain));
+}
+
 function isIpAddress(host: string) {
   // Basic IPv4 check and IPv6 presence detection.
   if (/^\d{1,3}(\.\d{1,3}){3}$/.test(host)) return true;
@@ -42,7 +60,7 @@ export function getSessionCookieOptions(
   return {
     httpOnly: true,
     path: "/",
-    sameSite: "none",
+    sameSite: "lax",
     secure: isSecureRequest(req),
   };
 }
