@@ -38,6 +38,7 @@ function Router() {
       </Switch>
       <Navigation />
       <Switch>
+        <Route path="/login" component={LoginPassword} />
         <Route path="/" component={ResumoOrcamentos} />
         <Route path="/fichas-custo">
           {() => <ProtectedRoute path="/fichas-custo" component={FichasCusto} />}
