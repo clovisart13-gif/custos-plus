@@ -144,3 +144,21 @@ export const empresas = mysqlTable("empresas", {
 
 export type Empresa = typeof empresas.$inferSelect;
 export type InsertEmpresa = typeof empresas.$inferInsert;
+
+/**
+ * Observações Pré-definidas - Pre-defined Observations for Quotations
+ */
+export const observacoesPredefinidas = mysqlTable("observacoes_predefinidas", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("user_id").notNull(),
+  titulo: varchar("titulo", { length: 100 }).notNull(),
+  conteudo: text("conteudo").notNull(),
+  categoria: varchar("categoria", { length: 50 }).default("geral").notNull(),
+  ativo: tinyint("ativo").default(1).notNull(),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ObservacaoPredefinida = typeof observacoesPredefinidas.$inferSelect;
+export type InsertObservacaoPredefinida = typeof observacoesPredefinidas.$inferInsert;

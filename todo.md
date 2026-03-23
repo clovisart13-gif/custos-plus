@@ -359,3 +359,42 @@ Em vez de armazenar totais no banco e tentar atualizar (que está falhando), cal
     * Aprovar/Reprovar
     * Enviar para Kanban
   - Status: PENDENTE
+
+## Sistema de Observações Pré-definidas (23/03/2026)
+
+- [x] Criar tabela de observações pré-definidas no banco
+  - Objetivo: Armazenar observações reutilizáveis para agilizar criação de orçamentos
+  - Implementação:
+    * ✅ Criada tabela `observacoesPredefinidas` no schema
+    * ✅ Campos: id, titulo, conteudo, categoria, empresaId
+    * ✅ Migration aplicada com `pnpm db:push`
+  - Status: ✅ CONCLUÍDO
+
+- [x] Criar procedures de CRUD para observações pré-definidas
+  - Objetivo: Gerenciar observações pré-definidas
+  - Implementação:
+    * ✅ Criado procedure `list` - retorna todas as observações
+    * ✅ Criado procedure `create` - cria nova observação
+    * ✅ Criado procedure `update` - atualiza observação existente
+    * ✅ Criado procedure `delete` - deleta observação
+  - Status: ✅ CONCLUÍDO
+
+- [x] Criar página de gerenciamento de observações
+  - Objetivo: Interface para criar, editar e deletar observações pré-definidas
+  - Implementação:
+    * ✅ Criada página `GerenciarObservacoes.tsx`
+    * ✅ Tabela com lista de observações
+    * ✅ Modal para criar nova observação
+    * ✅ Botões de editar e deletar
+    * ✅ Link adicionado na Navigation
+  - Status: ✅ CONCLUÍDO
+
+- [x] Adicionar dropdown de observações pré-definidas no modal de edição
+  - Objetivo: Permitir adicionar observações pré-definidas ao editar orçamento
+  - Implementação:
+    * ✅ Modificado `EditarObservacoesModal.tsx`
+    * ✅ Adicionado dropdown "Adicionar predefinida"
+    * ✅ Observações pré-definidas carregadas via tRPC
+    * ✅ Ao selecionar, adiciona conteúdo ao textarea
+  - Teste: Observação "Prazo de Entrega" adicionada com sucesso ao orçamento
+  - Status: ✅ CONCLUÍDO - FUNCIONALIDADE 100% OPERACIONAL

@@ -4,6 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Plus } from "lucide-react";
 
 interface EditarObservacoesModalProps {
   open: boolean;
@@ -19,6 +27,7 @@ export function EditarObservacoesModal({
   observacoesAtuais,
 }: EditarObservacoesModalProps) {
   const [observacoes, setObservacoes] = useState<string>(observacoesAtuais || "");
+  const { data: observacoesPredefinidas = [] } = trpc.observacoesPredefinidas.list.useQuery();
 
   const utils = trpc.useUtils();
   const updateMutation = trpc.orcamentos.updateDescontoObservacoes.useMutation({
@@ -42,6 +51,10 @@ export function EditarObservacoesModal({
     });
   };
 
+  const handleAdicionarPredefinida = (conteudo: string) => {
+    setObservacoes((prev) => (prev ? prev + "\n" + conteudo : conteudo));
+  };
+
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-[600px]">
@@ -51,7 +64,24 @@ export function EditarObservacoesModal({
 
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="observacoes">Observações</Label>
+            <div className="flex justify-between items-center">
+              <Label htmlFor="observacoes">Observações</Label>
+              {observacoesPredefinidas.length > 0 && (
+                <Select onValueChange={handleAdicionarPredefinida}>
+                  <SelectTrigger className="w-auto">
+                    <Plus className="h-4 w-4 mr-2" />
+                    <SelectValue placeholder="Adicionar predefinida" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {observacoesPredefinidas.map((obs) => (
+                      <SelectItem key={obs.id} value={obs.conteudo}>
+                        {obs.titulo}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
             <Textarea
               id="observacoes"
               value={observacoes}

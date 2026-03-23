@@ -1326,3 +1326,68 @@ export async function updateOrcamentoEnviado(orcamentoId: number, enviado: boole
 
   return { success: true };
 }
+
+
+// ============ Observações Pré-definidas Queries ============
+
+import { observacoesPredefinidas, InsertObservacaoPredefinida, ObservacaoPredefinida } from "../drizzle/schema";
+
+export async function getObservacoesPredefinidas(userId: number): Promise<ObservacaoPredefinida[]> {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db
+    .select()
+    .from(observacoesPredefinidas)
+    .where(eq(observacoesPredefinidas.userId, userId));
+}
+
+export async function createObservacaoPredefinida(data: InsertObservacaoPredefinida): Promise<ObservacaoPredefinida> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db.insert(observacoesPredefinidas).values(data);
+  
+  const created = await db
+    .select()
+    .from(observacoesPredefinidas)
+    .where(eq(observacoesPredefinidas.userId, data.userId))
+    .orderBy(desc(observacoesPredefinidas.createdAt))
+    .limit(1);
+
+  if (created.length > 0) {
+    return created[0];
+  }
+
+  throw new Error("Nao foi possivel criar a observacao predefinida");
+}
+
+export async function updateObservacaoPredefinida(id: number, userId: number, data: Partial<InsertObservacaoPredefinida>): Promise<ObservacaoPredefinida> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .update(observacoesPredefinidas)
+    .set(data)
+    .where(eq(observacoesPredefinidas.id, id));
+
+  const updated = await db
+    .select()
+    .from(observacoesPredefinidas)
+    .where(eq(observacoesPredefinidas.id, id));
+
+  if (updated.length > 0) {
+    return updated[0];
+  }
+
+  throw new Error("Nao foi possivel atualizar a observacao predefinida");
+}
+
+export async function deleteObservacaoPredefinida(id: number, userId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .delete(observacoesPredefinidas)
+    .where(eq(observacoesPredefinidas.id, id));
+}

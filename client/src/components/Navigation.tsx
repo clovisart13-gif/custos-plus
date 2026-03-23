@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FileText, LogOut, User, FileCheck, Users, Building2 } from "lucide-react";
+import { FileText, LogOut, User, FileCheck, Users, Building2, MessageSquare } from "lucide-react";
 
 export function Navigation() {
   const [location] = useLocation();
@@ -29,6 +29,7 @@ export function Navigation() {
   const adminItems = [
     { path: "/gerenciar-usuarios", label: "Gerenciar Usuários", icon: Users },
     { path: "/empresas", label: "Empresas", icon: Building2 },
+    { path: "/gerenciar-observacoes", label: "Observações", icon: MessageSquare },
   ];
 
   return (

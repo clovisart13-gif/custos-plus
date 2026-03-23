@@ -596,6 +596,48 @@ export const appRouter = router({
 
   }),
 
+  observacoesPredefinidas: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return await db.getObservacoesPredefinidas(ctx.user.id);
+    }),
+
+    create: protectedProcedure
+      .input(z.object({
+        titulo: z.string().min(1, "Título é obrigatório"),
+        conteudo: z.string().min(1, "Conteúdo é obrigatório"),
+        categoria: z.string().default("geral"),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        return await db.createObservacaoPredefinida({
+          userId: ctx.user.id,
+          titulo: input.titulo,
+          conteudo: input.conteudo,
+          categoria: input.categoria,
+          ativo: 1,
+        });
+      }),
+
+    update: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        titulo: z.string().optional(),
+        conteudo: z.string().optional(),
+        categoria: z.string().optional(),
+        ativo: z.number().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const { id, ...data } = input;
+        return await db.updateObservacaoPredefinida(id, ctx.user.id, data);
+      }),
+
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        await db.deleteObservacaoPredefinida(input.id, ctx.user.id);
+        return { success: true };
+      }),
+  }),
+
   dashboard: router({
     kpis: protectedProcedure
       .input(z.object({ familia: z.string().optional() }))

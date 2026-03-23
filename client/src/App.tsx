@@ -14,12 +14,13 @@ import VisualizarOrcamento from "./pages/VisualizarOrcamento";
 import ResumoOrcamentos from "./pages/ResumoOrcamentos";
 import GerenciarUsuarios from "./pages/GerenciarUsuarios";
 import Empresas from "./pages/Empresas";
+import { GerenciarObservacoes } from "./pages/GerenciarObservacoes";
 
 function ProtectedRoute({ path, component: Component }: { path: string; component: any }) {
   const { user } = useAuth();
   
   // Rotas que requerem admin
-  const adminRoutes = ["/fichas-custo", "/ficha/:id", "/gerenciar-usuarios", "/empresas"];
+  const adminRoutes = ["/fichas-custo", "/ficha/:id", "/gerenciar-usuarios", "/empresas", "/gerenciar-observacoes"];
   
   if (adminRoutes.some(route => path.startsWith(route.split(":")[0]))) {
     if (user?.role !== "admin") {
@@ -50,6 +51,9 @@ function Router() {
         </Route>
         <Route path="/empresas">
           {() => <ProtectedRoute path="/empresas" component={Empresas} />}
+        </Route>
+        <Route path="/gerenciar-observacoes">
+          {() => <ProtectedRoute path="/gerenciar-observacoes" component={GerenciarObservacoes} />}
         </Route>
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
