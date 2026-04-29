@@ -398,3 +398,18 @@ Em vez de armazenar totais no banco e tentar atualizar (que está falhando), cal
     * ✅ Ao selecionar, adiciona conteúdo ao textarea
   - Teste: Observação "Prazo de Entrega" adicionada com sucesso ao orçamento
   - Status: ✅ CONCLUÍDO - FUNCIONALIDADE 100% OPERACIONAL
+
+
+## Endpoint /api/export (29/04/2026)
+
+- [x] Criar endpoint GET /api/export
+  - Objetivo: Permitir exportação de todos os dados em JSON
+  - Implementação:
+    * ✅ Adicionado em server/_core/index.ts
+    * ✅ Retorna fichas_custo, orcamentos, itens_orcamento
+    * ✅ Inclui summary com totais
+    * ✅ Tratamento de erros
+  - Teste: Endpoint retorna JSON com 20 fichas, 3 orçamentos, múltiplos itens
+  - Status: ✅ CONCLUÍDO - FUNCIONALIDADE 100% OPERACIONAL
+  - URL: GET /api/export
+  - Resposta: JSON com estrutura { success, timestamp, data: { fichas_custo, orcamentos, itens_orcamento, summary } }

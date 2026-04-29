@@ -35,6 +35,49 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+  
+  // Export endpoint
+  app.get("/api/export", async (req, res) => {
+    try {
+      const { getDb } = await import("../db");
+      const db = await getDb();
+      
+      if (!db) {
+        return res.status(500).json({
+          success: false,
+          error: "Database not available"
+        });
+      }
+      
+      const { fichasCusto, orcamentos, itensOrcamento } = await import("../../drizzle/schema");
+      
+      const fichasData = await db.select().from(fichasCusto);
+      const orcamentosData = await db.select().from(orcamentos);
+      const itensData = await db.select().from(itensOrcamento);
+      
+      res.json({
+        success: true,
+        timestamp: new Date().toISOString(),
+        data: {
+          fichas_custo: fichasData,
+          orcamentos: orcamentosData,
+          itens_orcamento: itensData,
+          summary: {
+            total_fichas: fichasData.length,
+            total_orcamentos: orcamentosData.length,
+            total_itens: itensData.length,
+          }
+        }
+      });
+    } catch (error) {
+      console.error("Export error:", error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+  
   // tRPC API
   app.use(
     "/api/trpc",
